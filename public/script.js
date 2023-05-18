@@ -53,6 +53,15 @@ var peer = new Peer({
   debug: 3
 });
 
+peer.on("call", (call) => {
+  call.answer(myVideoStream);
+  const video = document.createElement("video");
+  call.on("stream", (userVideoStream) => {
+    addVideoStream(video, userVideoStream);
+  });
+});
+
+
 let myVideoStream;
 navigator.mediaDevices
   .getUserMedia({
@@ -78,13 +87,13 @@ navigator.mediaDevices
   });
 
 const connectToNewUser = (userId, stream) => {
-  console.log('I call someone' + userId);
   const call = peer.call(userId, stream);
   const video = document.createElement("video");
   call.on("stream", (userVideoStream) => {
     addVideoStream(video, userVideoStream);
   });
 };
+
 
 peer.on("open", (id) => {
   console.log('my id is' + id);
