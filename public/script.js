@@ -37,6 +37,8 @@ var peer = new Peer({
       { url: 'stun:stun.voipstunt.com' },
       { url: 'stun:stun.voxgratia.org' },
       { url: 'stun:stun.xten.com' },
+      { urls: 'stun:stun.l.google.com:19302' },
+      { urls: 'stun:stun1.l.google.com:19302' },
       {
         url: 'turn:192.158.29.39:3478?transport=udp',
         credential: 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
