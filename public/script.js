@@ -70,13 +70,14 @@ navigator.mediaDevices
   });
 
   const connectToNewUser = (userId, stream) => {
-    console.log('I call someone' + userId);
-    const call = peer.call(userId, myVideoStream); // Passa myVideoStream invece di stream
-    const video = document.createElement("video");
-    call.on("stream", (userVideoStream) => {
-      addVideoStream(video, userVideoStream);
-    });
-  };
+  console.log('I call someone' + userId);
+  const call = peer.call(userId, stream); // Utilizza 'stream' invece di 'myVideoStream'
+  const video = document.createElement("video");
+  call.on("stream", (userVideoStream) => {
+    addVideoStream(video, userVideoStream);
+  });
+};
+
 
 
 
