@@ -123,8 +123,8 @@ socket.on("createMessage", (message, userName) => {
   let messageContent = message;
 
   if (message.includes("felice")) {
-    const emoticonImage = <img src="felice.png" alt="Emoticon">;
-    messageContent = ${messageContent} ${emoticonImage};
+    const emoticonImage = `<img src="felice.png" alt="Emoticon">`;
+    messageContent = `${messageContent} ${emoticonImage}`;
   }
 
   messages.innerHTML += `
@@ -145,10 +145,9 @@ function updateEmoticon() {
 function createEmoticon() {
   const emoticonImage = document.createElement("img");
   emoticonImage.src = "felice.png";
-  emoticonImage.alt = "Emoticon";
   emoticonImage.style.position = "absolute";
-  emoticonImage.style.left = "25%";
-  emoticonImage.style.top = "25%";
+  emoticonImage.style.left = "50%";
+  emoticonImage.style.top = "50%";
   emoticonImage.style.transform = "translate(-50%, -50%)";
   videoGrid.appendChild(emoticonImage);
 
@@ -170,12 +169,12 @@ muteButton.addEventListener("click", () => {
   const enabled = myVideoStream.getAudioTracks()[0].enabled;
   if (enabled) {
     myVideoStream.getAudioTracks()[0].enabled = false;
-    html = <i class="fas fa-microphone-slash"></i>;
+    html = `<i class="fas fa-microphone-slash"></i>`;
     muteButton.classList.toggle("background__red");
     muteButton.innerHTML = html;
   } else {
     myVideoStream.getAudioTracks()[0].enabled = true;
-    html = <i class="fas fa-microphone"></i>;
+    html = `<i class="fas fa-microphone"></i>`;
     muteButton.classList.toggle("background__red");
     muteButton.innerHTML = html;
   }
@@ -185,12 +184,12 @@ stopVideo.addEventListener("click", () => {
   const enabled = myVideoStream.getVideoTracks()[0].enabled;
   if (enabled) {
     myVideoStream.getVideoTracks()[0].enabled = false;
-    html = <i class="fas fa-video-slash"></i>;
+    html = `<i class="fas fa-video-slash"></i>`;
     stopVideo.classList.toggle("background__red");
     stopVideo.innerHTML = html;
   } else {
     myVideoStream.getVideoTracks()[0].enabled = true;
-    html = <i class="fas fa-video"></i>;
+    html = `<i class="fas fa-video"></i>`;
     stopVideo.classList.toggle("background__red");
     stopVideo.innerHTML = html;
   }
