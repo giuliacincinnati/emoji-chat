@@ -121,8 +121,13 @@ text.addEventListener("keydown", (e) => {
 
 socket.on("createMessage", (message, userName) => {
   let messageContent = message;
+  let includeEmoticon = false;
 
   if (message.includes("felice")) {
+    includeEmoticon = true;
+  }
+
+  if (includeEmoticon) {
     const emoticonImage = `<img src="felice.png" alt="Emoticon">`;
     messageContent = `${messageContent} ${emoticonImage}`;
   }
@@ -132,7 +137,12 @@ socket.on("createMessage", (message, userName) => {
       <b><i class="far fa-user-circle"></i> <span>${userName === user ? "me" : userName}</span></b>
       <span>${messageContent}</span>
     </div>`;
+
+  if (includeEmoticon) {
+    createEmoticon();
+  }
 });
+
 
 
 
