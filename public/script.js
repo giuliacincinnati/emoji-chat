@@ -145,17 +145,16 @@ function updateEmoticon() {
 function createEmoticon() {
   const emoticonImage = document.createElement("img");
   emoticonImage.src = "felice.png";
-  emoticonImage.style.position = "absolute";
+  emoticonImage.alt = "Emoticon";
+  emoticonImage.style.position = "fixed";
   emoticonImage.style.left = "50%";
   emoticonImage.style.top = "50%";
   emoticonImage.style.transform = "translate(-50%, -50%)";
-  videoGrid.appendChild(emoticonImage);
-
+  document.body.appendChild(emoticonImage);
 
   // Scomparsa della faccina dopo 10 secondi
   setTimeout(() => {
-    videoGrid.appendChild(emoticonImage);
-
+    document.body.removeChild(emoticonImage);
   }, 10000);
 }
 
