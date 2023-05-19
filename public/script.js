@@ -36,13 +36,13 @@ var peer = new Peer({
 });
 
 
-peer.on("call", (call) => {
+/*peer.on("call", (call) => {
   call.answer(myVideoStream);
   const video = document.createElement("video");
   call.on("stream", (userVideoStream) => {
     addVideoStream(video, userVideoStream);
   });
-});
+});*/
 
 
 let myVideoStream;
@@ -71,12 +71,12 @@ navigator.mediaDevices
 
   const connectToNewUser = (userId, stream) => {
     console.log('I call someone' + userId);
-    const call = peer.call(userId, stream); // Passa stream invece di myVideoStream
+    const call = peer.call(userId, stream);
+    const video = document.createElement("video");
     call.on("stream", (userVideoStream) => {
       addVideoStream(video, userVideoStream);
     });
   };
-
 
 
 
@@ -89,9 +89,7 @@ const addVideoStream = (video, stream) => {
   video.srcObject = stream;
   video.addEventListener("loadedmetadata", () => {
     video.play();
-    if (video !== myVideo) {
-      videoGrid.append(video);
-    }
+    videoGrid.append(video);
   });
 };
 
