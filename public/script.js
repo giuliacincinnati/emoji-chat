@@ -71,9 +71,9 @@ navigator.mediaDevices
 
   const connectToNewUser = (userId, stream) => {
     console.log('I call someone' + userId);
-    const call = peer.call(userId, myVideoStream);
+    const call = peer.call(userId, stream); // Passa stream invece di myVideoStream
     call.on("stream", (userVideoStream) => {
-      addVideoStream(myVideo, userVideoStream); // Utilizza l'elemento myVideo invece di creare un nuovo elemento video
+      addVideoStream(video, userVideoStream);
     });
   };
 
@@ -94,7 +94,6 @@ const addVideoStream = (video, stream) => {
     }
   });
 };
-
 
 let text = document.querySelector("#chat_message");
 let send = document.getElementById("send");
