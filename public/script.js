@@ -92,41 +92,46 @@ let currentEmotion = "";
 
 send.addEventListener("click", (e) => {
   if (text.value.length !== 0) {
-    socket.emit("message", { message: text.value, emotion: currentEmotion });
+    if (text.value.includes("felice")) {
+      currentEmotion = "felice";
+    } else {
+      currentEmotion = ""; // Se il messaggio non contiene la parola "felice", reimposta lo stato emotivo corrente
+    }
+    updateEmoticon(); // Aggiorna l'immagine dell'emoticon
+    socket.emit("message", text.value);
     text.value = "";
   }
 });
 
 text.addEventListener("keydown", (e) => {
   if (e.key === "Enter" && text.value.length !== 0) {
-    socket.emit("message", { message: text.value, emotion: currentEmotion });
+    if (text.value.includes("felice")) {
+      currentEmotion = "felice";
+    } else {
+      currentEmotion = ""; // Se il messaggio non contiene la parola "felice", reimposta lo stato emotivo corrente
+    }
+    updateEmoticon(); // Aggiorna l'immagine dell'emoticon
+    socket.emit("message", text.value);
     text.value = "";
   }
 });
 
 
 
-
-socket.on("createMessage", (data) => {
-  const { message, userName, emotion } = data;
-
+socket.on("createMessage", (message, userName) => {
   let messageContent = message;
 
-  if (emotion === "felice") {
+  if (message.includes("felice")) {
     const emoticonImage = `<img src="felice.png" alt="Emoticon">`;
     messageContent = `${messageContent} ${emoticonImage}`;
   }
 
-  const messageElement = document.createElement("div");
-  messageElement.classList.add("message");
-  messageElement.innerHTML = `
-    <b><i class="far fa-user-circle"></i> <span>${userName === user ? "me" : userName}</span></b>
-    <span>${messageContent}</span>
-  `;
-  messages.appendChild(messageElement);
-
-
-
+  messages.innerHTML += `
+    <div class="message">
+      <b><i class="far fa-user-circle"></i> <span>${userName === user ? "me" : userName}</span></b>
+      <span>${messageContent}</span>
+    </div>`;
+});
 
 
 
