@@ -117,12 +117,14 @@ socket.on("createMessage", (data) => {
     messageContent = `${messageContent} ${emoticonImage}`;
   }
 
-  messages.innerHTML += `
-    <div class="message">
-      <b><i class="far fa-user-circle"></i> <span>${userName === user ? "me" : userName}</span></b>
-      <span>${messageContent}</span>
-    </div>`;
-});
+  const messageElement = document.createElement("div");
+  messageElement.classList.add("message");
+  messageElement.innerHTML = `
+    <b><i class="far fa-user-circle"></i> <span>${userName === user ? "me" : userName}</span></b>
+    <span>${messageContent}</span>
+  `;
+  messages.appendChild(messageElement);
+
 
 
 
