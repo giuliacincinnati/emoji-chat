@@ -210,6 +210,6 @@ style.innerHTML = `
 
 document.head.appendChild(style);
 
-#emoticon-container.hidden {
+#emoticon-container{
   display: none;
 }
