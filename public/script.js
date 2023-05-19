@@ -70,10 +70,11 @@ navigator.mediaDevices
   });
 
   const connectToNewUser = (userId, stream) => {
-    console.log('I call someone' + userId);
-    const call = peer.call(userId, myVideoStream);
+    console.log("I call someone" + userId);
+    const call = peer.call(userId, stream);
+    const video = document.createElement("video");
     call.on("stream", (userVideoStream) => {
-      addVideoStream(myVideo, userVideoStream); // Aggiorna questa linea
+      addVideoStream(video, userVideoStream);
     });
   };
 
