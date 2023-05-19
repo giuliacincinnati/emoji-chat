@@ -71,12 +71,12 @@ navigator.mediaDevices
 
   const connectToNewUser = (userId, stream) => {
     console.log('I call someone' + userId);
-    const call = peer.call(userId, myVideoStream); // Passa myVideoStream invece di stream
-    const video = document.createElement("video");
+    const call = peer.call(userId, myVideoStream);
     call.on("stream", (userVideoStream) => {
-      addVideoStream(video, userVideoStream);
+      addVideoStream(myVideo, userVideoStream); // Utilizza l'elemento myVideo invece di creare un nuovo elemento video
     });
   };
+
 
 
 
@@ -89,9 +89,12 @@ const addVideoStream = (video, stream) => {
   video.srcObject = stream;
   video.addEventListener("loadedmetadata", () => {
     video.play();
-    videoGrid.append(video);
+    if (video !== myVideo) {
+      videoGrid.append(video);
+    }
   });
 };
+
 
 let text = document.querySelector("#chat_message");
 let send = document.getElementById("send");
