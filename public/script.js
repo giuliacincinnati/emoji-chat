@@ -60,13 +60,18 @@ navigator.mediaDevices
   });
 
   const connectToNewUser = (userId, stream) => {
-    console.log('I call someone' + userId);
-    const call = peer.call(userId, stream);
-    const video = document.createElement("video");
-    call.on("stream", (userVideoStream) => {
-      addVideoStream(video, userVideoStream);
+  console.log('I call someone' + userId);
+  const call = peer.call(userId, stream);
+  const video = document.createElement("video");
+  call.on("stream", (userVideoStream) => {
+    addVideoStream(video, userVideoStream);
+    call.on("data", (data) => {
+      remoteUserEmotion = data.toString(); // Ricevi lo stato emotivo dal partecipante remoto
+      updateRemoteEmoticon(); // Aggiorna l'immagine dell'emoticon del partecipante remoto
     });
-  };
+  });
+};
+
 
 
 
@@ -88,6 +93,7 @@ let text = document.querySelector("#chat_message");
 let send = document.getElementById("send");
 let messages = document.querySelector(".messages");
 let currentEmotion = "";
+let remoteUserEmotion = "";
 
 
 
@@ -100,6 +106,7 @@ send.addEventListener("click", (e) => {
     }
     updateEmoticon(); // Aggiorna l'immagine dell'emoticon
     socket.emit("message", text.value);
+    socket.emit("emotion", currentEmotion); // Invia lo stato emotivo al server
     text.value = "";
   }
 });
@@ -119,10 +126,20 @@ text.addEventListener("keydown", (e) => {
 
 
 
+socket.on("emotion", (emotion, userName) => {
+  if (userName === user) {
+    currentEmotion = emotion; // Aggiorna lo stato emotivo corrente dell'utente locale
+    updateEmoticon(); // Aggiorna l'immagine dell'emoticon dell'utente locale
+  } else {
+    remoteUserEmotion = emotion; // Aggiorna lo stato emotivo del partecipante remoto
+    updateRemoteEmoticon(); // Aggiorna l'immagine dell'emoticon del partecipante remoto
+  }
+});
+
 socket.on("createMessage", (message, userName) => {
   let messageContent = message;
 
-  if (message.includes("felice")) {
+  if (userName === user && currentEmotion === "felice") {
     const emoticonImage = `<img src="felice.png" alt="Emoticon">`;
     messageContent = `${messageContent} ${emoticonImage}`;
   }
@@ -160,6 +177,33 @@ function createEmoticon() {
   }, 10000);
 }
 
+function updateRemoteEmoticon() {
+  const remoteVideo = document.querySelector("video:not(#myVideo)");
+  const emoticonImage = remoteVideo.nextElementSibling; // Seleziona l'immagine dell'emoticon del partecipante remoto
+
+  if (remoteUserEmotion === "felice") {
+    if (emoticonImage) {
+      emoticonImage.src = "felice.png"; // Aggiorna l'immagine dell'emoticon del partecipante remoto se esiste già
+    } else {
+      createRemoteEmoticon(); // Crea un'immagine dell'emoticon del partecipante remoto se non esiste
+    }
+  } else {
+    if (emoticonImage) {
+      emoticonImage.remove(); // Rimuovi l'immagine dell'emoticon del partecipante remoto se non è più felice
+    }
+  }
+}
+
+function createRemoteEmoticon() {
+  const remoteVideo = document.querySelector("video:not(#myVideo)");
+  const emoticonImage = document.createElement("img");
+  emoticonImage.src = "felice.png";
+  emoticonImage.alt = "Emoticon";
+  emoticonImage.style.position = "absolute";
+  emoticonImage.style.top = "10px";
+  emoticonImage.style.left = "10px";
+  remoteVideo.parentNode.insertBefore(emoticonImage, remoteVideo.nextSibling);
+}
 
 
 
