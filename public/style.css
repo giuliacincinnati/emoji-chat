@@ -209,7 +209,3 @@ style.innerHTML = `
 
 
 document.head.appendChild(style);
-
-#emoticon-container{
-  display: none;
-}

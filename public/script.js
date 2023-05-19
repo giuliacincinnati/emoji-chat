@@ -80,7 +80,6 @@ const addVideoStream = (video, stream) => {
   video.addEventListener("loadedmetadata", () => {
     video.play();
     videoGrid.append(video);
-    updateEmoticon()
   });
 };
 
@@ -150,13 +149,11 @@ function createEmoticon() {
   emoticonImage.style.left = "50%";
   emoticonImage.style.top = "50%";
   emoticonImage.style.transform = "translate(-50%, -50%)";
-  videoGrid.appendChild(emoticonImage);
-
+  document.body.appendChild(emoticonImage);
 
   // Scomparsa della faccina dopo 10 secondi
   setTimeout(() => {
-    videoGrid.appendChild(emoticonImage);
-
+    document.body.removeChild(emoticonImage);
   }, 10000);
 }
 
