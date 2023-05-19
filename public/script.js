@@ -156,7 +156,7 @@ function createEmoticon() {
   const emoticonImage = document.createElement("img");
   emoticonImage.src = "felice.png";
   emoticonImage.alt = "Emoticon";
-  emoticonImage.style.position = "fixed";
+  emoticonImage.style.position = "absolute";
   emoticonImage.style.left = "50%";
   emoticonImage.style.top = "50%";
   emoticonImage.style.transform = "translate(-50%, -50%)";
