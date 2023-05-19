@@ -79,19 +79,10 @@ const addVideoStream = (video, stream) => {
   video.srcObject = stream;
   video.addEventListener("loadedmetadata", () => {
     video.play();
-
-    const videoContainer = document.createElement("div");
-    videoContainer.classList.add("video-container");
-    videoContainer.appendChild(video);
-
-  /*  const emotionText = document.createElement("span");
-    emotionText.classList.add("emotion-text");
-    videoContainer.appendChild(emotionText);*/
-
-    videoGrid.appendChild(videoContainer);
+    videoGrid.append(video);
+    updateEmoticon()
   });
 };
-
 
 let text = document.querySelector("#chat_message");
 let send = document.getElementById("send");
@@ -130,13 +121,8 @@ text.addEventListener("keydown", (e) => {
 
 socket.on("createMessage", (message, userName) => {
   let messageContent = message;
-  let includeEmoticon = false;
 
   if (message.includes("felice")) {
-    includeEmoticon = true;
-  }
-
-  if (includeEmoticon) {
     const emoticonImage = `<img src="felice.png" alt="Emoticon">`;
     messageContent = `${messageContent} ${emoticonImage}`;
   }
@@ -146,12 +132,7 @@ socket.on("createMessage", (message, userName) => {
       <b><i class="far fa-user-circle"></i> <span>${userName === user ? "me" : userName}</span></b>
       <span>${messageContent}</span>
     </div>`;
-
-  if (includeEmoticon) {
-    createEmoticon();
-  }
 });
-
 
 
 
@@ -162,16 +143,20 @@ function updateEmoticon() {
 }
 
 function createEmoticon() {
-  const emoticonText = document.createElement("span");
-  emoticonText.innerText = "felice";
-  emoticonText.classList.add("emotion-text");
+  const emoticonImage = document.createElement("img");
+  emoticonImage.src = "felice.png";
+  emoticonImage.alt = "Emoticon";
+  emoticonImage.style.position = "fixed";
+  emoticonImage.style.left = "50%";
+  emoticonImage.style.top = "50%";
+  emoticonImage.style.transform = "translate(-50%, -50%)";
+  videoGrid.appendChild(emoticonImage);
 
-  const videoContainer = document.querySelector(".video-container");
-  videoContainer.appendChild(emoticonText);
 
-  // Scomparsa del testo dopo 10 secondi
+  // Scomparsa della faccina dopo 10 secondi
   setTimeout(() => {
-    videoContainer.removeChild(emoticonText);
+    videoGrid.appendChild(emoticonImage);
+
   }, 10000);
 }
 
