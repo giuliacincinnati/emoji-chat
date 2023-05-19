@@ -79,10 +79,19 @@ const addVideoStream = (video, stream) => {
   video.srcObject = stream;
   video.addEventListener("loadedmetadata", () => {
     video.play();
-    videoGrid.append(video);
-    updateEmoticon();
+
+    const videoContainer = document.createElement("div");
+    videoContainer.classList.add("video-container");
+    videoContainer.appendChild(video);
+
+  /*  const emotionText = document.createElement("span");
+    emotionText.classList.add("emotion-text");
+    videoContainer.appendChild(emotionText);*/
+
+    videoGrid.appendChild(videoContainer);
   });
 };
+
 
 let text = document.querySelector("#chat_message");
 let send = document.getElementById("send");
@@ -153,18 +162,16 @@ function updateEmoticon() {
 }
 
 function createEmoticon() {
-  const emoticonImage = document.createElement("img");
-  emoticonImage.src = "felice.png";
-  emoticonImage.alt = "Emoticon";
-  emoticonImage.style.position = "absolute";
-  emoticonImage.style.left = "50%";
-  emoticonImage.style.top = "50%";
-  emoticonImage.style.transform = "translate(-50%, -50%)";
-  videoGrid.appendChild(emoticonImage);
+  const emoticonText = document.createElement("span");
+  emoticonText.innerText = "felice";
+  emoticonText.classList.add("emotion-text");
 
-  // Scomparsa della faccina dopo 10 secondi
+  const videoContainer = document.querySelector(".video-container");
+  videoContainer.appendChild(emoticonText);
+
+  // Scomparsa del testo dopo 10 secondi
   setTimeout(() => {
-    videoGrid.removeChild(emoticonImage);
+    videoContainer.removeChild(emoticonText);
   }, 10000);
 }
 
