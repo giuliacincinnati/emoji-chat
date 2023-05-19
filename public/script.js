@@ -136,7 +136,7 @@ socket.on("createMessage", (message, userName) => {
 
 
 function updateEmoticon() {
-  const emoticonContainer = document.getElementById("emoticon-container");
+//  const emoticonContainer = document.getElementById("emoticon-container");
 
   if (currentEmotion === "felice") {
     createEmoticon();
