@@ -35,16 +35,6 @@ var peer = new Peer({
   debug: 3
 });
 
-
-/*peer.on("call", (call) => {
-  call.answer(myVideoStream);
-  const video = document.createElement("video");
-  call.on("stream", (userVideoStream) => {
-    addVideoStream(video, userVideoStream);
-  });
-});*/
-
-
 let myVideoStream;
 navigator.mediaDevices
   .getUserMedia({
@@ -146,10 +136,16 @@ socket.on("createMessage", (message, userName) => {
 
 
 function updateEmoticon() {
+  const emoticonContainer = document.getElementById("emoticon-container");
+
   if (currentEmotion === "felice") {
     createEmoticon();
+    emoticonContainer.classList.remove("hidden");
+  } else {
+    emoticonContainer.classList.add("hidden");
   }
 }
+
 
 function createEmoticon() {
   const emoticonImage = document.createElement("img");
