@@ -4,7 +4,9 @@ const myVideo = document.createElement("video");
 const showChat = document.querySelector("#showChat");
 const backBtn = document.querySelector(".header__back");
 myVideo.muted = true;
-
+const emoticonFelice = "felice.png";
+const emoticonArrabbiato = "arrabiato.png";
+const emoticonTriste = "triste.png";
 
 backBtn.addEventListener("click", () => {
   document.querySelector(".main__left").style.display = "flex";
@@ -59,16 +61,14 @@ navigator.mediaDevices
     });
   });
 
-  const connectToNewUser = (userId, stream) => {
-    console.log('I call someone' + userId);
-    const call = peer.call(userId, stream);
-    const video = document.createElement("video");
-    call.on("stream", (userVideoStream) => {
-      addVideoStream(video, userVideoStream);
-    });
-  };
-
-
+const connectToNewUser = (userId, stream) => {
+  console.log('I call someone' + userId);
+  const call = peer.call(userId, stream);
+  const video = document.createElement("video");
+  call.on("stream", (userVideoStream) => {
+    addVideoStream(video, userVideoStream);
+  });
+};
 
 peer.on("open", (id) => {
   console.log('my id is' + id);
@@ -88,14 +88,16 @@ let send = document.getElementById("send");
 let messages = document.querySelector(".messages");
 let currentEmotion = "";
 
-
-
 send.addEventListener("click", (e) => {
   if (text.value.length !== 0) {
     if (text.value.includes("felice")) {
       currentEmotion = "felice";
+    } else if (text.value.includes("arrabbiato")) {
+      currentEmotion = "arrabbiato";
+    } else if (text.value.includes("triste")) {
+      currentEmotion = "triste";
     } else {
-      currentEmotion = ""; // Se il messaggio non contiene la parola "felice", reimposta lo stato emotivo corrente
+      currentEmotion = ""; // Se il messaggio non contiene alcuna parola chiave emotiva, reimposta lo stato emotivo corrente
     }
     updateEmoticon(); // Aggiorna l'immagine dell'emoticon
     socket.emit("message", text.value);
@@ -107,8 +109,12 @@ text.addEventListener("keydown", (e) => {
   if (e.key === "Enter" && text.value.length !== 0) {
     if (text.value.includes("felice")) {
       currentEmotion = "felice";
+    } else if (text.value.includes("arrabbiato")) {
+      currentEmotion = "arrabbiato";
+    } else if (text.value.includes("triste")) {
+      currentEmotion = "triste";
     } else {
-      currentEmotion = ""; // Se il messaggio non contiene la parola "felice", reimposta lo stato emotivo corrente
+      currentEmotion = ""; // Se il messaggio non contiene alcuna parola chiave emotiva, reimposta lo stato emotivo corrente
     }
     updateEmoticon(); // Aggiorna l'immagine dell'emoticon
     socket.emit("message", text.value);
@@ -116,19 +122,21 @@ text.addEventListener("keydown", (e) => {
   }
 });
 
-
-
 socket.on("createMessage", (message, userName) => {
   let messageContent = message;
   let includeEmoticon = false;
 
   if (message.includes("felice")) {
+    currentEmotion = "felice";
     includeEmoticon = true;
-  }
-
-  if (includeEmoticon) {
-    const emoticonImage = `<img src="felice.png" alt="Emoticon">`;
-    messageContent = `${messageContent} ${emoticonImage}`;
+  } else if (message.includes("arrabbiato")) {
+    currentEmotion = "arrabbiato";
+    includeEmoticon = true;
+  } else if (message.includes("triste")) {
+    currentEmotion = "triste";
+    includeEmoticon = true;
+  } else {
+    currentEmotion = ""; // Se il messaggio non contiene alcuna parola chiave emotiva, reimposta lo stato emotivo corrente
   }
 
   messages.innerHTML += `
@@ -142,18 +150,19 @@ socket.on("createMessage", (message, userName) => {
   }
 });
 
-
-
-
 function updateEmoticon() {
   if (currentEmotion === "felice") {
-    createEmoticon();
+    createEmoticon(emoticonFelice);
+  } else if (currentEmotion === "arrabbiato") {
+    createEmoticon(emoticonArrabbiato);
+  } else if (currentEmotion === "triste") {
+    createEmoticon(emoticonTriste);
   }
 }
 
-function createEmoticon() {
+function createEmoticon(emoticon) {
   const emoticonImage = document.createElement("img");
-  emoticonImage.src = "felice.png";
+  emoticonImage.src = emoticon;
   emoticonImage.alt = "Emoticon";
   emoticonImage.style.position = "fixed";
   emoticonImage.style.left = "50%";
@@ -167,12 +176,10 @@ function createEmoticon() {
   }, 10000);
 }
 
-
-
-
 const inviteButton = document.querySelector("#inviteButton");
 const muteButton = document.querySelector("#muteButton");
 const stopVideo = document.querySelector("#stopVideo");
+
 muteButton.addEventListener("click", () => {
   const enabled = myVideoStream.getAudioTracks()[0].enabled;
   if (enabled) {
