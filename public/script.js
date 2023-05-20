@@ -143,7 +143,7 @@ socket.on("createMessage", (message, userName) => {
     </div>`;
 
   if (includeEmoticon) {
-    createEmoticon();
+    updateEmoticon();
   }
 });
 
