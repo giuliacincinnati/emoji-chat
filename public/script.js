@@ -172,7 +172,6 @@ function updateEmoticon() {
 function createEmoticon(imageFileName) {
   const emoticonImage = document.createElement("img");
   emoticonImage.src = imageFileName;
-  emoticonImage.alt = "Emoticon";
   emoticonImage.style.position = "fixed";
   emoticonImage.style.left = "50%";
   emoticonImage.style.top = "50%";
