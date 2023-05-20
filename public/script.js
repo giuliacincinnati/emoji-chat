@@ -94,10 +94,14 @@ send.addEventListener("click", (e) => {
   if (text.value.length !== 0) {
     if (text.value.includes("felice")) {
       currentEmotion = "felice";
+    } else if (text.value.includes("arrabbiat")) {
+      currentEmotion = "arrabbiato";
+    } else if (text.value.includes("triste")) {
+      currentEmotion = "triste";
     } else {
-      currentEmotion = ""; // Se il messaggio non contiene la parola "felice", reimposta lo stato emotivo corrente
+      currentEmotion = "";
     }
-    updateEmoticon(); // Aggiorna l'immagine dell'emoticon
+    updateEmoticon();
     socket.emit("message", text.value);
     text.value = "";
   }
@@ -107,10 +111,14 @@ text.addEventListener("keydown", (e) => {
   if (e.key === "Enter" && text.value.length !== 0) {
     if (text.value.includes("felice")) {
       currentEmotion = "felice";
+    } else if (text.value.includes("arrabbiat")) {
+      currentEmotion = "arrabbiato";
+    } else if (text.value.includes("triste")) {
+      currentEmotion = "triste";
     } else {
-      currentEmotion = ""; // Se il messaggio non contiene la parola "felice", reimposta lo stato emotivo corrente
+      currentEmotion = "";
     }
-    updateEmoticon(); // Aggiorna l'immagine dell'emoticon
+    updateEmoticon();
     socket.emit("message", text.value);
     text.value = "";
   }
@@ -123,12 +131,16 @@ socket.on("createMessage", (message, userName) => {
   let includeEmoticon = false;
 
   if (message.includes("felice")) {
+    currentEmotion = "felice";
     includeEmoticon = true;
-  }
-
-  if (includeEmoticon) {
-    const emoticonImage = `<img src="felice.png" alt="Emoticon">`;
-    messageContent = `${messageContent} ${emoticonImage}`;
+  } else if (message.includes("arrabbiat")) {
+    currentEmotion = "arrabbiato";
+    includeEmoticon = true;
+  } else if (message.includes("triste")) {
+    currentEmotion = "triste";
+    includeEmoticon = true;
+  } else {
+    currentEmotion = "";
   }
 
   messages.innerHTML += `
@@ -145,15 +157,21 @@ socket.on("createMessage", (message, userName) => {
 
 
 
+
 function updateEmoticon() {
   if (currentEmotion === "felice") {
-    createEmoticon();
+    createEmoticon("felice.png");
+  } else if (currentEmotion === "triste") {
+    createEmoticon("triste.png");
+  } else if (currentEmotion === "arrabbiato") {
+    createEmoticon("arrabbiato.png");
   }
 }
 
-function createEmoticon() {
+
+function createEmoticon(imageFileName) {
   const emoticonImage = document.createElement("img");
-  emoticonImage.src = "felice.png";
+  emoticonImage.src = imageFileName;
   emoticonImage.alt = "Emoticon";
   emoticonImage.style.position = "fixed";
   emoticonImage.style.left = "50%";
@@ -161,11 +179,12 @@ function createEmoticon() {
   emoticonImage.style.transform = "translate(-50%, -50%)";
   document.body.appendChild(emoticonImage);
 
-  // Scomparsa della faccina dopo 10 secondi
+  // Scomparsa dell'emoticon dopo 10 secondi
   setTimeout(() => {
     document.body.removeChild(emoticonImage);
   }, 10000);
 }
+
 
 
 
