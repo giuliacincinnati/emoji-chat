@@ -5,7 +5,6 @@ const showChat = document.querySelector("#showChat");
 const backBtn = document.querySelector(".header__back");
 myVideo.muted = true;
 
-
 backBtn.addEventListener("click", () => {
   document.querySelector(".main__left").style.display = "flex";
   document.querySelector(".main__left").style.flex = "1";
@@ -59,16 +58,14 @@ navigator.mediaDevices
     });
   });
 
-  const connectToNewUser = (userId, stream) => {
-    console.log('I call someone' + userId);
-    const call = peer.call(userId, stream);
-    const video = document.createElement("video");
-    call.on("stream", (userVideoStream) => {
-      addVideoStream(video, userVideoStream);
-    });
-  };
-
-
+const connectToNewUser = (userId, stream) => {
+  console.log('I call someone' + userId);
+  const call = peer.call(userId, stream);
+  const video = document.createElement("video");
+  call.on("stream", (userVideoStream) => {
+    addVideoStream(video, userVideoStream);
+  });
+};
 
 peer.on("open", (id) => {
   console.log('my id is' + id);
@@ -87,8 +84,6 @@ let text = document.querySelector("#chat_message");
 let send = document.getElementById("send");
 let messages = document.querySelector(".messages");
 let currentEmotion = "";
-
-
 
 send.addEventListener("click", (e) => {
   if (text.value.length !== 0) {
@@ -124,8 +119,6 @@ text.addEventListener("keydown", (e) => {
   }
 });
 
-
-
 socket.on("createMessage", (message, userName) => {
   let messageContent = message;
   let includeEmoticon = false;
@@ -154,10 +147,6 @@ socket.on("createMessage", (message, userName) => {
   }
 });
 
-
-
-
-
 function updateEmoticon() {
   if (currentEmotion === "felice") {
     createEmoticon("felice.png");
@@ -167,7 +156,6 @@ function updateEmoticon() {
     createEmoticon("arrabbiato.png");
   }
 }
-
 
 function createEmoticon(imageFileName) {
   const emoticonImage = document.createElement("img");
@@ -184,13 +172,10 @@ function createEmoticon(imageFileName) {
   }, 10000);
 }
 
-
-
-
-
 const inviteButton = document.querySelector("#inviteButton");
 const muteButton = document.querySelector("#muteButton");
 const stopVideo = document.querySelector("#stopVideo");
+
 muteButton.addEventListener("click", () => {
   const enabled = myVideoStream.getAudioTracks()[0].enabled;
   if (enabled) {
