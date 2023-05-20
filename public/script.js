@@ -5,7 +5,7 @@ const showChat = document.querySelector("#showChat");
 const backBtn = document.querySelector(".header__back");
 myVideo.muted = true;
 const emoticonFelice = "felice.png";
-const emoticonArrabbiato = "arrabiato.png";
+const emoticonArrabbiato = "arrabbiato.png";
 const emoticonTriste = "triste.png";
 
 backBtn.addEventListener("click", () => {
@@ -92,7 +92,7 @@ send.addEventListener("click", (e) => {
   if (text.value.length !== 0) {
     if (text.value.includes("felice")) {
       currentEmotion = "felice";
-    } else if (text.value.includes("arrabbiato")) {
+    } else if (text.value.includes("arrabbiat")) {
       currentEmotion = "arrabbiato";
     } else if (text.value.includes("triste")) {
       currentEmotion = "triste";
@@ -109,7 +109,7 @@ text.addEventListener("keydown", (e) => {
   if (e.key === "Enter" && text.value.length !== 0) {
     if (text.value.includes("felice")) {
       currentEmotion = "felice";
-    } else if (text.value.includes("arrabbiato")) {
+    } else if (text.value.includes("arrabbiat")) {
       currentEmotion = "arrabbiato";
     } else if (text.value.includes("triste")) {
       currentEmotion = "triste";
@@ -129,7 +129,7 @@ socket.on("createMessage", (message, userName) => {
   if (message.includes("felice")) {
     currentEmotion = "felice";
     includeEmoticon = true;
-  } else if (message.includes("arrabbiato")) {
+  } else if (message.includes("arrabbiat")) {
     currentEmotion = "arrabbiato";
     includeEmoticon = true;
   } else if (message.includes("triste")) {
