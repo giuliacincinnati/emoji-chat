@@ -122,6 +122,7 @@ text.addEventListener("keydown", (e) => {
 socket.on("createMessage", (message, userName) => {
   let messageContent = message;
   let includeEmoticon = false;
+  let isLocalUser = userName === user;
 
   if (message.includes("felice")) {
     currentEmotion = "felice";
@@ -138,37 +139,40 @@ socket.on("createMessage", (message, userName) => {
 
   messages.innerHTML += `
     <div class="message">
-      <b><i class="far fa-user-circle"></i> <span>${userName === user ? "me" : userName}</span></b>
+      <b><i class="far fa-user-circle"></i> <span>${isLocalUser ? "me" : userName}</span></b>
       <span>${messageContent}</span>
     </div>`;
 
   if (includeEmoticon) {
-    updateEmoticon();
+    updateEmoticon(isLocalUser);
   }
 });
 
-function updateEmoticon() {
+function updateEmoticon(isLocalUser) {
   if (currentEmotion === "felice") {
-    createEmoticon("felice.png");
+    createEmoticon("felice.png", isLocalUser);
   } else if (currentEmotion === "triste") {
-    createEmoticon("triste.png");
+    createEmoticon("triste.png", isLocalUser);
   } else if (currentEmotion === "arrabbiato") {
-    createEmoticon("arrabbiato.png");
+    createEmoticon("arrabbiato.png", isLocalUser);
   }
 }
 
-function createEmoticon(imageFileName) {
+function createEmoticon(imageFileName, isLocalUser) {
   const emoticonImage = document.createElement("img");
   emoticonImage.src = imageFileName;
   emoticonImage.style.position = "fixed";
   emoticonImage.style.left = "50%";
   emoticonImage.style.top = "50%";
   emoticonImage.style.transform = "translate(-50%, -50%)";
-  document.body.appendChild(emoticonImage);
 
-  // Scomparsa dell'emoticon dopo 10 secondi
+  // Add the emoticon to the appropriate video container based on whether it's the local user or participant
+  const videoContainer = isLocalUser ? myVideo : document.querySelector("video:not([muted])").parentNode;
+  videoContainer.appendChild(emoticonImage);
+
+  // Remove the emoticon after 10 seconds
   setTimeout(() => {
-    document.body.removeChild(emoticonImage);
+    emoticonImage.remove();
   }, 10000);
 }
 
