@@ -53,13 +53,13 @@ navigator.mediaDevices
       });
     });
 
-    socket.on("user-connected", (userId) => {
+/*    socket.on("user-connected", (userId) => {
       connectToNewUser(userId, stream);
     });
-  });
-/*  socket.on("user-connected", (userId) => {
-    connectToNewUser(userId, myVideoStream);
   });*/
+  socket.on("user-connected", (userId) => {
+    connectToNewUser(userId, myVideoStream);
+  });
 
 
 const connectToNewUser = (userId, stream) => {
@@ -75,6 +75,7 @@ peer.on("open", (id) => {
   console.log('my id is' + id);
   socket.emit("join-room", ROOM_ID, id, user);
 });
+
 
 const addVideoStream = (video, stream, userId) => {
   video.srcObject = stream;
