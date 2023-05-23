@@ -4,9 +4,6 @@ const myVideo = document.createElement("video");
 const showChat = document.querySelector("#showChat");
 const backBtn = document.querySelector(".header__back");
 myVideo.muted = true;
-const myVideoEmoticon = document.createElement("img");
-myVideoEmoticon.id = "emoticon-image";
-
 
 backBtn.addEventListener("click", () => {
   document.querySelector(".main__left").style.display = "flex";
@@ -80,10 +77,8 @@ const addVideoStream = (video, stream) => {
   video.addEventListener("loadedmetadata", () => {
     video.play();
     videoGrid.append(video);
-    videoGrid.appendChild(myVideoEmoticon); // Aggiungi l'elemento dell'immagine dell'emoticon al videoGrid
   });
 };
-
 
 let text = document.querySelector("#chat_message");
 let send = document.getElementById("send");
@@ -149,21 +144,18 @@ socket.on("createMessage", (message, userName) => {
 
   if (includeEmoticon) {
     updateEmoticon();
-    myVideoEmoticon.style.display = userName === user ? "block" : "none"; // Mostra l'immagine dell'emoticon sul riquadro video del mittente
   }
 });
 
-
 function updateEmoticon() {
   if (currentEmotion === "felice") {
-    myVideoEmoticon.src = "felice.png";
+    createEmoticon("felice.png");
   } else if (currentEmotion === "triste") {
-    myVideoEmoticon.src = "triste.png";
+    createEmoticon("triste.png");
   } else if (currentEmotion === "arrabbiato") {
-    myVideoEmoticon.src = "arrabbiato.png";
+    createEmoticon("arrabbiato.png");
   }
 }
-
 
 function createEmoticon(imageFileName) {
   const emoticonImage = document.createElement("img");
