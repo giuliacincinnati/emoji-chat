@@ -84,43 +84,57 @@ let text = document.querySelector("#chat_message");
 let send = document.getElementById("send");
 let messages = document.querySelector(".messages");
 let currentEmotion = "";
-let myEmotion = "";
 
 send.addEventListener("click", (e) => {
   if (text.value.length !== 0) {
-    myEmotion = currentEmotion; // Aggiorna l'emozione corrente
-    socket.emit("message", { message: text.value, emotion: myEmotion }); // Invia il messaggio e l'emozione al server
+    if (text.value.includes("felice")) {
+      currentEmotion = "felice";
+    } else if (text.value.includes("arrabbiat")) {
+      currentEmotion = "arrabbiato";
+    } else if (text.value.includes("triste")) {
+      currentEmotion = "triste";
+    } else {
+      currentEmotion = "";
+    }
+    updateEmoticon();
+    socket.emit("message", text.value);
     text.value = "";
   }
 });
-
 
 text.addEventListener("keydown", (e) => {
   if (e.key === "Enter" && text.value.length !== 0) {
-    myEmotion = currentEmotion; // Aggiorna l'emozione corrente
-    socket.emit("message", { message: text.value, emotion: myEmotion }); // Invia il messaggio e l'emozione al server
+    if (text.value.includes("felice")) {
+      currentEmotion = "felice";
+    } else if (text.value.includes("arrabbiat")) {
+      currentEmotion = "arrabbiato";
+    } else if (text.value.includes("triste")) {
+      currentEmotion = "triste";
+    } else {
+      currentEmotion = "";
+    }
+    updateEmoticon();
+    socket.emit("message", text.value);
     text.value = "";
   }
 });
 
+socket.on("createMessage", (message, userName) => {
+  let messageContent = message;
+  let includeEmoticon = false;
 
-socket.on("createMessage", (data) => {
-  let messageContent = data.message;
-  let userName = data.userName;
-  let emotion = data.emotion;
-
-  if (emotion) {
-    // Se l'emozione è presente nel messaggio ricevuto, aggiorna l'emozione dell'utente corrispondente
-    if (userName === user) {
-      myEmotion = emotion;
-    }
-    // Aggiorna l'emozione nel riquadro video dell'utente corrispondente
-    updateParticipantEmotion(userName, emotion);
+  if (message.includes("felice")) {
+    currentEmotion = "felice";
+    includeEmoticon = true;
+  } else if (message.includes("arrabbiat")) {
+    currentEmotion = "arrabbiato";
+    includeEmoticon = true;
+  } else if (message.includes("triste")) {
+    currentEmotion = "triste";
+    includeEmoticon = true;
+  } else {
+    currentEmotion = "";
   }
-
-  // Resto del codice...
-});
-
 
   messages.innerHTML += `
     <div class="message">
@@ -134,9 +148,14 @@ socket.on("createMessage", (data) => {
 });
 
 function updateEmoticon() {
-  myEmotion = currentEmotion;
+  if (currentEmotion === "felice") {
+    createEmoticon("felice.png");
+  } else if (currentEmotion === "triste") {
+    createEmoticon("triste.png");
+  } else if (currentEmotion === "arrabbiato") {
+    createEmoticon("arrabbiato.png");
+  }
 }
-
 
 function createEmoticon(imageFileName) {
   const emoticonImage = document.createElement("img");
@@ -193,25 +212,3 @@ inviteButton.addEventListener("click", (e) => {
     window.location.href
   );
 });
-
-function updateParticipantEmotion(userName, emotion) {
-  const videoElements = document.getElementsByTagName("video");
-  for (let i = 0; i < videoElements.length; i++) {
-    const video = videoElements[i];
-    if (video.id === userName) {
-      // Trova il video dell'utente corrispondente
-      const emoticonContainer = video.parentNode.querySelector(
-        "#emoticon-container"
-      );
-      const emoticonImage = emoticonContainer.querySelector("#emoticon-image");
-
-      if (emotion === "felice") {
-        emoticonImage.src = "felice.png";
-      } else if (emotion === "triste") {
-       emoticonImage.src = "triste.png";
-     } else if (emotion === "arrabbiato") {
-       emoticonImage.src = "arrabbiato.png";
-     }
-   }
- }
-}
