@@ -4,8 +4,6 @@ const myVideo = document.createElement("video");
 const showChat = document.querySelector("#showChat");
 const backBtn = document.querySelector(".header__back");
 myVideo.muted = true;
-const myVideoId = peer.id;
-
 
 backBtn.addEventListener("click", () => {
   document.querySelector(".main__left").style.display = "flex";
@@ -151,32 +149,28 @@ socket.on("createMessage", (message, userName) => {
 
 function updateEmoticon() {
   if (currentEmotion === "felice") {
-    createEmoticon("felice.png", myVideoId);
+    createEmoticon("felice.png");
   } else if (currentEmotion === "triste") {
-    createEmoticon("triste.png", myVideoId);
+    createEmoticon("triste.png");
   } else if (currentEmotion === "arrabbiato") {
-    createEmoticon("arrabbiato.png", myVideoId);
+    createEmoticon("arrabbiato.png");
   }
 }
 
+function createEmoticon(imageFileName) {
+  const emoticonImage = document.createElement("img");
+  emoticonImage.src = imageFileName;
+  emoticonImage.style.position = "fixed";
+  emoticonImage.style.left = "50%";
+  emoticonImage.style.top = "50%";
+  emoticonImage.style.transform = "translate(-50%, -50%)";
+  document.body.appendChild(emoticonImage);
 
-function createEmoticon(imageFileName, videoId) {
-  if (videoId === myVideoId) {
-    const emoticonImage = document.createElement("img");
-    emoticonImage.src = imageFileName;
-    emoticonImage.style.position = "fixed";
-    emoticonImage.style.left = "50%";
-    emoticonImage.style.top = "50%";
-    emoticonImage.style.transform = "translate(-50%, -50%)";
-    document.body.appendChild(emoticonImage);
-
-    // Scomparsa dell'emoticon dopo 10 secondi
-    setTimeout(() => {
-      document.body.removeChild(emoticonImage);
-    }, 10000);
-  }
+  // Scomparsa dell'emoticon dopo 10 secondi
+  setTimeout(() => {
+    document.body.removeChild(emoticonImage);
+  }, 10000);
 }
-
 
 const inviteButton = document.querySelector("#inviteButton");
 const muteButton = document.querySelector("#muteButton");
