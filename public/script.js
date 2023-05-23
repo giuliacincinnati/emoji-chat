@@ -54,9 +54,8 @@ navigator.mediaDevices
     });
 
     socket.on("user-connected", (userId) => {
-      connectToNewUser(userId, stream);
+      connectToNewUser(userId, myVideoStream);
     });
-  });
 
 const connectToNewUser = (userId, stream) => {
   console.log('I call someone' + userId);
@@ -72,11 +71,15 @@ peer.on("open", (id) => {
   socket.emit("join-room", ROOM_ID, id, user);
 });
 
-const addVideoStream = (video, stream) => {
+const addVideoStream = (video, stream, userId) => {
   video.srcObject = stream;
   video.addEventListener("loadedmetadata", () => {
     video.play();
-    videoGrid.append(video);
+    const videoWrapper = document.createElement("div");
+    videoWrapper.setAttribute("id", `video-wrapper-${userId}`);
+    videoWrapper.classList.add("participant-video-wrapper");
+    videoWrapper.appendChild(video);
+    videoGrid.appendChild(videoWrapper);
   });
 };
 
@@ -119,10 +122,9 @@ text.addEventListener("keydown", (e) => {
   }
 });
 
-socket.on("createMessage", (message, userName) => {
+socket.on("createMessage", (message, userName, userId) => {
   let messageContent = message;
   let includeEmoticon = false;
-  let isLocalUser = userName === user;
 
   if (message.includes("felice")) {
     currentEmotion = "felice";
@@ -139,42 +141,41 @@ socket.on("createMessage", (message, userName) => {
 
   messages.innerHTML += `
     <div class="message">
-      <b><i class="far fa-user-circle"></i> <span>${isLocalUser ? "me" : userName}</span></b>
+      <b><i class="far fa-user-circle"></i> <span>${userName === user ? "me" : userName}</span></b>
       <span>${messageContent}</span>
     </div>`;
 
   if (includeEmoticon) {
-    updateEmoticon(isLocalUser);
+    updateEmoticon();
+    createEmoticon(`${currentEmotion}.png`, userId);
   }
 });
 
-function updateEmoticon(isLocalUser) {
+function updateEmoticon() {
   if (currentEmotion === "felice") {
-    createEmoticon("felice.png", isLocalUser);
+    createEmoticon("felice.png");
   } else if (currentEmotion === "triste") {
-    createEmoticon("triste.png", isLocalUser);
+    createEmoticon("triste.png");
   } else if (currentEmotion === "arrabbiato") {
-    createEmoticon("arrabbiato.png", isLocalUser);
+    createEmoticon("arrabbiato.png");
   }
 }
 
-function createEmoticon(imageFileName, isLocalUser) {
+const createEmoticon = (imageFileName, userId) => {
   const emoticonImage = document.createElement("img");
   emoticonImage.src = imageFileName;
-  emoticonImage.style.position = "fixed";
-  emoticonImage.style.left = "50%";
+  emoticonImage.style.position = "absolute";
   emoticonImage.style.top = "50%";
+  emoticonImage.style.left = "50%";
   emoticonImage.style.transform = "translate(-50%, -50%)";
+  const videoWrapper = document.getElementById(`video-wrapper-${userId}`);
+  videoWrapper.appendChild(emoticonImage);
 
-  // Add the emoticon to the appropriate video container based on whether it's the local user or participant
-  const videoContainer = isLocalUser ? myVideo : document.querySelector("video:not([muted])").parentNode;
-  videoContainer.appendChild(emoticonImage);
-
-  // Remove the emoticon after 10 seconds
+  // Rimozione dell'emoticon dopo 10 secondi
   setTimeout(() => {
-    emoticonImage.remove();
+    videoWrapper.removeChild(emoticonImage);
   }, 10000);
-}
+};
 
 const inviteButton = document.querySelector("#inviteButton");
 const muteButton = document.querySelector("#muteButton");
