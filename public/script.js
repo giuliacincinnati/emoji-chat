@@ -57,6 +57,10 @@ navigator.mediaDevices
       connectToNewUser(userId, stream);
     });
   });
+/*  socket.on("user-connected", (userId) => {
+    connectToNewUser(userId, myVideoStream);
+  });*/
+
 
 const connectToNewUser = (userId, stream) => {
   console.log('I call someone' + userId);
@@ -72,13 +76,18 @@ peer.on("open", (id) => {
   socket.emit("join-room", ROOM_ID, id, user);
 });
 
-const addVideoStream = (video, stream) => {
+const addVideoStream = (video, stream, userId) => {
   video.srcObject = stream;
   video.addEventListener("loadedmetadata", () => {
     video.play();
-    videoGrid.append(video);
+    const videoWrapper = document.createElement("div");
+    videoWrapper.setAttribute("id", `video-wrapper-${userId}`);
+    videoWrapper.classList.add("participant-video-wrapper");
+    videoWrapper.appendChild(video);
+    videoGrid.appendChild(videoWrapper);
   });
 };
+
 
 let text = document.querySelector("#chat_message");
 let send = document.getElementById("send");
@@ -119,7 +128,7 @@ text.addEventListener("keydown", (e) => {
   }
 });
 
-socket.on("createMessage", (message, userName) => {
+socket.on("createMessage", (message, userName, userId) => {
   let messageContent = message;
   let includeEmoticon = false;
 
@@ -142,9 +151,10 @@ socket.on("createMessage", (message, userName) => {
       <span>${messageContent}</span>
     </div>`;
 
-  if (includeEmoticon) {
-    updateEmoticon();
-  }
+    if (includeEmoticon) {
+      updateEmoticon();
+      createEmoticon(`${currentEmotion}.png`, userId);
+    }
 });
 
 function updateEmoticon() {
@@ -157,14 +167,14 @@ function updateEmoticon() {
   }
 }
 
-function createEmoticon(imageFileName) {
+const createEmoticon = (imageFileName, userId) => {
   const emoticonImage = document.createElement("img");
   emoticonImage.src = imageFileName;
-  emoticonImage.style.position = "fixed";
-  emoticonImage.style.left = "50%";
-  emoticonImage.style.top = "50%";
-  emoticonImage.style.transform = "translate(-50%, -50%)";
-  document.body.appendChild(emoticonImage);
+  emoticonImage.style.position = "absolute";
+  emoticonImage.style.top = "10px";
+  emoticonImage.style.right = "10px";
+  const videoWrapper = document.querySelector(`#video-wrapper-${userId}`);
+  videoWrapper.appendChild(emoticonImage);
 
   // Scomparsa dell'emoticon dopo 10 secondi
   setTimeout(() => {
