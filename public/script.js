@@ -54,8 +54,9 @@ navigator.mediaDevices
     });
 
     socket.on("user-connected", (userId) => {
-      connectToNewUser(userId, myVideoStream);
+      connectToNewUser(userId, stream);
     });
+  });
 
 const connectToNewUser = (userId, stream) => {
   console.log('I call someone' + userId);
@@ -71,15 +72,11 @@ peer.on("open", (id) => {
   socket.emit("join-room", ROOM_ID, id, user);
 });
 
-const addVideoStream = (video, stream, userId) => {
+const addVideoStream = (video, stream) => {
   video.srcObject = stream;
   video.addEventListener("loadedmetadata", () => {
     video.play();
-    const videoWrapper = document.createElement("div");
-    videoWrapper.setAttribute("id", `video-wrapper-${userId}`);
-    videoWrapper.classList.add("participant-video-wrapper");
-    videoWrapper.appendChild(video);
-    videoGrid.appendChild(videoWrapper);
+    videoGrid.append(video);
   });
 };
 
@@ -122,7 +119,7 @@ text.addEventListener("keydown", (e) => {
   }
 });
 
-socket.on("createMessage", (message, userName, userId) => {
+socket.on("createMessage", (message, userName) => {
   let messageContent = message;
   let includeEmoticon = false;
 
@@ -147,7 +144,6 @@ socket.on("createMessage", (message, userName, userId) => {
 
   if (includeEmoticon) {
     updateEmoticon();
-    createEmoticon(`${currentEmotion}.png`, userId);
   }
 });
 
@@ -161,21 +157,20 @@ function updateEmoticon() {
   }
 }
 
-const createEmoticon = (imageFileName, userId) => {
+function createEmoticon(imageFileName) {
   const emoticonImage = document.createElement("img");
   emoticonImage.src = imageFileName;
-  emoticonImage.style.position = "absolute";
-  emoticonImage.style.top = "50%";
+  emoticonImage.style.position = "fixed";
   emoticonImage.style.left = "50%";
+  emoticonImage.style.top = "50%";
   emoticonImage.style.transform = "translate(-50%, -50%)";
-  const videoWrapper = document.getElementById(`video-wrapper-${userId}`);
-  videoWrapper.appendChild(emoticonImage);
+  document.body.appendChild(emoticonImage);
 
-  // Rimozione dell'emoticon dopo 10 secondi
+  // Scomparsa dell'emoticon dopo 10 secondi
   setTimeout(() => {
-    videoWrapper.removeChild(emoticonImage);
+    document.body.removeChild(emoticonImage);
   }, 10000);
-};
+}
 
 const inviteButton = document.querySelector("#inviteButton");
 const muteButton = document.querySelector("#muteButton");
