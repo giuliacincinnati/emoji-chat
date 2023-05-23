@@ -160,17 +160,15 @@ function updateEmoticon() {
 function createEmoticon(imageFileName) {
   const emoticonImage = document.createElement("img");
   emoticonImage.src = imageFileName;
-  emoticonImage.style.position = "fixed";
-  emoticonImage.style.left = "50%";
-  emoticonImage.style.top = "50%";
-  emoticonImage.style.transform = "translate(-50%, -50%)";
-  document.body.appendChild(emoticonImage);
+  emoticonImage.classList.add("emoticon-image"); // Aggiungi una classe CSS per lo stile dell'immagine
+  document.querySelector("#video-grid").appendChild(emoticonImage); // Aggiungi l'immagine al riquadro webcam
 
   // Scomparsa dell'emoticon dopo 10 secondi
   setTimeout(() => {
-    document.body.removeChild(emoticonImage);
+    document.querySelector("#video-grid").removeChild(emoticonImage); // Rimuovi l'immagine dal riquadro webcam
   }, 10000);
 }
+
 
 const inviteButton = document.querySelector("#inviteButton");
 const muteButton = document.querySelector("#muteButton");
