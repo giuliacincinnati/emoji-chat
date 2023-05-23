@@ -197,5 +197,31 @@ style.innerHTML = `
     position: relative;
   }
 
+  .emoticon-felice::after,
+  .emoticon-triste::after,
+  .emoticon-arrabbiato::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100px;
+    height: 100px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
 
+  .emoticon-felice::after {
+    background-image: url("felice.png");
+  }
+
+  .emoticon-triste::after {
+    background-image: url("triste.png");
+  }
+
+  .emoticon-arrabbiato::after {
+    background-image: url("arrabbiato.png");
+  }
+  
 document.head.appendChild(style);

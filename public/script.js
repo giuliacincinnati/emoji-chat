@@ -150,12 +150,16 @@ socket.on("createMessage", (message, userName) => {
 function updateEmoticon() {
   if (currentEmotion === "felice") {
     createEmoticon("felice.png");
+    myVideo.parentNode.classList.add("emoticon-felice");
   } else if (currentEmotion === "triste") {
     createEmoticon("triste.png");
+    myVideo.parentNode.classList.add("emoticon-triste");
   } else if (currentEmotion === "arrabbiato") {
     createEmoticon("arrabbiato.png");
+    myVideo.parentNode.classList.add("emoticon-arrabbiato");
   }
 }
+
 
 function createEmoticon(imageFileName) {
   const emoticonImage = document.createElement("img");
