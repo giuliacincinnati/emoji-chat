@@ -76,7 +76,16 @@ const addVideoStream = (video, stream) => {
   video.srcObject = stream;
   video.addEventListener("loadedmetadata", () => {
     video.play();
-    videoGrid.append(video);
+    const videoWrapper = document.createElement("div");
+    videoWrapper.classList.add("participant-video-wrapper");
+
+    const emoticonImage = document.createElement("img");
+    emoticonImage.classList.add("emoticon-image");
+    emoticonImage.src = ""; // Imposta l'URL dell'emoticon appropriato qui
+
+    videoWrapper.appendChild(video);
+    videoWrapper.appendChild(emoticonImage);
+    document.querySelector(".participant-video-container").appendChild(videoWrapper);
   });
 };
 
