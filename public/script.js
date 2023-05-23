@@ -149,26 +149,31 @@ socket.on("createMessage", (message, userName) => {
 
 function updateEmoticon() {
   if (currentEmotion === "felice") {
-    createEmoticon("felice.png");
+    createEmoticon("felice.png", myVideo);
   } else if (currentEmotion === "triste") {
-    createEmoticon("triste.png");
+    createEmoticon("triste.png", myVideo);
   } else if (currentEmotion === "arrabbiato") {
-    createEmoticon("arrabbiato.png");
+    createEmoticon("arrabbiato.png", myVideo);
   }
 }
 
-function createEmoticon(imageFileName) {
+function createEmoticon(imageFileName, videoContainer) {
   const emoticonImage = document.createElement("img");
   emoticonImage.src = imageFileName;
-  emoticonImage.style.position = "fixed";
-  emoticonImage.style.left = "50%";
+  emoticonImage.style.position = "absolute";
   emoticonImage.style.top = "50%";
+  emoticonImage.style.left = "50%";
   emoticonImage.style.transform = "translate(-50%, -50%)";
-  document.body.appendChild(emoticonImage);
+
+  const videoWrapper = document.createElement("div");
+  videoWrapper.classList.add("participant-video-wrapper");
+  videoWrapper.appendChild(emoticonImage);
+
+  videoContainer.parentNode.insertBefore(videoWrapper, videoContainer.nextSibling);
 
   // Scomparsa dell'emoticon dopo 10 secondi
   setTimeout(() => {
-    document.body.removeChild(emoticonImage);
+    videoWrapper.remove();
   }, 10000);
 }
 
