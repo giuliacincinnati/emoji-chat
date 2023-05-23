@@ -197,16 +197,5 @@ style.innerHTML = `
     position: relative;
   }
 
-  .participant-video-wrapper {
-    position: relative;
-    display: inline-block;
-  }
-
-  .participant-video-wrapper video {
-    width: 100%;
-    height: auto;
-  }
-
-
 
 document.head.appendChild(style);
