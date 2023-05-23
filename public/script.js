@@ -87,6 +87,7 @@ let currentEmotion = "";
 
 send.addEventListener("click", (e) => {
   if (text.value.length !== 0) {
+    const isCurrentUser = true;
     if (text.value.includes("felice")) {
       currentEmotion = "felice";
     } else if (text.value.includes("arrabbiat")) {
@@ -104,6 +105,7 @@ send.addEventListener("click", (e) => {
 
 text.addEventListener("keydown", (e) => {
   if (e.key === "Enter" && text.value.length !== 0) {
+    const isCurrentUser = true;
     if (text.value.includes("felice")) {
       currentEmotion = "felice";
     } else if (text.value.includes("arrabbiat")) {
@@ -122,6 +124,7 @@ text.addEventListener("keydown", (e) => {
 socket.on("createMessage", (message, userName) => {
   let messageContent = message;
   let includeEmoticon = false;
+  const isCurrentUser = userName === user; // Verifica se il messaggio è stato inviato dall'utente corrente
 
   if (message.includes("felice")) {
     currentEmotion = "felice";
@@ -138,24 +141,28 @@ socket.on("createMessage", (message, userName) => {
 
   messages.innerHTML += `
     <div class="message">
-      <b><i class="far fa-user-circle"></i> <span>${userName === user ? "me" : userName}</span></b>
+      <b><i class="far fa-user-circle"></i> <span>${
+        userName === user ? "me" : userName
+      }</span></b>
       <span>${messageContent}</span>
     </div>`;
 
   if (includeEmoticon) {
-    updateEmoticon();
+    updateEmoticon(isCurrentUser); // Passa il valore corretto per isCurrentUser
   }
 });
 
-function updateEmoticon() {
-  if (currentEmotion === "felice") {
+
+function updateEmoticon(isCurrentUser) {
+  if (isCurrentUser && currentEmotion === "felice") {
     createEmoticon("felice.png");
-  } else if (currentEmotion === "triste") {
+  } else if (isCurrentUser && currentEmotion === "triste") {
     createEmoticon("triste.png");
-  } else if (currentEmotion === "arrabbiato") {
+  } else if (isCurrentUser && currentEmotion === "arrabbiato") {
     createEmoticon("arrabbiato.png");
   }
 }
+
 
 function createEmoticon(imageFileName) {
   const emoticonImage = document.createElement("img");
