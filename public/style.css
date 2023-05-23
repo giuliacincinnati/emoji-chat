@@ -207,11 +207,5 @@ style.innerHTML = `
     width: 100%;
     height: auto;
   }
-  .emoticon-image {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
 
 document.head.appendChild(style);
