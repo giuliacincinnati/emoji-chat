@@ -1,5 +1,6 @@
 const socket = io("/");
 const videoGrid = document.getElementById("video-grid");
+const emoticonContainer = document.getElementById("emoticon-container");
 const myVideo = document.createElement("video");
 const showChat = document.querySelector("#showChat");
 const backBtn = document.querySelector(".header__back");
@@ -76,9 +77,11 @@ const addVideoStream = (video, stream) => {
   video.srcObject = stream;
   video.addEventListener("loadedmetadata", () => {
     video.play();
+    videoGrid.append(emoticonContainer); // Spostato qui
     videoGrid.append(video);
   });
 };
+
 
 let text = document.querySelector("#chat_message");
 let send = document.getElementById("send");
