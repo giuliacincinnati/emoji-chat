@@ -60,15 +60,14 @@ navigator.mediaDevices
     });
   });
 
-  const connectToNewUser = (userId, stream) => {
-    const call = peer.call(userId, stream);
-    const video = document.createElement("video");
-    video.setAttribute("data-id", userId); // Imposta l'ID di PeerJS come attributo data-id
-    call.on("stream", (userVideoStream) => {
-      addVideoStream(video, userVideoStream);
-    });
-  };
-
+const connectToNewUser = (userId, stream) => {
+  console.log('I call someone' + userId);
+  const call = peer.call(userId, stream);
+  const video = document.createElement("video");
+  call.on("stream", (userVideoStream) => {
+    addVideoStream(video, userVideoStream);
+  });
+};
 
 peer.on("open", (id) => {
   console.log('my id is' + id);
@@ -79,14 +78,10 @@ const addVideoStream = (video, stream) => {
   video.srcObject = stream;
   video.addEventListener("loadedmetadata", () => {
     video.play();
-    videoGrid.appendChild(video);
+    videoGrid.append(video);
     videoGrid.appendChild(emoticonContainer); // Aggiungi emoticonContainer come figlio di videoGrid
   });
-
-  // Memorizza l'ID di PeerJS come attributo data-id dell'elemento video
-  video.setAttribute("data-id", peer.id);
 };
-
 
 let text = document.querySelector("#chat_message");
 let send = document.getElementById("send");
@@ -143,13 +138,6 @@ socket.on("createMessage", (message, userName) => {
   } else {
     currentEmotion = "";
   }
-
-  const userVideo = document.querySelector(`video[data-id="${userId}"]`);
-
- if (userVideo) {
-   // Aggiungi l'emoticon container all'elemento video corrispondente
-   userVideo.parentElement.appendChild(emoticonContainer);
- }
 
   messages.innerHTML += `
     <div class="message">
