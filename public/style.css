@@ -48,14 +48,6 @@
   background-color: var(--main-dark);
 }
 
-  flex-grow: 1;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start; /* Modifica l'allineamento verticale */
-  padding: 1rem;
-  background-color: var(--main-dark);
-}
-
 video {
   height: 300px;
   border-radius: 1rem;
@@ -198,8 +190,8 @@ video {
   }
 }
 
-#emoticon-container {
-  position: absolute;
+.emoticon.container {
+  position: fixed;
   top: 10px;
   right: 10px;
 }

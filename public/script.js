@@ -172,7 +172,6 @@ function createEmoticon(imageFileName) {
 
 
 
-
 const inviteButton = document.querySelector("#inviteButton");
 const muteButton = document.querySelector("#muteButton");
 const stopVideo = document.querySelector("#stopVideo");
