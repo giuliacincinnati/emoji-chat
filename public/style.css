@@ -46,7 +46,15 @@
   align-items: center;
   padding: 1rem;
   background-color: var(--main-dark);
+  position: relative; /* Aggiunto */
 }
+
+#emoticon-container {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
 
 video {
   height: 300px;
@@ -188,12 +196,6 @@ video {
   #showChat {
     display: flex;
   }
-}
-
-.emoticon-container {
-  position: absolute;
-  top: 5px;
-  right: 10px;
 }
 
 document.head.appendChild(style);
