@@ -5,6 +5,7 @@ const myVideo = document.createElement("video");
 const showChat = document.querySelector("#showChat");
 const backBtn = document.querySelector(".header__back");
 myVideo.muted = true;
+const userVideoMap = {}; // Mappa gli ID degli utenti agli elementi video
 
 backBtn.addEventListener("click", () => {
   document.querySelector(".main__left").style.display = "flex";
@@ -60,13 +61,13 @@ navigator.mediaDevices
   });
 
   const connectToNewUser = (userId, stream) => {
-    console.log('I call someone' + userId);
     const call = peer.call(userId, stream);
     const video = document.createElement("video");
     call.on("stream", (userVideoStream) => {
-      addVideoStream(video, userVideoStream, userId); // Passa l'ID del mittente come parametro
+      addVideoStream(video, userVideoStream, userId); // Passa anche l'ID utente
     });
   };
+
 
 
 peer.on("open", (id) => {
@@ -74,13 +75,15 @@ peer.on("open", (id) => {
   socket.emit("join-room", ROOM_ID, id, user);
 });
 
-const addVideoStream = (video, stream, sender) => {
+const addVideoStream = (video, stream, userId) => {
   video.srcObject = stream;
   video.addEventListener("loadedmetadata", () => {
     video.play();
     videoGrid.appendChild(video);
     videoGrid.appendChild(emoticonContainer); // Aggiungi emoticonContainer come figlio di videoGrid
   });
+
+  userVideoMap[userId] = video; // Memorizza l'elemento video associato all'ID utente
 };
 
 
@@ -159,7 +162,17 @@ function updateEmoticon() {
   } else if (currentEmotion === "arrabbiato") {
     createEmoticon("arrabbiato.png");
   }
+
+  const myVideoElement = userVideoMap[peer.id]; // Elemento video associato all'ID utente attuale
+  const emoticonContainer = myVideoElement.parentElement.querySelector("#emoticon-container");
+  emoticonContainer.innerHTML = ''; // Rimuovi eventuali emoticon precedenti
+  emoticonContainer.appendChild(emoticonImage);
+
+  setTimeout(() => {
+    emoticonContainer.innerHTML = ''; // Rimuovi l'emoticon dopo 10 secondi
+  }, 10000);
 }
+
 
 function createEmoticon(imageFileName) {
   const emoticonImage = document.createElement("img");
