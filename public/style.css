@@ -191,12 +191,12 @@ video {
 }
 
 
-const style = document.createElement("style");
-style.innerHTML = `
-  #participant-video-container {
-    position: relative;
+  .emoticon-container {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    transform: translate(50%, 0);
   }
-
 
 
 document.head.appendChild(style);

@@ -41,7 +41,6 @@ navigator.mediaDevices
     video: true,
   })
   .then((stream) => {
-    myVideo.id = "my-video";
     myVideoStream = stream;
     addVideoStream(myVideo, stream);
 
@@ -77,27 +76,14 @@ const addVideoStream = (video, stream) => {
   video.srcObject = stream;
   video.addEventListener("loadedmetadata", () => {
     video.play();
-    if (video.id === "my-video") {
-      // Aggiungi emoticon container in alto a destra del tuo riquadro webcam
-      const emoticonContainer = document.getElementById("emoticon-container");
-      emoticonContainer.innerHTML = "";
-      const emoticonImage = document.createElement("img");
-      emoticonImage.id = "emoticon-image";
-      emoticonContainer.appendChild(emoticonImage);
-    } else {
-      // Aggiungi il video al video-grid
-      videoGrid.append(video);
-    }
+    videoGrid.append(video);
   });
 };
-
 
 let text = document.querySelector("#chat_message");
 let send = document.getElementById("send");
 let messages = document.querySelector(".messages");
 let currentEmotion = "";
-let myVideoId = null;
-
 
 send.addEventListener("click", (e) => {
   if (text.value.length !== 0) {
@@ -172,11 +158,11 @@ function updateEmoticon() {
 }
 
 function createEmoticon(imageFileName) {
-  const emoticonImage = document.getElementById("emoticon-image");
+  const emoticonImage = document.createElement("img");
   emoticonImage.src = imageFileName;
   emoticonImage.style.position = "fixed";
-  emoticonImage.style.right = "10px"; // Posiziona l'emoticon container in alto a destra
-  emoticonImage.style.top = "10px";
+  emoticonImage.style.left = "50%";
+  emoticonImage.style.top = "50%";
   emoticonImage.style.transform = "translate(-50%, -50%)";
   document.body.appendChild(emoticonImage);
 
@@ -185,7 +171,6 @@ function createEmoticon(imageFileName) {
     document.body.removeChild(emoticonImage);
   }, 10000);
 }
-
 
 const inviteButton = document.querySelector("#inviteButton");
 const muteButton = document.querySelector("#muteButton");
