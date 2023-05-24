@@ -196,4 +196,15 @@ video {
   right: 10px;
 }
 
+.video-element {
+  position: relative;
+}
+
+.video-element .emoticon-container {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+
 document.head.appendChild(style);

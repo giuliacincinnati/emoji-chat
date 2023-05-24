@@ -77,10 +77,12 @@ const addVideoStream = (video, stream) => {
   video.srcObject = stream;
   video.addEventListener("loadedmetadata", () => {
     video.play();
-    videoGrid.append(emoticonContainer); // Spostato qui
+    videoGrid.append(emoticonContainer);
     videoGrid.append(video);
   });
+  video.classList.add("video-element"); // Aggiungi questa riga
 };
+
 
 
 let text = document.querySelector("#chat_message");
