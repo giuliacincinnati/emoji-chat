@@ -80,11 +80,10 @@ const addVideoStream = (video, stream, sender) => {
     video.play();
     videoGrid.appendChild(video);
     if (sender === peer.id) {
-    videoGrid.appendChild(emoticonContainer); // Aggiungi emoticonContainer al riquadro del mittente
-  } else {
-    video.parentNode.appendChild(emoticonContainer); // Aggiungi emoticonContainer al riquadro del destinatario
-  }
-};
+      videoGrid.appendChild(emoticonContainer); // Aggiungi emoticonContainer al riquadro del mittente
+    } else {
+      video.parentNode.appendChild(emoticonContainer); // Aggiungi emoticonContainer al riquadro del destinatario
+    }
   });
 };
 
