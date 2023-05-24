@@ -77,11 +77,8 @@ const addVideoStream = (video, stream) => {
   video.srcObject = stream;
   video.addEventListener("loadedmetadata", () => {
     video.play();
-    const videoWrapper = document.createElement("div");
-    videoWrapper.classList.add("video-wrapper");
-    videoWrapper.appendChild(emoticonContainer); // Inserisci l'emoticon container nel wrapper
-    videoWrapper.appendChild(video);
-    videoGrid.appendChild(videoWrapper);
+    videoGrid.append(emoticonContainer); // Spostato qui
+    videoGrid.append(video);
   });
 };
 
