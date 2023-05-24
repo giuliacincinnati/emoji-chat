@@ -164,7 +164,15 @@ video {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
+  position: relative; /* Aggiungi questa riga */
 }
+
+#emoticon-container {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
 
 #showChat {
   display: none;
