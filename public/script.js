@@ -5,7 +5,6 @@ const myVideo = document.createElement("video");
 const showChat = document.querySelector("#showChat");
 const backBtn = document.querySelector(".header__back");
 myVideo.muted = true;
-let connectedUsers = {};
 
 backBtn.addEventListener("click", () => {
   document.querySelector(".main__left").style.display = "flex";
@@ -56,22 +55,18 @@ navigator.mediaDevices
     });
 
     socket.on("user-connected", (userId) => {
-      if (!connectedUsers[userId]) {
-        connectToNewUser(userId, myVideoStream);
-      }
+      connectToNewUser(userId, stream);
     });
+  });
 
-
-  const connectToNewUser = (userId, stream) => {
-    const call = peer.call(userId, stream);
-    const video = document.createElement("video");
-    call.on("stream", (userVideoStream) => {
-      addVideoStream(video, userVideoStream);
-    });
-
-    connectedUsers[userId] = video; // Memorizza l'ID dell'utente e l'elemento video associato
-  };
-
+const connectToNewUser = (userId, stream) => {
+  console.log('I call someone' + userId);
+  const call = peer.call(userId, stream);
+  const video = document.createElement("video");
+  call.on("stream", (userVideoStream) => {
+    addVideoStream(video, userVideoStream);
+  });
+};
 
 peer.on("open", (id) => {
   console.log('my id is' + id);
@@ -82,26 +77,10 @@ const addVideoStream = (video, stream) => {
   video.srcObject = stream;
   video.addEventListener("loadedmetadata", () => {
     video.play();
-    videoGrid.appendChild(video);
+    videoGrid.append(video);
     videoGrid.appendChild(emoticonContainer); // Aggiungi emoticonContainer come figlio di videoGrid
-
-    const userId = getPeerIdFromVideo(video);
-    const connectedVideo = connectedUsers[userId];
-    if (connectedVideo) {
-      connectedVideo.appendChild(emoticonContainer); // Aggiungi emoticonContainer come figlio dell'elemento video
-    }
   });
 };
-
-// Funzione ausiliaria per ottenere l'ID di PeerJS dall'elemento video
-const getPeerIdFromVideo = (video) => {
-  const stream = video.srcObject;
-  const tracks = stream.getTracks();
-  const peerConnection = tracks[0].getCapabilities().peerConnection;
-  const peerConnectionId = peerConnection.id;
-  return peerConnectionId;
-};
-
 
 let text = document.querySelector("#chat_message");
 let send = document.getElementById("send");
@@ -178,17 +157,13 @@ function updateEmoticon() {
   } else if (currentEmotion === "arrabbiato") {
     createEmoticon("arrabbiato.png");
   }
-
-  const userId = peer.id;
-  const connectedVideo = connectedUsers[userId];
-  if (connectedVideo) {
-    connectedVideo.appendChild(emoticonContainer);
-  }
 }
 
 function createEmoticon(imageFileName) {
   const emoticonImage = document.createElement("img");
   emoticonImage.src = imageFileName;
+
+  const emoticonContainer = document.getElementById("emoticon-container");
   emoticonContainer.innerHTML = ''; // Rimuovi eventuali emoticon precedenti
   emoticonContainer.appendChild(emoticonImage);
 
