@@ -121,8 +121,6 @@ text.addEventListener("keydown", (e) => {
   }
 });
 
-// ...
-
 socket.on("createMessage", (message, userName) => {
   let messageContent = message;
   let includeEmoticon = false;
@@ -147,38 +145,32 @@ socket.on("createMessage", (message, userName) => {
     </div>`;
 
   if (includeEmoticon) {
-    updateEmoticon(userName); // Aggiorna l'emoticon solo per l'utente corrispondente
+    updateEmoticon();
   }
 });
 
-function updateEmoticon(userName) {
-  const videos = Array.from(videoGrid.getElementsByTagName("video"));
-  const userVideo = videos.find((video) => video.srcObject && video.srcObject.id === userName);
-
+function updateEmoticon() {
   if (currentEmotion === "felice") {
-    createEmoticon(userVideo, "felice.png");
+    createEmoticon("felice.png");
   } else if (currentEmotion === "triste") {
-    createEmoticon(userVideo, "triste.png");
+    createEmoticon("triste.png");
   } else if (currentEmotion === "arrabbiato") {
-    createEmoticon(userVideo, "arrabbiato.png");
+    createEmoticon("arrabbiato.png");
   }
 }
 
-function createEmoticon(video, imageFileName) {
+function createEmoticon(imageFileName) {
   const emoticonImage = document.createElement("img");
   emoticonImage.src = imageFileName;
 
-  const emoticonContainer = video.parentElement.querySelector("#emoticon-container");
-  emoticonContainer.innerHTML = ""; // Rimuovi eventuali emoticon precedenti
+  const emoticonContainer = document.getElementById("emoticon-container");
+  emoticonContainer.innerHTML = ''; // Rimuovi eventuali emoticon precedenti
   emoticonContainer.appendChild(emoticonImage);
 
   setTimeout(() => {
-    emoticonContainer.innerHTML = ""; // Rimuovi l'emoticon dopo 10 secondi
+    emoticonContainer.innerHTML = ''; // Rimuovi l'emoticon dopo 10 secondi
   }, 10000);
 }
-
-// ...
-
 
 
 
