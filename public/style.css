@@ -156,9 +156,7 @@ video {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  position: relative; /* Aggiunto */
 }
-
 
 #showChat {
   display: none;
@@ -192,8 +190,8 @@ video {
   }
 }
 
-.emoticon-container {
-  position: absolute;
+.emoticon-wrapper {
+  position: fixed;
   top: 10px;
   right: 10px;
 }
