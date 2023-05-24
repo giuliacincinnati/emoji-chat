@@ -158,25 +158,22 @@ function updateEmoticon() {
 }
 
 function createEmoticon(imageFileName) {
-  // Creazione del wrapper per l'emoticon
   const emoticonWrapper = document.createElement("div");
   emoticonWrapper.classList.add("emoticon-wrapper");
 
-  // Creazione dell'elemento immagine dell'emoticon
   const emoticonImage = document.createElement("img");
   emoticonImage.src = imageFileName;
 
-  // Aggiunta dell'immagine al wrapper
   emoticonWrapper.appendChild(emoticonImage);
 
-  // Aggiunta del wrapper al documento
-  document.body.appendChild(emoticonWrapper);
+  const videoGrid = document.getElementById("video-grid"); // Ottieni il riferimento al video grid
+  videoGrid.appendChild(emoticonWrapper); // Aggiungi l'emoticon wrapper al video grid
 
-  // Scomparsa dell'emoticon dopo 10 secondi
   setTimeout(() => {
-    document.body.removeChild(emoticonWrapper);
+    videoGrid.removeChild(emoticonWrapper); // Rimuovi l'emoticon wrapper dal video grid dopo 10 secondi
   }, 10000);
 }
+
 
 
 const inviteButton = document.querySelector("#inviteButton");
