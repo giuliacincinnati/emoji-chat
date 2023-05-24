@@ -190,5 +190,10 @@ video {
   }
 }
 
+.emoticon-wrapper {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+}
 
 document.head.appendChild(style);

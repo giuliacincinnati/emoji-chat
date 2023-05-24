@@ -158,19 +158,26 @@ function updateEmoticon() {
 }
 
 function createEmoticon(imageFileName) {
+  // Creazione del wrapper per l'emoticon
+  const emoticonWrapper = document.createElement("div");
+  emoticonWrapper.classList.add("emoticon-wrapper");
+
+  // Creazione dell'elemento immagine dell'emoticon
   const emoticonImage = document.createElement("img");
   emoticonImage.src = imageFileName;
-  emoticonImage.style.position = "fixed";
-  emoticonImage.style.left = "50%";
-  emoticonImage.style.top = "50%";
-  emoticonImage.style.transform = "translate(-50%, -50%)";
-  document.body.appendChild(emoticonImage);
+
+  // Aggiunta dell'immagine al wrapper
+  emoticonWrapper.appendChild(emoticonImage);
+
+  // Aggiunta del wrapper al documento
+  document.body.appendChild(emoticonWrapper);
 
   // Scomparsa dell'emoticon dopo 10 secondi
   setTimeout(() => {
-    document.body.removeChild(emoticonImage);
+    document.body.removeChild(emoticonWrapper);
   }, 10000);
 }
+
 
 const inviteButton = document.querySelector("#inviteButton");
 const muteButton = document.querySelector("#muteButton");
