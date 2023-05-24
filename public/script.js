@@ -6,7 +6,6 @@ const showChat = document.querySelector("#showChat");
 const backBtn = document.querySelector(".header__back");
 myVideo.muted = true;
 
-
 backBtn.addEventListener("click", () => {
   document.querySelector(".main__left").style.display = "flex";
   document.querySelector(".main__left").style.flex = "1";
@@ -78,13 +77,10 @@ const addVideoStream = (video, stream) => {
   video.srcObject = stream;
   video.addEventListener("loadedmetadata", () => {
     video.play();
-    videoGrid.appendChild(video);
+    videoGrid.append(video);
     videoGrid.appendChild(emoticonContainer); // Aggiungi emoticonContainer come figlio di videoGrid
-    video.setAttribute("data-peer-id", peer.id); // Imposta l'attributo data-peer-id con l'ID dell'utente corrente
-    video.classList.add("video-container"); // Aggiungi la classe video-container all'elemento video
   });
 };
-
 
 let text = document.querySelector("#chat_message");
 let send = document.getElementById("send");
@@ -154,28 +150,16 @@ socket.on("createMessage", (message, userName) => {
 });
 
 function updateEmoticon() {
-  const videoContainers = document.querySelectorAll(".video-container");
-  const emoticonImage = document.createElement("img");
-  emoticonImage.src = imageFileName;
-
-  emoticonContainer.innerHTML = ""; // Rimuovi eventuali emoticon precedenti
-
-  videoContainers.forEach((videoContainer) => {
-    const peerId = videoContainer.getAttribute("data-peer-id");
-    if (peerId === peer.id) {
-      // L'utente corrente ha digitato l'emoticon
-      emoticonContainer.appendChild(emoticonImage);
-      return;
-    }
-  });
-
-  setTimeout(() => {
-    emoticonContainer.innerHTML = ""; // Rimuovi l'emoticon dopo 10 secondi
-  }, 10000);
+  if (currentEmotion === "felice") {
+    createEmoticon("felice.png");
+  } else if (currentEmotion === "triste") {
+    createEmoticon("triste.png");
+  } else if (currentEmotion === "arrabbiato") {
+    createEmoticon("arrabbiato.png");
+  }
 }
 
-
- /*function createEmoticon(imageFileName) {
+function createEmoticon(imageFileName) {
   const emoticonImage = document.createElement("img");
   emoticonImage.src = imageFileName;
 
@@ -186,7 +170,7 @@ function updateEmoticon() {
   setTimeout(() => {
     emoticonContainer.innerHTML = ''; // Rimuovi l'emoticon dopo 10 secondi
   }, 10000);
-}*/
+}
 
 
 
