@@ -158,8 +158,13 @@ function updateEmoticon() {
 }
 
 function createEmoticon(imageFileName) {
-    const emoticonContainer = document.getElementById("emoticon-container");
-    emoticonContainer.innerHTML = `<img id="emoticon-image" src="${imageFileName}">`;
+  const emoticonImage = document.createElement("img");
+  emoticonImage.src = imageFileName;
+  emoticonImage.style.position = "fixed";
+  emoticonImage.style.left = "50%";
+  emoticonImage.style.top = "50%";
+  emoticonImage.style.transform = "translate(-50%, -50%)";
+  document.body.appendChild(emoticonImage);
 
   // Scomparsa dell'emoticon dopo 10 secondi
   setTimeout(() => {
