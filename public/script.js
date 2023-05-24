@@ -73,46 +73,14 @@ peer.on("open", (id) => {
   socket.emit("join-room", ROOM_ID, id, user);
 });
 
-// Crea l'emoticon container
-const emoticonContainer = document.createElement("div");
-emoticonContainer.id = "emoticon-container";
-
-// Funzione per aggiungere lo stream video
 const addVideoStream = (video, stream) => {
   video.srcObject = stream;
   video.addEventListener("loadedmetadata", () => {
     video.play();
-
-    // Crea il wrapper del video
-    const videoWrapper = document.createElement("div");
-    videoWrapper.classList.add("video-wrapper");
-
-    // Inserisce l'emoticon container nel wrapper del video
-    videoWrapper.appendChild(emoticonContainer);
-
-    // Inserisce il video nel wrapper del video
-    videoWrapper.appendChild(video);
-
-    // Aggiunge il wrapper del video alla griglia dei video
-    videoGrid.appendChild(videoWrapper);
+    videoGrid.append(emoticonContainer); // Spostato qui
+    videoGrid.append(video);
   });
 };
-
-// Aggiungi regole CSS per il posizionamento dell'emoticon container
-const style = document.createElement("style");
-style.innerHTML = `
-.video-wrapper {
-  position: relative;
-}
-
-#emoticon-container {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-}`;
-
-document.head.appendChild(style);
-
 
 let text = document.querySelector("#chat_message");
 let send = document.getElementById("send");
