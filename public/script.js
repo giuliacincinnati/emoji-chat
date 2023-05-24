@@ -70,6 +70,7 @@ const connectToNewUser = (userId, stream) => {
 };
 
 peer.on("open", (id) => {
+  myPeerId = id;
   console.log('my id is' + id);
   socket.emit("join-room", ROOM_ID, id, user);
 });
@@ -87,6 +88,8 @@ let text = document.querySelector("#chat_message");
 let send = document.getElementById("send");
 let messages = document.querySelector(".messages");
 let currentEmotion = "";
+let myPeerId;
+
 
 send.addEventListener("click", (e) => {
   if (text.value.length !== 0) {
@@ -100,7 +103,7 @@ send.addEventListener("click", (e) => {
       currentEmotion = "";
     }
     updateEmoticon();
-    socket.emit("message", text.value);
+    socket.emit("message", { message: text.value, userId: myPeerId });
     text.value = "";
   }
 });
@@ -122,22 +125,10 @@ text.addEventListener("keydown", (e) => {
   }
 });
 
-socket.on("createMessage", (message, userName) => {
-  let messageContent = message;
-  let includeEmoticon = false;
-
-  if (message.includes("felice")) {
-    currentEmotion = "felice";
-    includeEmoticon = true;
-  } else if (message.includes("arrabbiat")) {
-    currentEmotion = "arrabbiato";
-    includeEmoticon = true;
-  } else if (message.includes("triste")) {
-    currentEmotion = "triste";
-    includeEmoticon = true;
-  } else {
-    currentEmotion = "";
-  }
+socket.on("createMessage", (data) => {
+  const messageContent = data.message;
+  const senderId = data.userId;
+  const includeEmoticon = checkEmoticonMessage(messageContent);
 
   messages.innerHTML += `
     <div class="message">
@@ -146,21 +137,26 @@ socket.on("createMessage", (message, userName) => {
     </div>`;
 
   if (includeEmoticon) {
-    updateEmoticon();
+    updateEmoticon(senderId);
   }
 });
 
-function updateEmoticon() {
-  if (currentEmotion === "felice") {
-    createEmoticon("felice.png");
-  } else if (currentEmotion === "triste") {
-    createEmoticon("triste.png");
-  } else if (currentEmotion === "arrabbiato") {
-    createEmoticon("arrabbiato.png");
+function updateEmoticon(senderId) {
+  if (senderId === myPeerId) {
+    if (currentEmotion === "felice") {
+      createEmoticon("felice.png");
+    } else if (currentEmotion === "triste") {
+      createEmoticon("triste.png");
+    } else if (currentEmotion === "arrabbiato") {
+      createEmoticon("arrabbiato.png");
+    }
   }
 }
 
+
 function createEmoticon(imageFileName) {
+  updateEmoticon(myPeerId);
+
   const emoticonImage = document.createElement("img");
   emoticonImage.src = imageFileName;
 
