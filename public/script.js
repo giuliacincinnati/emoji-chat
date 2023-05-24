@@ -59,14 +59,16 @@ navigator.mediaDevices
     });
   });
 
-const connectToNewUser = (userId, stream) => {
-  console.log('I call someone' + userId);
-  const call = peer.call(userId, stream);
-  const video = document.createElement("video");
-  call.on("stream", (userVideoStream) => {
-    addVideoStream(video, userVideoStream);
-  });
-};
+  const connectToNewUser = (userId, stream) => {
+    console.log("I call someone" + userId);
+    const call = peer.call(userId, stream);
+    const video = document.createElement("video");
+    video.setAttribute("data-id", userId); // Aggiungi l'attributo data-id con l'ID del mittente
+    call.on("stream", (userVideoStream) => {
+      addVideoStream(video, userVideoStream);
+    });
+  };
+
 
 peer.on("open", (id) => {
   console.log('my id is' + id);
@@ -79,6 +81,20 @@ const addVideoStream = (video, stream) => {
     video.play();
     videoGrid.appendChild(video);
     videoGrid.appendChild(emoticonContainer); // Aggiungi emoticonContainer come figlio di videoGrid
+
+    // Aggiungi l'evento click al video per impostare l'emoticon container corretto
+    video.addEventListener("click", () => {
+      const senderId = video.getAttribute("data-id");
+      if (senderId === peer.id) {
+        // Il video è del mittente
+        myVideoStream.getVideoTracks()[0].enabled = true; // Attiva il video del mittente
+        emoticonContainer.style.display = "flex"; // Mostra l'emoticon container
+      } else {
+        // Il video è del destinatario
+        myVideoStream.getVideoTracks()[0].enabled = false; // Disattiva il video del mittente
+        emoticonContainer.style.display = "none"; // Nascondi l'emoticon container
+      }
+    });
   });
 };
 
