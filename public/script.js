@@ -77,14 +77,10 @@ const addVideoStream = (video, stream) => {
   video.srcObject = stream;
   video.addEventListener("loadedmetadata", () => {
     video.play();
-    const videoWrapper = document.createElement("div");
-    videoWrapper.classList.add("video-wrapper");
-    videoWrapper.appendChild(emoticonContainer); // Inserisce l'emoticon container all'interno del wrapper del video
-    videoWrapper.appendChild(video);
-    videoGrid.appendChild(videoWrapper);
+    videoGrid.append(emoticonContainer); // Spostato qui
+    videoGrid.append(video);
   });
 };
-
 
 let text = document.querySelector("#chat_message");
 let send = document.getElementById("send");
