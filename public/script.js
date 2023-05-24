@@ -158,21 +158,23 @@ function updateEmoticon() {
 }
 
 function createEmoticon(imageFileName) {
-  const emoticonWrapper = document.createElement("div");
-  emoticonWrapper.classList.add("emoticon-wrapper");
+  function createEmoticon(imageFileName) {
+    const emoticonWrapper = document.createElement("div");
+    emoticonWrapper.classList.add("emoticon-wrapper");
 
-  const emoticonImage = document.createElement("img");
-  emoticonImage.src = imageFileName;
+    const emoticonImage = document.createElement("img");
+    emoticonImage.src = imageFileName;
 
-  emoticonWrapper.appendChild(emoticonImage);
+    emoticonWrapper.appendChild(emoticonImage);
 
-  const videoGrid = document.getElementById("video-grid"); // Ottieni il riferimento al video grid
-  videoGrid.appendChild(emoticonWrapper); // Aggiungi l'emoticon wrapper al video grid
+    const videoGrid = document.getElementById("video-grid"); // Ottieni il riferimento al video grid
+    videoGrid.appendChild(emoticonWrapper); // Aggiungi l'emoticon wrapper al video grid
 
-  setTimeout(() => {
-    videoGrid.removeChild(emoticonWrapper); // Rimuovi l'emoticon wrapper dal video grid dopo 10 secondi
-  }, 10000);
-}
+    setTimeout(() => {
+      videoGrid.removeChild(emoticonWrapper); // Rimuovi l'emoticon wrapper dal video grid dopo 10 secondi
+    }, 10000);
+  }
+
 
 
 
