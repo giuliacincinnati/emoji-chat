@@ -79,6 +79,9 @@ const addVideoStream = (video, stream) => {
     video.play();
     videoGrid.append(emoticonContainer); // Spostato qui
     videoGrid.append(video);
+
+    // Aggiungi una classe al riquadro del video corrente
+    video.classList.add("my-video");
   });
 };
 
@@ -164,14 +167,17 @@ function createEmoticon(imageFileName) {
   const emoticonImage = document.createElement("img");
   emoticonImage.src = imageFileName;
 
-  const emoticonContainer = document.getElementById("emoticon-container");
-  emoticonContainer.innerHTML = ''; // Rimuovi eventuali emoticon precedenti
-  emoticonContainer.appendChild(emoticonImage);
+  // Ottieni il riquadro video corrente dell'utente corrente
+  const myVideo = document.querySelector(".my-video");
+
+  // Aggiungi l'emoticon al riquadro video corrente
+  myVideo.parentElement.insertBefore(emoticonImage, myVideo.nextSibling);
 
   setTimeout(() => {
-    emoticonContainer.innerHTML = ''; // Rimuovi l'emoticon dopo 10 secondi
+    emoticonImage.remove(); // Rimuovi l'emoticon dopo 10 secondi
   }, 10000);
 }
+
 
 
 
