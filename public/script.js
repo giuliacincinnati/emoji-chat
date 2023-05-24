@@ -78,6 +78,8 @@ const addVideoStream = (video, stream) => {
   video.addEventListener("loadedmetadata", () => {
     video.play();
     const videoContainer = document.createElement("div"); // Crea un nuovo elemento div per il video e l'emoticon container
+    videoContainer.appendChild(video);
+    videoContainer.appendChild(emoticonContainer);
     videoGrid.append(video);
     videoGrid.append(emoticonContainer);
   });
