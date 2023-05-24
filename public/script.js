@@ -5,7 +5,6 @@ const myVideo = document.createElement("video");
 const showChat = document.querySelector("#showChat");
 const backBtn = document.querySelector(".header__back");
 myVideo.muted = true;
-const userVideoMap = new Map();
 
 
 backBtn.addEventListener("click", () => {
@@ -61,29 +60,28 @@ navigator.mediaDevices
     });
   });
 
-  const connectToNewUser = (userId, stream) => {
-    console.log('I call someone' + userId);
-    const video = document.createElement("video");
-    addVideoStream(video, stream, userId);
-  };
+const connectToNewUser = (userId, stream) => {
+  console.log('I call someone' + userId);
+  const call = peer.call(userId, stream);
+  const video = document.createElement("video");
+  call.on("stream", (userVideoStream) => {
+    addVideoStream(video, userVideoStream);
+  });
+};
 
 peer.on("open", (id) => {
   console.log('my id is' + id);
   socket.emit("join-room", ROOM_ID, id, user);
 });
 
-const addVideoStream = (video, stream, userId) => {
+const addVideoStream = (video, stream) => {
   video.srcObject = stream;
   video.addEventListener("loadedmetadata", () => {
     video.play();
-    videoGrid.appendChild(video);
+    videoGrid.append(video);
     videoGrid.appendChild(emoticonContainer); // Aggiungi emoticonContainer come figlio di videoGrid
   });
-
-  // Salvare l'elemento video nella mappa degli utenti
-  userVideoMap.set(userId, video);
 };
-
 
 let text = document.querySelector("#chat_message");
 let send = document.getElementById("send");
@@ -124,7 +122,7 @@ text.addEventListener("keydown", (e) => {
   }
 });
 
-socket.on("createMessage", (message, userName, userId) => {
+socket.on("createMessage", (message, userName) => {
   let messageContent = message;
   let includeEmoticon = false;
 
@@ -148,31 +146,26 @@ socket.on("createMessage", (message, userName, userId) => {
     </div>`;
 
   if (includeEmoticon) {
-    updateEmoticon(userId);
+    updateEmoticon();
   }
 });
 
-
-function updateEmoticon(userId) {
-  const video = userVideoMap.get(userId);
-  if (!video) return;
-
+function updateEmoticon() {
   if (currentEmotion === "felice") {
-    createEmoticon("felice.png", video);
+    createEmoticon("felice.png");
   } else if (currentEmotion === "triste") {
-    createEmoticon("triste.png", video);
+    createEmoticon("triste.png");
   } else if (currentEmotion === "arrabbiato") {
-    createEmoticon("arrabbiato.png", video);
+    createEmoticon("arrabbiato.png");
   }
 }
 
-function createEmoticon(imageFileName, video) {
+function createEmoticon(imageFileName) {
   const emoticonImage = document.createElement("img");
   emoticonImage.src = imageFileName;
-  emoticonImage.classList.add("emoticon");
 
-  // Posiziona l'emoticon nell'elemento video
-  const emoticonContainer = video.parentElement.querySelector(".emoticon-container");
+  const emoticonContainer = document.getElementById("emoticon-container");
+  emoticonContainer.innerHTML = ''; // Rimuovi eventuali emoticon precedenti
   emoticonContainer.appendChild(emoticonImage);
 
   setTimeout(() => {
