@@ -79,12 +79,8 @@ const addVideoStream = (video, stream) => {
     video.play();
     videoGrid.append(emoticonContainer); // Spostato qui
     videoGrid.append(video);
-
-    // Aggiungi una classe al riquadro del video corrente
-    video.classList.add("my-video");
   });
 };
-
 
 let text = document.querySelector("#chat_message");
 let send = document.getElementById("send");
@@ -167,14 +163,12 @@ function createEmoticon(imageFileName) {
   const emoticonImage = document.createElement("img");
   emoticonImage.src = imageFileName;
 
-  // Ottieni il riquadro video corrente dell'utente corrente
-  const myVideo = document.querySelector(".my-video");
-
-  // Aggiungi l'emoticon al riquadro video corrente
-  myVideo.parentElement.insertBefore(emoticonImage, myVideo.nextSibling);
+  const emoticonContainer = document.getElementById("emoticon-container");
+  emoticonContainer.innerHTML = ''; // Rimuovi eventuali emoticon precedenti
+  emoticonContainer.appendChild(emoticonImage);
 
   setTimeout(() => {
-    emoticonImage.remove(); // Rimuovi l'emoticon dopo 10 secondi
+    emoticonContainer.innerHTML = ''; // Rimuovi l'emoticon dopo 10 secondi
   }, 10000);
 }
 
