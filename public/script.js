@@ -78,19 +78,10 @@ const addVideoStream = (video, stream, sender) => {
   video.srcObject = stream;
   video.addEventListener("loadedmetadata", () => {
     video.play();
-    const videoContainer = document.createElement("div");
-    videoContainer.appendChild(video);
-    if (sender === peer.id) {
-      videoContainer.appendChild(emoticonContainer); // Aggiungi emoticonContainer al riquadro del mittente
-    } else {
-      const recipientEmoticonContainer = document.createElement("div");
-      recipientEmoticonContainer.classList.add("emoticon-container");
-      videoContainer.appendChild(recipientEmoticonContainer); // Aggiungi emoticonContainer al riquadro del destinatario
-    }
-    videoGrid.appendChild(videoContainer);
+    videoGrid.appendChild(video);
+    videoGrid.appendChild(emoticonContainer); // Aggiungi emoticonContainer come figlio di videoGrid
   });
 };
-
 
 
 let text = document.querySelector("#chat_message");
