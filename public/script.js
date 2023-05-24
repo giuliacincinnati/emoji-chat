@@ -5,6 +5,8 @@ const myVideo = document.createElement("video");
 const showChat = document.querySelector("#showChat");
 const backBtn = document.querySelector(".header__back");
 myVideo.muted = true;
+const userVideoElements = {};
+
 
 backBtn.addEventListener("click", () => {
   document.querySelector(".main__left").style.display = "flex";
@@ -59,26 +61,28 @@ navigator.mediaDevices
     });
   });
 
-const connectToNewUser = (userId, stream) => {
-  console.log('I call someone' + userId);
-  const call = peer.call(userId, stream);
-  const video = document.createElement("video");
-  call.on("stream", (userVideoStream) => {
-    addVideoStream(video, userVideoStream);
-  });
-};
+  const connectToNewUser = (userId, stream) => {
+    console.log('I call someone' + userId);
+    const call = peer.call(userId, stream);
+    const video = document.createElement("video");
+    call.on("stream", (userVideoStream) => {
+      addVideoStream(video, userVideoStream, userId); // Passa anche l'ID dell'utente
+    });
+  };
+
 
 peer.on("open", (id) => {
   console.log('my id is' + id);
   socket.emit("join-room", ROOM_ID, id, user);
 });
 
-const addVideoStream = (video, stream) => {
+const addVideoStream = (video, stream, userId) => {
   video.srcObject = stream;
   video.addEventListener("loadedmetadata", () => {
     video.play();
-    videoGrid.append(video);
+    videoGrid.appendChild(video);
     videoGrid.appendChild(emoticonContainer); // Aggiungi emoticonContainer come figlio di videoGrid
+    userVideoElements[userId] = video; // Salva l'elemento video nell'oggetto userVideoElements associandolo all'ID dell'utente
   });
 };
 
@@ -145,7 +149,7 @@ socket.on("createMessage", (message, userName) => {
     </div>`;
 
   if (includeEmoticon) {
-    updateEmoticon();
+    updateEmoticon(userId);
   }
 });
 
@@ -159,11 +163,12 @@ function updateEmoticon() {
   }
 }
 
-function createEmoticon(imageFileName) {
+function createEmoticon(imageFileName, userId) {
   const emoticonImage = document.createElement("img");
   emoticonImage.src = imageFileName;
 
-  const emoticonContainer = document.getElementById("emoticon-container");
+  const videoElement = userVideoElements[userId]; // Ottieni l'elemento video corrispondente all'ID dell'utente
+  const emoticonContainer = videoElement.parentElement; // Ottieni il genitore dell'elemento video (che è emoticonContainer)
   emoticonContainer.innerHTML = ''; // Rimuovi eventuali emoticon precedenti
   emoticonContainer.appendChild(emoticonImage);
 
