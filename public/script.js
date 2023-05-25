@@ -155,10 +155,8 @@ socket.on("createMessage", (message, userName) => {
   let messageContent = message;
 
   if (currentEmotion === "felice" || currentEmotion === "triste" || currentEmotionemotion === "arrabbiato") {
-    if (userName !== user) {
-      updateEmoticonContainer(userName); // Mostra l'emoticon container sull'elemento video corrispondente
+          updateEmoticonContainer(userName); // Mostra l'emoticon container sull'elemento video corrispondente
     }
-  }
 
   messages.innerHTML += `
     <div class="message">
@@ -166,7 +164,6 @@ socket.on("createMessage", (message, userName) => {
       <span>${messageContent}</span>
     </div>`;
 
-  updateEmoticonContainer(userName); // Mostra o nascondi l'emoticon container in base al messaggio
 });
 
 
