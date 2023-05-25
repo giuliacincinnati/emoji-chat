@@ -178,10 +178,14 @@ function updateEmoticon() {
   const myVideoId = peer._id;
   const myVideo = peers[myVideoId];
   if (myVideo) {
-    const emoticonContainer = createEmoticonContainer(myVideoId);
-    myVideo.parentElement.appendChild(emoticonContainer);
+    let emoticonContainer = document.getElementById(`emoticon-container-${myVideoId}`);
+    if (!emoticonContainer) {
+      emoticonContainer = createEmoticonContainer(myVideoId);
+      myVideo.parentElement.appendChild(emoticonContainer);
+    }
   }
 }
+
 
 function createEmoticon(imageFileName, userId) {
   const emoticonImage = document.createElement("img");
