@@ -64,9 +64,8 @@ const connectToNewUser = (userId, stream) => {
   console.log('I call someone' + userId);
   const call = peer.call(userId, stream);
   const video = document.createElement("video");
-  const emoticonContainer = document.createElement("emoticonContainer");//
   call.on("stream", (userVideoStream) => {
-    addVideoStream(video, userVideoStream, emoticonContainer);
+    addVideoStream(video, userVideoStream);
   });
 };
 
