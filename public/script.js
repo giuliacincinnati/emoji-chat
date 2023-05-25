@@ -158,18 +158,21 @@ socket.on("createMessage", (message, userName, emotion) => {
 
 
 function updateEmoticon(userId, emotion) {
-  const emoticonContainer = document.getElementById(`emoticon-container-${userId}`);
-  if (emoticonContainer) {
-    emoticonContainer.innerHTML = ''; // Rimuovi eventuali emoticon precedenti
-    if (emotion === "felice") {
-      createEmoticon("felice.png", emoticonContainer);
-    } else if (emotion === "triste") {
-      createEmoticon("triste.png", emoticonContainer);
-    } else if (emotion === "arrabbiato") {
-      createEmoticon("arrabbiato.png", emoticonContainer);
+  if (userId !== socket.id && ["felice", "arrabbiato", "triste"].includes(emotion)) {
+    const emoticonContainer = document.getElementById(`emoticon-container-${userId}`);
+    if (emoticonContainer) {
+      emoticonContainer.innerHTML = ''; // Rimuovi eventuali emoticon precedenti
+      if (emotion === "felice") {
+        createEmoticon("felice.png", emoticonContainer);
+      } else if (emotion === "triste") {
+        createEmoticon("triste.png", emoticonContainer);
+      } else if (emotion === "arrabbiato") {
+        createEmoticon("arrabbiato.png", emoticonContainer);
+      }
     }
   }
 }
+
 
 function createEmoticon(imageFileName, emoticonContainer) {
   const emoticonImage = document.createElement("img");
