@@ -178,7 +178,7 @@ function updateEmoticon() {
     const peerVideoGrid = myVideo.parentElement;
     peerVideoGrid.appendChild(emoticonContainer);
   }
-
+} // Aggiungi questa parentesi graffa di chiusura
 
 function createEmoticon(imageFileName, userId) {
   const emoticonImage = document.createElement("img");
@@ -192,6 +192,7 @@ function createEmoticon(imageFileName, userId) {
     emoticonContainer.innerHTML = ''; // Rimuovi l'emoticon dopo 10 secondi
   }, 10000);
 }
+
 
 
 const inviteButton = document.querySelector("#inviteButton");
