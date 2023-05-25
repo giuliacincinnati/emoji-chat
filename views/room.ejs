@@ -9,6 +9,65 @@
     <script src="https://kit.fontawesome.com/c939d0e917.js"></script>
     <script src="https://unpkg.com/peerjs@1.3.1/dist/peerjs.min.js"></script>
     <script>
+    //inserisco //
+     const ROOM_ID = "<%= roomId %>";
+
+     // Codice JavaScript aggiunto per gestire la ricezione dei messaggi dal server
+     const socket = io("/");
+
+     socket.on("connect", () => {
+       socket.emit("join-room", ROOM_ID);
+     });
+
+     socket.on("createMessage", (message, userName, emotion) => {
+       const messageContainer = document.querySelector(".messages");
+       const messageElement = document.createElement("div");
+
+       messageElement.innerHTML = `
+         <b><i class="far fa-user-circle"></i> <span>${
+           userName === user ? "me" : userName
+         }</span></b>
+         <span>${message}</span>`;
+
+       if (emotion) {
+         const emoticonImage = document.createElement("img");
+         emoticonImage.src = `${emotion}.png`;
+         emoticonImage.classList.add("emoticon-image");
+         messageElement.appendChild(emoticonImage);
+       }
+
+       messageContainer.appendChild(messageElement);
+       messageContainer.scrollTop = messageContainer.scrollHeight;
+     });
+
+     // Funzione per inviare un messaggio
+     function sendMessage() {
+       const inputElement = document.querySelector("#chat_message");
+       const message = inputElement.value;
+
+       if (message.length !== 0) {
+         let emotion = "";
+
+         if (message.includes("felice")) {
+           emotion = "felice";
+         } else if (message.includes("arrabbiato")) {
+           emotion = "arrabbiato";
+         } else if (message.includes("triste")) {
+           emotion = "triste";
+         }
+
+         socket.emit("message", message, emotion);
+         inputElement.value = "";
+       }
+     }
+
+     // Aggiungi un listener per l'invio del messaggio
+     document.querySelector("#send").addEventListener("click", sendMessage);
+     document.querySelector("#chat_message").addEventListener("keydown", (e) => {
+       if (e.key === "Enter") {
+         sendMessage();
+       }
+     });
       const ROOM_ID = "<%= roomId %>";
     </script>
   </head>
@@ -24,7 +83,7 @@
     <div class="main">
       <div class="main__left">
         <div class="videos__group">
-        <div><img id="emoticon-image"> </div> 
+        <div><img id="emoticon-image"> </div>
                <div id="video-grid">
                </div>
              </div>

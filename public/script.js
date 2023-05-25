@@ -183,11 +183,7 @@ function createEmoticon(imageFileName, userId) {
   const emoticonContainer = document.querySelector(`.peer-video-grid[data-peer="${userId}"] .emoticon-container`);
   emoticonContainer.innerHTML = ''; // Rimuovi eventuali emoticon precedenti
   emoticonContainer.appendChild(emoticonImage);
-
-  // Aggiungi l'emoticon anche all'emoticon container dell'utente locale
-const localEmoticonContainer = document.querySelector(`.peer-video-grid[data-peer="${peer.id}"] .emoticon-container`);
-localEmoticonContainer.innerHTML = ''; // Rimuovi eventuali emoticon precedenti
-localEmoticonContainer.appendChild(emoticonImage.cloneNode(true));
+  
 
   setTimeout(() => {
     emoticonContainer.innerHTML = ''; // Rimuovi l'emoticon dopo 10 secondi
