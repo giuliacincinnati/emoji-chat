@@ -148,7 +148,22 @@ socket.on("createMessage", (message, userName, emotion) => {
       <b><i class="far fa-user-circle"></i> <span>${userName === user ? "me" : userName}</span></b>
       <span>${messageContent}</span>
     </div>`;
+
+  if (userName !== user && (emotion === "felice" || emotion === "triste" || emotion === "arrabbiato")) {
+    updateEmoticonContainer(userName); // Mostra l'emoticon container sull'elemento video dell'altro partecipante
+  }
 });
+
+function updateEmoticonContainer(userId) {
+  const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
+  if (peerVideoGrid) {
+    let emoticonContainer = peerVideoGrid.querySelector(".emoticon-container");
+    if (!emoticonContainer) {
+      emoticonContainer = createEmoticonContainer(userId);
+      peerVideoGrid.appendChild(emoticonContainer);
+    }
+  }
+}
 
 
 
