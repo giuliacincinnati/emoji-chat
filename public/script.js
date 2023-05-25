@@ -5,7 +5,7 @@ const myVideo = document.createElement("video");
 const showChat = document.querySelector("#showChat");
 const backBtn = document.querySelector(".header__back");
 myVideo.muted = true;
-
+const userVideoMap = {};
 
 backBtn.addEventListener("click", () => {
   document.querySelector(".main__left").style.display = "flex";
@@ -56,32 +56,36 @@ navigator.mediaDevices
     });
 
     socket.on("user-connected", (userId) => {
-      connectToNewUser(userId, stream);
+       connectToNewUser(userId, myVideoStream);
     });
   });
 
-const connectToNewUser = (userId, stream) => {
-  console.log('I call someone' + userId);
-  const call = peer.call(userId, stream);
-  const video = document.createElement("video");
-  call.on("stream", (userVideoStream) => {
-    addVideoStream(video, userVideoStream);
-  });
-};
+  const connectToNewUser = (userId, stream) => {
+    const call = peer.call(userId, stream);
+    const video = document.createElement("video");
+    call.on("stream", (userVideoStream) => {
+      addVideoStream(video, userVideoStream, userId); // Passa l'ID di PeerJS come terzo argomento
+    });
+  };
+
 
 peer.on("open", (id) => {
   console.log('my id is' + id);
   socket.emit("join-room", ROOM_ID, id, user);
 });
 
-const addVideoStream = (video, stream) => {
+const addVideoStream = (video, stream, userId) => {
   video.srcObject = stream;
   video.addEventListener("loadedmetadata", () => {
     video.play();
-    videoGrid.append(video);
-    videoGrid.appendChild(emoticonContainer); // Aggiungi emoticonContainer come figlio di videoGrid
+    videoGrid.appendChild(video);
+    videoGrid.appendChild(emoticonContainer);
+
+    // Memorizza l'ID di PeerJS associato all'elemento video
+    userVideoMap[userId] = video;
   });
 };
+
 
 let text = document.querySelector("#chat_message");
 let send = document.getElementById("send");
@@ -122,7 +126,7 @@ text.addEventListener("keydown", (e) => {
   }
 });
 
-socket.on("createMessage", (message, userName) => {
+socket.on("createMessage", (message, userName, userId) => {
   let messageContent = message;
   let includeEmoticon = false;
 
@@ -147,8 +151,17 @@ socket.on("createMessage", (message, userName) => {
 
   if (includeEmoticon) {
     updateEmoticon();
+
+    // Ottieni l'elemento video corrispondente utilizzando l'ID di PeerJS
+    const video = userVideoMap[userId];
+
+    // Aggiorna l'emoticon container associato all'elemento video
+    const emoticonContainer = video.parentNode;
+    emoticonContainer.innerHTML = '';
+    emoticonContainer.appendChild(emoticonImage);
   }
 });
+
 
 function updateEmoticon() {
   if (currentEmotion === "felice") {
