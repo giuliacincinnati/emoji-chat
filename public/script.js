@@ -156,7 +156,7 @@ socket.on("createMessage", (message, userName, emotion) => {
 
 function updateEmoticonContainer(userId) {
   const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
-  if (peerVideoGrid) {
+  if (peerVideoGrid && userId !== peer.id) {
     let emoticonContainer = peerVideoGrid.querySelector(".emoticon-container");
     if (!emoticonContainer) {
       emoticonContainer = createEmoticonContainer(userId);
@@ -167,6 +167,7 @@ function updateEmoticonContainer(userId) {
 
 
 
+
 function updateEmoticon(targetUserId) {
   if (currentEmotion === "felice") {
     createEmoticon("felice.png", targetUserId);
@@ -174,21 +175,28 @@ function updateEmoticon(targetUserId) {
     createEmoticon("triste.png", targetUserId);
   } else if (currentEmotion === "arrabbiato") {
     createEmoticon("arrabbiato.png", targetUserId);
+  }
 
-
-    // Mostra l'emoticon container nell'elemento video corrispondente
-    if (targetUserId) {
-      let emoticonContainer = document.getElementById(`emoticon-container-${targetUserId}`);
-      if (!emoticonContainer) {
-        emoticonContainer = createEmoticonContainer(targetUserId);
-        const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${targetUserId}"]`);
-        if (peerVideoGrid) {
-          peerVideoGrid.appendChild(emoticonContainer);
-        }
+  // Mostra l'emoticon container nell'elemento video corrispondente
+  if (targetUserId) {
+    let emoticonContainer = document.getElementById(`emoticon-container-${targetUserId}`);
+    if (!emoticonContainer) {
+      emoticonContainer = createEmoticonContainer(targetUserId);
+      const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${targetUserId}"]`);
+      if (peerVideoGrid) {
+        peerVideoGrid.appendChild(emoticonContainer);
       }
     }
+  }
+
+  // Nascondi l'emoticon container nell'elemento video corrispondente all'utente corrente
+  if (peer.id !== targetUserId) {
+    let emoticonContainer = document.getElementById(`emoticon-container-${peer.id}`);
+    if (emoticonContainer) {
+      emoticonContainer.innerHTML = '';
     }
   }
+}
 
 
 
