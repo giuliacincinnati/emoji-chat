@@ -56,17 +56,17 @@ navigator.mediaDevices
     });
 
     socket.on("user-connected", (userId) => {
-      connectToNewUser(userId, stream);
+      connectToNewUser(userId, stream, userId); // Passa userId come parametro aggiuntivo
     });
-  });
 
-  const connectToNewUser = (userId, stream) => {
-    const call = peer.call(userId, stream);
-    const video = document.createElement("video");
-    call.on("stream", (userVideoStream) => {
-      addVideoStream(video, userVideoStream, userId); // Passa userId come parametro
-    });
-  };
+
+    const connectToNewUser = (userId, stream, userIdParam) => {
+      const call = peer.call(userId, stream);
+      const video = document.createElement("video");
+      call.on("stream", (userVideoStream) => {
+        addVideoStream(video, userVideoStream, userId); // Passa userId invece di userIdParam
+      });
+    };
 
 peer.on("open", (id) => {
   console.log('my id is' + id);
@@ -134,7 +134,7 @@ text.addEventListener("keydown", (e) => {
   }
 });
 
-socket.on("createMessage", (message, userName) => {
+socket.on("message", (message, userName) => {
   let messageContent = message;
   let includeEmoticon = false;
 
@@ -161,6 +161,7 @@ socket.on("createMessage", (message, userName) => {
     updateEmoticon();
   }
 });
+
 
 function updateEmoticon() {
   if (currentEmotion === "felice") {
