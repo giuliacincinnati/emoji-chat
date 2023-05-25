@@ -60,10 +60,6 @@ navigator.mediaDevices
     });
   });
 
-  socket.on("user-emotion", (userId, emotion) => {
-  updateEmoticon(userId, emotion);
-});
-
   const connectToNewUser = (userId, stream) => {
     const call = peer.call(userId, stream);
     const video = document.createElement("video");
@@ -115,10 +111,9 @@ send.addEventListener("click", (e) => {
     } else {
       currentEmotion = "";
     }
-    updateEmoticon(); // Aggiorna l'emoticon visualizzata localmente
-    socket.emit("message", text.value); // Invia il messaggio al server
-    socket.emit("emotion", currentEmotion); // Invia l'emozione al server
-    text.value = "";
+    updateEmoticon();
+       socket.emit("message", text.value);
+       text.value = "";
   }
 });
 
@@ -133,13 +128,11 @@ text.addEventListener("keydown", (e) => {
     } else {
       currentEmotion = "";
     }
-    updateEmoticon(); // Aggiorna l'emoticon visualizzata localmente
-    socket.emit("message", text.value); // Invia il messaggio al server
-    socket.emit("emotion", currentEmotion); // Invia l'emozione al server
+    updateEmoticon();
+    socket.emit("message", text.value);
     text.value = "";
   }
 });
-
 
 socket.on("createMessage", (message, userName, emotion) => {
   let messageContent = message;
@@ -157,34 +150,44 @@ socket.on("createMessage", (message, userName, emotion) => {
 
 
 
-function updateEmoticon(userId, emotion) {
-  if (userId !== socket.id && ["felice", "arrabbiato", "triste"].includes(emotion)) {
-    const emoticonContainer = document.getElementById(`emoticon-container-${userId}`);
-    if (emoticonContainer) {
-      emoticonContainer.innerHTML = ''; // Rimuovi eventuali emoticon precedenti
-      if (emotion === "felice") {
-        createEmoticon("felice.png", emoticonContainer);
-      } else if (emotion === "triste") {
-        createEmoticon("triste.png", emoticonContainer);
-      } else if (emotion === "arrabbiato") {
-        createEmoticon("arrabbiato.png", emoticonContainer);
+function updateEmoticon(targetUserId) {
+  if (currentEmotion === "felice") {
+    createEmoticon("felice.png", targetUserId);
+  } else if (currentEmotion === "triste") {
+    createEmoticon("triste.png", targetUserId);
+  } else if (currentEmotion === "arrabbiato") {
+    createEmoticon("arrabbiato.png", targetUserId);
+
+
+  // Mostra l'emoticon container nell'elemento video corrispondente
+  if (userId) {
+    let emoticonContainer = document.getElementById(`emoticon-container-${userId}`);
+    if (!emoticonContainer) {
+      emoticonContainer = createEmoticonContainer(userId);
+      const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
+      if (peerVideoGrid) {
+        peerVideoGrid.appendChild(emoticonContainer);
       }
     }
   }
-}
+    }
+  }
 
 
-function createEmoticon(imageFileName, emoticonContainer) {
+
+
+function createEmoticon(imageFileName, userId) {
   const emoticonImage = document.createElement("img");
   emoticonImage.src = imageFileName;
+
+  const emoticonContainer = document.getElementById(`emoticon-container-${userId}`); // Seleziona l'emoticon container corretto utilizzando l'ID univoco
+  emoticonContainer.innerHTML = ''; // Rimuovi eventuali emoticon precedenti
   emoticonContainer.appendChild(emoticonImage);
 
   setTimeout(() => {
     emoticonContainer.innerHTML = ''; // Rimuovi l'emoticon dopo 10 secondi
   }, 10000);
 }
-
-
 
 const inviteButton = document.querySelector("#inviteButton");
 const muteButton = document.querySelector("#muteButton");
@@ -225,16 +228,4 @@ inviteButton.addEventListener("click", (e) => {
     "Copy this link and send it to people you want to meet with",
     window.location.href
   );
-});
-
-socket.on("message", (message) => {
-  io.to(roomId).emit("createMessage", message, user, currentEmotion); // Invia l'emozione insieme al messaggio
-});
-
-socket.on("emotion", (emotion) => {
-  io.to(roomId).emit("user-emotion", socket.id, emotion); // Invia l'emozione agli altri utenti
-});
-
-socket.on("user-emotion", (userId, emotion) => {
-  updateEmoticon(userId, emotion);
 });
