@@ -60,21 +60,20 @@ navigator.mediaDevices
     });
   });
 
-  const connectToNewUser = (userId, stream) => {
-    const call = peer.call(userId, stream);
-    const video = document.createElement("video");
-    call.on("stream", (userVideoStream) => {
-      addVideoStream(video, userVideoStream, userId); // Passa userId come parametro
-    });
-
-
+const connectToNewUser = (userId, stream) => {
+  const call = peer.call(userId, stream);
+  const video = document.createElement("video");
+  call.on("stream", (userVideoStream) => {
+    addVideoStream(video, userVideoStream, userId); // Passa userId come parametro
+  });
+};
 
 peer.on("open", (id) => {
   console.log('my id is' + id);
   socket.emit("join-room", ROOM_ID, id, user);
 });
 
-const addVideoStream = (video, stream, userId) => { // Aggiungi userId come parametro
+const addVideoStream = (video, stream, userId) => {
   video.srcObject = stream;
   video.addEventListener("loadedmetadata", () => {
     video.play();
@@ -88,7 +87,6 @@ const addVideoStream = (video, stream, userId) => { // Aggiungi userId come para
     videoGrid.appendChild(peerVideoGrid); // Aggiungi il riquadro del video al videoGrid
   });
 };
-
 
 function createEmoticonContainer(userId) {
   const emoticonContainer = document.createElement("div");
@@ -106,7 +104,7 @@ send.addEventListener("click", (e) => {
   if (text.value.length !== 0) {
     if (text.value.includes("felice")) {
       currentEmotion = "felice";
-    } else if (text.value.includes("arrabbiat")) {
+    } else if (text.value.includes("arrabbiato")) {
       currentEmotion = "arrabbiato";
     } else if (text.value.includes("triste")) {
       currentEmotion = "triste";
@@ -114,7 +112,7 @@ send.addEventListener("click", (e) => {
       currentEmotion = "";
     }
     updateEmoticon();
-    socket.emit("message", text.value); // Invia l'emozione corrente
+    socket.emit("message", text.value); // Invia il messaggio al server
     text.value = "";
   }
 });
@@ -123,7 +121,7 @@ text.addEventListener("keydown", (e) => {
   if (e.key === "Enter" && text.value.length !== 0) {
     if (text.value.includes("felice")) {
       currentEmotion = "felice";
-    } else if (text.value.includes("arrabbiat")) {
+    } else if (text.value.includes("arrabbiato")) {
       currentEmotion = "arrabbiato";
     } else if (text.value.includes("triste")) {
       currentEmotion = "triste";
@@ -131,11 +129,10 @@ text.addEventListener("keydown", (e) => {
       currentEmotion = "";
     }
     updateEmoticon();
-    socket.emit("message", text.value); // Invia l'emozione corrente
+    socket.emit("message", text.value); // Invia il messaggio al server
     text.value = "";
   }
 });
-
 
 function updateEmoticonContainer(userId) {
   const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
@@ -148,14 +145,13 @@ function updateEmoticonContainer(userId) {
   }
 }
 
-
 socket.on("createMessage", (message, userName, emotion) => {
   let messageContent = message;
 
   if (emotion === "felice" || emotion === "triste" || emotion === "arrabbiato") {
     if (userName !== user) {
-    updateEmoticonContainer(userName); // Mostra l'emoticon container sull'elemento video corrispondente
-  }
+      updateEmoticonContainer(userName); // Mostra l'emoticon container sull'elemento video corrispondente
+    }
   }
 
   messages.innerHTML += `
@@ -166,7 +162,6 @@ socket.on("createMessage", (message, userName, emotion) => {
 
   updateEmoticonContainer(userName); // Mostra l'emoticon container sull'elemento video corrispondente
 });
-
 
 function updateEmoticon(targetUserId) {
   if (currentEmotion === "felice") {
@@ -180,23 +175,21 @@ function updateEmoticon(targetUserId) {
   // Mostra l'emoticon container nell'elemento video corrispondente
   if (targetUserId) {
     updateEmoticonContainer(targetUserId);
-      }
-    }
+  }
+}
 
-    function createEmoticon(imageFileName, userId) {
-      const emoticonImage = document.createElement("img");
-      emoticonImage.src = imageFileName;
+function createEmoticon(imageFileName, userId) {
+  const emoticonImage = document.createElement("img");
+  emoticonImage.src = imageFileName;
 
-      const emoticonContainer = document.querySelector(`.peer-video-grid[data-peer="${userId}"] .emoticon-container`);
-      emoticonContainer.innerHTML = ''; // Rimuovi eventuali emoticon precedenti
-      emoticonContainer.appendChild(emoticonImage);
+  const emoticonContainer = document.querySelector(`.peer-video-grid[data-peer="${userId}"] .emoticon-container`);
+  emoticonContainer.innerHTML = ''; // Rimuovi eventuali emoticon precedenti
+  emoticonContainer.appendChild(emoticonImage);
 
-      setTimeout(() => {
-        emoticonContainer.innerHTML = ''; // Rimuovi l'emoticon dopo 10 secondi
-      }, 10000);
-    }
-
-
+  setTimeout(() => {
+    emoticonContainer.innerHTML = ''; // Rimuovi l'emoticon dopo 10 secondi
+  }, 10000);
+}
 
 const inviteButton = document.querySelector("#inviteButton");
 const muteButton = document.querySelector("#muteButton");
