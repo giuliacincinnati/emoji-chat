@@ -58,7 +58,7 @@ navigator.mediaDevices
     socket.on("user-connected", (userId) => {
       connectToNewUser(userId, stream, userId); // Passa userId come parametro aggiuntivo
     });
-
+  });
 
     const connectToNewUser = (userId, stream, userIdParam) => {
       const call = peer.call(userId, stream);
