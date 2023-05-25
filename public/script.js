@@ -139,6 +139,7 @@ text.addEventListener("keydown", (e) => {
 
 socket.on("createMessage", (message, userName, emotion) => {
   let messageContent = message;
+  let senderId = ""; // Aggiungi questa variabile per tenere traccia dell'ID del mittente
 
   if (emotion === "felice" || emotion === "triste" || emotion === "arrabbiato") {
     updateEmoticon(userName); // Mostra l'emoticon container sul suo elemento video
@@ -149,7 +150,18 @@ socket.on("createMessage", (message, userName, emotion) => {
       <b><i class="far fa-user-circle"></i> <span>${userName === user ? "me" : userName}</span></b>
       <span>${messageContent}</span>
     </div>`;
+
+  // Controlla se il messaggio è stato inviato da me o da un altro partecipante
+  if (userName === user) {
+    senderId = peer._id; // Se sono io il mittente, usa il mio ID PeerJS
+  } else {
+    senderId = Object.keys(peers).find((id) => peers[id] === userName); // Trova l'ID PeerJS corrispondente al nome del mittente
+  }
+
+  // Aggiorna l'emoticon sul riquadro video del mittente
+  updateEmoticon(senderId, emotion);
 });
+
 
 
 
