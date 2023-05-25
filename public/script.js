@@ -56,7 +56,7 @@ navigator.mediaDevices
       call.on("stream", (userVideoStream) => {
         addVideoStream(video, userVideoStream);
         const newUserEmoticonContainer = createEmoticonContainer(userId); // Chiamata alla funzione createEmoticonContainer con l'ID dell'utente appena connesso
-      document.body.appendChild(newUserEmoticonContainer); // Aggiunge il nuovo emoticon container al corpo del documento
+      document.Video.appendChild(newUserEmoticonContainer); // Aggiunge il nuovo emoticon container al corpo del documento
       });
     });
 
@@ -154,8 +154,17 @@ socket.on("createMessage", (message, userName, emotion) => {
   let messageContent = message;
 
   if (emotion === "felice" || emotion === "triste" || emotion === "arrabbiato") {
-      updateEmoticonContainer(userName); // Mostra l'emoticon container sull'elemento video corrispondente
+    updateEmoticonContainer(userName); // Mostra l'emoticon container sull'elemento video corrispondente
   }
+
+  messages.innerHTML += `
+    <div class="message">
+      <b><i class="far fa-user-circle"></i> <span>${userName === user ? "me" : userName}</span></b>
+      <span>${messageContent}</span>
+    </div>`;
+
+  updateEmoticonContainer(userName); // Mostra l'emoticon container sull'elemento video corrispondente
+});
 
   messages.innerHTML += `
     <div class="message">
