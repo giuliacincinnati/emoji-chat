@@ -112,7 +112,7 @@ send.addEventListener("click", (e) => {
       currentEmotion = "";
     }
     updateEmoticon();
-    socket.emit("message", text.value); // Invia il messaggio al server
+    socket.emit("message", text.value, currentEmotion); // Invia il messaggio al server
     text.value = "";
   }
 });
@@ -129,21 +129,21 @@ text.addEventListener("keydown", (e) => {
       currentEmotion = "";
     }
     updateEmoticon();
-    socket.emit("message", text.value); // Invia il messaggio al server
+    socket.emit("message", text.value, currentEmotion); // Invia il messaggio al server
     text.value = "";
   }
 });
 
 function updateEmoticonContainer(userId) {
-  const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
-  if (peerVideoGrid) {
-    let emoticonContainer = peerVideoGrid.querySelector(".emoticon-container");
-    if (!emoticonContainer) {
-      emoticonContainer = createEmoticonContainer(userId);
-      peerVideoGrid.appendChild(emoticonContainer);
-    }
+  const emoticonContainer = document.getElementById(`emoticon-container-${userId}`);
+  if (emoticonContainer) {
+    emoticonContainer.style.display = "block"; // Mostra l'emoticon container
+    setTimeout(() => {
+      emoticonContainer.style.display = "none"; // Nascondi l'emoticon container dopo 10 secondi
+    }, 10000);
   }
 }
+
 
 socket.on("createMessage", (message, userName, emotion) => {
   let messageContent = message;
@@ -183,12 +183,12 @@ function createEmoticon(imageFileName, userId) {
   const emoticonImage = document.createElement("img");
   emoticonImage.src = imageFileName;
 
-  const emoticonContainer = document.querySelector(`.peer-video-grid[data-peer="${userId}"] .emoticon-container`);
-  emoticonContainer.innerHTML = ''; // Rimuovi eventuali emoticon precedenti
+  const emoticonContainer = document.getElementById(`emoticon-container-${userId}`);
+  emoticonContainer.innerHTML = ""; // Rimuovi eventuali emoticon precedenti
   emoticonContainer.appendChild(emoticonImage);
 
   setTimeout(() => {
-    emoticonContainer.innerHTML = ''; // Rimuovi l'emoticon dopo 10 secondi
+    emoticonContainer.innerHTML = ""; // Rimuovi l'emoticon dopo 10 secondi
   }, 10000);
 }
 
