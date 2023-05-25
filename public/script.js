@@ -165,22 +165,18 @@ socket.on("createMessage", (message, userName) => {
 
 function updateEmoticon() {
   if (currentEmotion === "felice") {
-    createEmoticon("felice.png", myVideoStream.id);
+    createEmoticon("felice.png");
   } else if (currentEmotion === "triste") {
-    createEmoticon("triste.png", myVideoStream.id);
+    createEmoticon("triste.png");
   } else if (currentEmotion === "arrabbiato") {
-    createEmoticon("arrabbiato.png", myVideoStream.id);
+    createEmoticon("arrabbiato.png");
   }
 
   // Mostra l'emoticon container nell'elemento video corrispondente
-  const myVideoId = myVideoStream.id;
+  const myVideoId = peer._id;
   const myVideo = peers[myVideoId];
   if (myVideo) {
-    const peerVideoGrid = myVideo.parentElement;
-    const peerEmoticonContainer = peerVideoGrid.querySelector(`#emoticon-container-${myVideoId}`);
-    if (peerEmoticonContainer) {
-      peerEmoticonContainer.appendChild(emoticonContainer);
-    }
+    myVideo.parentElement.appendChild(emoticonContainer);
   }
 }
 
@@ -189,16 +185,13 @@ function createEmoticon(imageFileName, userId) {
   emoticonImage.src = imageFileName;
 
   const emoticonContainer = document.getElementById(`emoticon-container-${userId}`); // Seleziona l'emoticon container corretto utilizzando l'ID univoco
-  if (emoticonContainer) {
-    emoticonContainer.innerHTML = ''; // Rimuovi eventuali emoticon precedenti
-    emoticonContainer.appendChild(emoticonImage);
+  emoticonContainer.innerHTML = ''; // Rimuovi eventuali emoticon precedenti
+  emoticonContainer.appendChild(emoticonImage);
 
-    setTimeout(() => {
-      emoticonContainer.innerHTML = ''; // Rimuovi l'emoticon dopo 10 secondi
-    }, 10000);
-  }
+  setTimeout(() => {
+    emoticonContainer.innerHTML = ''; // Rimuovi l'emoticon dopo 10 secondi
+  }, 10000);
 }
-
 
 
 
