@@ -106,6 +106,7 @@ send.addEventListener("click", (e) => {
     socket.emit("message", text.value);
     text.value = "";
   }
+  updateEmoticon(); // Aggiungi questa linea per chiamare updateEmoticon() anche quando invii un messaggio
 });
 
 text.addEventListener("keydown", (e) => {
@@ -123,7 +124,9 @@ text.addEventListener("keydown", (e) => {
     socket.emit("message", text.value);
     text.value = "";
   }
+  updateEmoticon(); // Aggiungi questa linea per chiamare updateEmoticon() anche quando invii un messaggio
 });
+
 
 socket.on("createMessage", (message, userName) => {
   let messageContent = message;
