@@ -138,19 +138,23 @@ function updateEmoticonContainer(userId) {
   const emoticonContainer = document.getElementById(`emoticon-container-${userId}`);
   if (emoticonContainer) {
     emoticonContainer.innerHTML = ''; // Rimuovi eventuali emoticon precedenti
-    if (currentEmotion) {
+    if (currentEmotion && messages.innerHTML.includes(currentEmotion)) {
       const emoticonImage = document.createElement("img");
       emoticonImage.src = `${currentEmotion}.png`;
       emoticonContainer.appendChild(emoticonImage);
+      emoticonContainer.removeAttribute("hidden"); // Mostra l'emoticon container
+    } else {
+      emoticonContainer.setAttribute("hidden", true); // Nascondi l'emoticon container
     }
   }
 }
 
 
-socket.on("createMessage", (message, userName, emotion) => {
+
+socket.on("createMessage", (message, userName) => {
   let messageContent = message;
 
-  if (emotion === "felice" || emotion === "triste" || emotion === "arrabbiato") {
+  if (currentEmotion === "felice" || currentEmotion === "triste" || currentEmotionemotion === "arrabbiato") {
     if (userName !== user) {
       updateEmoticonContainer(userName); // Mostra l'emoticon container sull'elemento video corrispondente
     }
@@ -162,8 +166,9 @@ socket.on("createMessage", (message, userName, emotion) => {
       <span>${messageContent}</span>
     </div>`;
 
-  updateEmoticonContainer(userName); // Mostra l'emoticon container sull'elemento video corrispondente
+  updateEmoticonContainer(userName); // Mostra o nascondi l'emoticon container in base al messaggio
 });
+
 
 function updateEmoticon() {
   const peerVideoGrids = document.querySelectorAll(".peer-video-grid");
