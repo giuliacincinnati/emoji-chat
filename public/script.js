@@ -135,7 +135,7 @@ text.addEventListener("keydown", (e) => {
 });
 
 function updateEmoticonContainer(userId) {
-  const emoticonContainer = document.querySelector(`#emoticon-container-${userId}`);
+  const emoticonContainer = document.getElementById(`emoticon-container-${userId}`);
   if (emoticonContainer) {
     emoticonContainer.innerHTML = ''; // Rimuovi eventuali emoticon precedenti
     if (currentEmotion) {
@@ -145,6 +145,7 @@ function updateEmoticonContainer(userId) {
     }
   }
 }
+
 
 socket.on("createMessage", (message, userName, emotion) => {
   let messageContent = message;
