@@ -97,7 +97,6 @@ function createEmoticonContainer(userId) {
 }
 
 
-
 let text = document.querySelector("#chat_message");
 let send = document.getElementById("send");
 let messages = document.querySelector(".messages");
@@ -120,6 +119,7 @@ send.addEventListener("click", (e) => {
   }
 });
 
+
 text.addEventListener("keydown", (e) => {
   if (e.key === "Enter" && text.value.length !== 0) {
     if (text.value.includes("felice")) {
@@ -131,15 +131,14 @@ text.addEventListener("keydown", (e) => {
     } else {
       currentEmotion = "";
     }
-    updateEmoticon();
-    socket.emit("message", text.value);
+    updateEmoticon(peer._id); // Mostra l'emoticon container sul tuo elemento video
+    socket.emit("message", text.value, currentEmotion); // Invia il messaggio e l'emozione corrente
     text.value = "";
   }
 });
 
 socket.on("createMessage", (message, userName, emotion) => {
   let messageContent = message;
-  let senderId = ""; // Aggiungi questa variabile per tenere traccia dell'ID del mittente
 
   if (emotion === "felice" || emotion === "triste" || emotion === "arrabbiato") {
     updateEmoticon(userName); // Mostra l'emoticon container sul suo elemento video
@@ -150,18 +149,7 @@ socket.on("createMessage", (message, userName, emotion) => {
       <b><i class="far fa-user-circle"></i> <span>${userName === user ? "me" : userName}</span></b>
       <span>${messageContent}</span>
     </div>`;
-
-  // Controlla se il messaggio è stato inviato da me o da un altro partecipante
-  if (userName === user) {
-    senderId = peer._id; // Se sono io il mittente, usa il mio ID PeerJS
-  } else {
-    senderId = Object.keys(peers).find((id) => peers[id] === userName); // Trova l'ID PeerJS corrispondente al nome del mittente
-  }
-
-  // Aggiorna l'emoticon sul riquadro video del mittente
-  updateEmoticon(senderId, emotion);
 });
-
 
 
 
@@ -172,22 +160,21 @@ function updateEmoticon(targetUserId) {
     createEmoticon("triste.png", targetUserId);
   } else if (currentEmotion === "arrabbiato") {
     createEmoticon("arrabbiato.png", targetUserId);
-
+  }
 
   // Mostra l'emoticon container nell'elemento video corrispondente
-  if (userId) {
-    let emoticonContainer = document.getElementById(`emoticon-container-${userId}`);
+  if (targetUserId === peer._id) {
+    let emoticonContainer = document.getElementById(`emoticon-container-${targetUserId}`);
     if (!emoticonContainer) {
-      emoticonContainer = createEmoticonContainer(userId);
-      const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
+      emoticonContainer = createEmoticonContainer(targetUserId);
+      const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${targetUserId}"]`);
       if (peerVideoGrid) {
         peerVideoGrid.appendChild(emoticonContainer);
       }
     }
   }
+}
 
-    }
-  }
 
 
 
