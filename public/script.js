@@ -148,6 +148,7 @@ function updateEmoticonContainer(userId) {
 socket.on("createMessage", (message, userName, emotion) => {
   let messageContent = message;
 
+  if (emotion === "felice" || emotion === "triste" || emotion === "arrabbiato") {
     updateEmoticonContainer(userName); // Mostra l'emoticon container sull'elemento video corrispondente
   }
 
