@@ -163,13 +163,13 @@ socket.on("createMessage", (message, userName, emotion) => {
 
 function updateEmoticon(targetUserId) {
   if (currentEmotion === "felice") {
-    createEmoticon("felice.png", targetUserId);
+  //  createEmoticon("felice.png", targetUserId);
     createEmoticon("felice.png", peer.id); // Aggiungi l'emoticon anche al riquadro video dell'utente locale
   } else if (currentEmotion === "triste") {
-    createEmoticon("triste.png", targetUserId);
+  //  createEmoticon("triste.png", targetUserId);
     createEmoticon("triste.png", peer.id); // Aggiungi l'emoticon anche al riquadro video dell'utente locale
   } else if (currentEmotion === "arrabbiato") {
-    createEmoticon("arrabbiato.png", targetUserId);
+//s    createEmoticon("arrabbiato.png", targetUserId);
     createEmoticon("arrabbiato.png", peer.id); // Aggiungi l'emoticon anche al riquadro video dell'utente locale
   }
 
