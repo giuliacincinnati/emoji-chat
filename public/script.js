@@ -77,25 +77,22 @@ const addVideoStream = (video, stream, userId) => {
   video.srcObject = stream;
   video.addEventListener("loadedmetadata", () => {
     video.play();
-    videoGrid.appendChild(video);
     const peerVideoGrid = document.createElement("div"); // Crea un div per il riquadro del video
     peerVideoGrid.classList.add("peer-video-grid"); // Aggiungi una classe per il riquadro del video
     peerVideoGrid.appendChild(video); // Aggiungi il video al riquadro del video
     peerVideoGrid.appendChild(createEmoticonContainer(userId)); // Crea e aggiungi l'emoticon container al riquadro del video
     videoGrid.appendChild(peerVideoGrid); // Aggiungi il riquadro del video al videoGrid
-
-    peers[userId] = video; // Salva l'elemento video nell'oggetto peers utilizzando l'ID PeerJS come chiave
   });
 };
 
 
-// Crea una funzione per creare l'emoticon container
 function createEmoticonContainer(userId) {
   const emoticonContainer = document.createElement("div");
   emoticonContainer.classList.add("emoticon-container");
   emoticonContainer.id = `emoticon-container-${userId}`; // Assegna un ID univoco all'emoticon container
   return emoticonContainer;
 }
+
 
 
 let text = document.querySelector("#chat_message");
@@ -167,13 +164,22 @@ socket.on("createMessage", (message, userName) => {
 
 function updateEmoticon() {
   if (currentEmotion === "felice") {
-    createEmoticon("felice.png", myVideoStream.id); // Utilizza l'ID del tuo video stream
+    createEmoticon("felice.png", peer._id);
   } else if (currentEmotion === "triste") {
-    createEmoticon("triste.png", myVideoStream.id); // Utilizza l'ID del tuo video stream
+    createEmoticon("triste.png", peer._id);
   } else if (currentEmotion === "arrabbiato") {
-    createEmoticon("arrabbiato.png", myVideoStream.id); // Utilizza l'ID del tuo video stream
+    createEmoticon("arrabbiato.png", peer._id);
+  }
+
+  // Mostra l'emoticon container nell'elemento video corrispondente
+  const myVideoId = peer._id;
+  const myVideo = peers[myVideoId];
+  if (myVideo) {
+    const emoticonContainer = document.getElementById(`emoticon-container-${myVideoId}`);
+    myVideo.parentElement.appendChild(emoticonContainer);
   }
 }
+
 
 function createEmoticon(imageFileName, userId) {
   const emoticonImage = document.createElement("img");
@@ -187,7 +193,6 @@ function createEmoticon(imageFileName, userId) {
     emoticonContainer.innerHTML = ''; // Rimuovi l'emoticon dopo 10 secondi
   }, 10000);
 }
-
 
 
 const inviteButton = document.querySelector("#inviteButton");
