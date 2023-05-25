@@ -77,9 +77,9 @@ peer.on("open", (id) => {
 const addVideoStream = (video, stream) => {
   video.srcObject = stream;
   video.addEventListener("loadedmetadata", () => {
-    video.play();
+    video.play(emoticonContainer);
     videoGrid.append(video);
-    video.append(emoticonContainer); // Aggiungi emoticonContainer come figlio di videoGrid
+    //videoGrid.appendChild(emoticonContainer); // Aggiungi emoticonContainer come figlio di videoGrid
   });
 };
 
