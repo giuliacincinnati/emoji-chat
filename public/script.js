@@ -79,27 +79,13 @@ const addVideoStream = (video, stream, userId) => {
   video.addEventListener("loadedmetadata", () => {
     video.play();
 
-    // Crea un nuovo elemento div per il riquadro del video
-    const videoContainer = document.createElement("div");
-    videoContainer.classList.add("video-container");
-
-    // Crea un nuovo elemento emoticon container
-    const emoticonContainer = document.createElement("div");
-    emoticonContainer.classList.add("emoticon-container");
-
-    // Aggiungi l'emoticon container al videoContainer
-    videoContainer.appendChild(emoticonContainer);
-
-    // Aggiungi il video e il videoContainer al videoGrid
-    videoContainer.appendChild(video);
-    videoGrid.appendChild(videoContainer);
+    videoGrid.appendChild(video);
+    videoGrid.appendChild(emoticonContainer);
 
     // Memorizza l'ID di PeerJS associato all'elemento video e all'emoticon container
     userVideoMap[userId] = { video, emoticonContainer };
   });
 };
-
-
 
 
 let text = document.querySelector("#chat_message");
