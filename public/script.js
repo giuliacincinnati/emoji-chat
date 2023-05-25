@@ -5,6 +5,7 @@ const myVideo = document.createElement("video");
 const showChat = document.querySelector("#showChat");
 const backBtn = document.querySelector(".header__back");
 myVideo.muted = true;
+const peers = {}; // Oggetto per memorizzare gli ID PeerJS e gli elementi video associati
 
 
 backBtn.addEventListener("click", () => {
@@ -61,29 +62,27 @@ navigator.mediaDevices
   });
 
   const connectToNewUser = (userId, stream) => {
+    console.log('I call someone' + userId);
     const call = peer.call(userId, stream);
     const video = document.createElement("video");
     call.on("stream", (userVideoStream) => {
-      addVideoStream(video, userVideoStream, userId); // Passa anche l'ID dell'utente
+      addVideoStream(video, userVideoStream, userId); // Passa l'ID PeerJS come terzo argomento
     });
   };
-
 
 peer.on("open", (id) => {
   console.log('my id is' + id);
   socket.emit("join-room", ROOM_ID, id, user);
 });
 
-const addVideoStream = (video, stream, userId) => {
+const addVideoStream = (video, stream, peerId) => {
   video.srcObject = stream;
   video.addEventListener("loadedmetadata", () => {
     video.play();
     videoGrid.appendChild(video);
-    videoGrid.appendChild(emoticonContainer);
+    videoGrid.appendChild(emoticonContainer); // Aggiungi emoticonContainer come figlio di videoGrid
+    peers[peerId] = video; // Memorizza l'ID PeerJS e l'elemento video associato nell'oggetto peers
   });
-
-  // Assegna l'ID del peer come ID del video element
-  video.id = userId;
 };
 
 let text = document.querySelector("#chat_message");
@@ -155,30 +154,33 @@ socket.on("createMessage", (message, userName) => {
 
 function updateEmoticon() {
   if (currentEmotion === "felice") {
-    createEmoticon("felice.png", myVideo.id); // Passa l'ID del peer corrente
+    createEmoticon("felice.png");
   } else if (currentEmotion === "triste") {
-    createEmoticon("triste.png", myVideo.id); // Passa l'ID del peer corrente
+    createEmoticon("triste.png");
   } else if (currentEmotion === "arrabbiato") {
-    createEmoticon("arrabbiato.png", myVideo.id); // Passa l'ID del peer corrente
+    createEmoticon("arrabbiato.png");
+  }
+
+  // Mostra l'emoticon container nell'elemento video corrispondente
+  const myVideoId = peer._id;
+  const myVideo = peers[myVideoId];
+  if (myVideo) {
+    myVideo.parentElement.appendChild(emoticonContainer);
   }
 }
 
-function createEmoticon(imageFileName, userId) {
+function createEmoticon(imageFileName) {
   const emoticonImage = document.createElement("img");
   emoticonImage.src = imageFileName;
 
-  const peerVideo = document.getElementById(userId); // Trova il video element corrispondente all'ID del peer
-  if (peerVideo) {
-    const emoticonContainer = peerVideo.parentElement; // Ottieni il container del video element
-    emoticonContainer.innerHTML = ''; // Rimuovi eventuali emoticon precedenti
-    emoticonContainer.appendChild(emoticonImage);
+  const emoticonContainer = document.getElementById("emoticon-container");
+  emoticonContainer.innerHTML = ''; // Rimuovi eventuali emoticon precedenti
+  emoticonContainer.appendChild(emoticonImage);
 
-    setTimeout(() => {
-      emoticonContainer.innerHTML = ''; // Rimuovi l'emoticon dopo 10 secondi
-    }, 10000);
-  }
+  setTimeout(() => {
+    emoticonContainer.innerHTML = ''; // Rimuovi l'emoticon dopo 10 secondi
+  }, 10000);
 }
-
 
 
 
