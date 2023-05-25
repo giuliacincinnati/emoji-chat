@@ -5,6 +5,7 @@ const myVideo = document.createElement("video");
 const showChat = document.querySelector("#showChat");
 const backBtn = document.querySelector(".header__back");
 myVideo.muted = true;
+const videoElements = new Map();
 
 
 backBtn.addEventListener("click", () => {
@@ -60,28 +61,32 @@ navigator.mediaDevices
     });
   });
 
-const connectToNewUser = (userId, stream) => {
-  console.log('I call someone' + userId);
-  const call = peer.call(userId, stream);
-  const video = document.createElement("video");
-  call.on("stream", (userVideoStream) => {
-    addVideoStream(video, userVideoStream);
-  });
-};
+  const connectToNewUser = (userId, stream) => {
+    console.log('I call someone' + userId);
+    const call = peer.call(userId, stream);
+    const video = document.createElement("video");
+    call.on("stream", (userVideoStream) => {
+      addVideoStream(video, userVideoStream);
+      videoElements.set(userVideoStream.id, video); // Aggiungi l'elemento video alla mappa
+    });
+  };
+
 
 peer.on("open", (id) => {
   console.log('my id is' + id);
   socket.emit("join-room", ROOM_ID, id, user);
 });
 
-const addVideoStream = (video, stream) => {
+function addVideoStream(video, stream) {
   video.srcObject = stream;
   video.addEventListener("loadedmetadata", () => {
     video.play();
-    videoGrid.append(video);
+    videoGrid.appendChild(video);
     videoGrid.appendChild(emoticonContainer); // Aggiungi emoticonContainer come figlio di videoGrid
+    videoElements.set(stream.id, video); // Aggiungi l'elemento video alla mappa
   });
-};
+}
+
 
 let text = document.querySelector("#chat_message");
 let send = document.getElementById("send");
@@ -158,6 +163,10 @@ function updateEmoticon() {
   } else if (currentEmotion === "arrabbiato") {
     createEmoticon("arrabbiato.png");
   }
+
+  const myVideoElement = videoElements.get(peer.id); // Recupera l'elemento video corrispondente al proprio ID del PeerJS
+  const myVideoContainer = myVideoElement.parentElement;
+  myVideoContainer.appendChild(emoticonContainer); // Posiziona l'emoticon container nel riquadro webcam dell'utente corrente
 }
 
 function createEmoticon(imageFileName) {
