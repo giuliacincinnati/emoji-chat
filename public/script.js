@@ -74,10 +74,11 @@ peer.on("open", (id) => {
   socket.emit("join-room", ROOM_ID, id, user);
 });
 
-const addVideoStream = (video, stream) => {
+const addVideoStream = (video, stream, emoticonContainer) => {
   video.srcObject = stream;
   video.addEventListener("loadedmetadata", () => {
-    video.play(emoticonContainer);
+    video.play();
+    video.emoticonContainer;
     videoGrid.append(video);
     //videoGrid.appendChild(emoticonContainer); // Aggiungi emoticonContainer come figlio di videoGrid
   });
