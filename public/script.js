@@ -149,9 +149,8 @@ socket.on("createMessage", (message, userName, emotion) => {
   let messageContent = message;
 
   if (emotion === "felice" || emotion === "triste" || emotion === "arrabbiato") {
-    if (userName !== user) {
-      updateEmoticonContainer(userName); // Mostra l'emoticon container sull'elemento video corrispondente
-    }
+    updateEmoticonContainer(userName); // Mostra l'emoticon container sull'elemento video corrispondente
+  }
   }
 
   messages.innerHTML += `
@@ -166,10 +165,13 @@ socket.on("createMessage", (message, userName, emotion) => {
 function updateEmoticon(targetUserId) {
   if (currentEmotion === "felice") {
     createEmoticon("felice.png", targetUserId);
+    createEmoticon("felice.png", peer.id); // Aggiungi l'emoticon anche al riquadro video dell'utente locale
   } else if (currentEmotion === "triste") {
     createEmoticon("triste.png", targetUserId);
+    createEmoticon("triste.png", peer.id); // Aggiungi l'emoticon anche al riquadro video dell'utente locale
   } else if (currentEmotion === "arrabbiato") {
     createEmoticon("arrabbiato.png", targetUserId);
+    createEmoticon("arrabbiato.png", peer.id); // Aggiungi l'emoticon anche al riquadro video dell'utente locale
   }
 
   // Mostra l'emoticon container nell'elemento video corrispondente
