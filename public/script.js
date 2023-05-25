@@ -21,7 +21,7 @@ showChat.addEventListener("click", () => {
   document.querySelector(".header__back").style.display = "block";
 });
 
-const user = prompt("Enter your name");
+const userName = prompt("Enter your name");
 
 var peer = new Peer({
   host: window.location.hostname,
@@ -64,7 +64,7 @@ navigator.mediaDevices
     const call = peer.call(userId, stream);
     const video = document.createElement("video");
     call.on("stream", (userVideoStream) => {
-      addVideoStream(video, userVideoStream, userId); // Passa userId come parametro
+      addVideoStream(video, userVideoStream, userId, userName); // Passa userId come parametro
     });
 
     // Invia l'emozione corrente al nuovo utente
@@ -74,10 +74,10 @@ navigator.mediaDevices
 
 peer.on("open", (id) => {
   console.log('my id is' + id);
-  socket.emit("join-room", ROOM_ID, id, user);
+  socket.emit("join-room", ROOM_ID, id, user, userName);
 });
 
-const addVideoStream = (video, stream, userId) => { // Aggiungi userId come parametro
+const addVideoStream = (video, stream, userId, userName) => { // Aggiungi userId come parametro
   video.srcObject = stream;
   video.addEventListener("loadedmetadata", () => {
     video.play();
@@ -139,33 +139,35 @@ text.addEventListener("keydown", (e) => {
 });
 
 
-function updateEmoticonContainer(userId) {
-  const emoticonContainer = document.getElementById(`emoticon-container-${userId}`);
-  if (emoticonContainer) {
-    emoticonContainer.innerHTML = ''; // Rimuovi eventuali emoticon precedenti
+function updateEmoticonContainer(userName, userId) {
+  const emoticonContainers = document.querySelectorAll(`[data-peer="${userId}"]`); // Seleziona tutti gli elementi con lo stesso ID PeerJS
+  emoticonContainers.forEach((emoticonContainer) => {
+    emoticonContainer.innerHTML = '';
     if (currentEmotion) {
       const emoticonImage = document.createElement("img");
       emoticonImage.src = `${currentEmotion}.png`;
       emoticonContainer.appendChild(emoticonImage);
-      emoticonContainer.removeAttribute("hidden"); // Mostra l'emoticon container
+      emoticonContainer.removeAttribute("hidden");
     } else {
-      emoticonContainer.setAttribute("hidden", true); // Nascondi l'emoticon container
+      emoticonContainer.setAttribute("hidden", true);
     }
-  }
+  });
 }
 
 
 
 
-socket.on("createMessage", (message, userName) => {
+
+socket.on("createMessage", (message, userName, userId) => {
   messages.innerHTML += `
     <div class="message">
       <b><i class="far fa-user-circle"></i> <span>${userName === user ? "me" : userName}</span></b>
       <span>${message}</span>
     </div>`;
 
-  updateEmoticonContainer(userName); // Mostra l'emoticon container sull'elemento video corrispondente
+  updateEmoticonContainer(userName, userId); // Mostra l'emoticon container sull'elemento video corrispondente
 });
+
 
 
 
