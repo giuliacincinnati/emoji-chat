@@ -97,6 +97,7 @@ function createEmoticonContainer(userId) {
 }
 
 
+
 let text = document.querySelector("#chat_message");
 let send = document.getElementById("send");
 let messages = document.querySelector(".messages");
@@ -113,12 +114,11 @@ send.addEventListener("click", (e) => {
     } else {
       currentEmotion = "";
     }
-    updateEmoticon(peer._id); // Mostra l'emoticon container sul tuo elemento video
+    updateEmoticon(); // Mostra l'emoticon container sul tuo elemento video
     socket.emit("message", text.value, currentEmotion); // Invia il messaggio e l'emozione corrente
     text.value = "";
   }
 });
-
 
 text.addEventListener("keydown", (e) => {
   if (e.key === "Enter" && text.value.length !== 0) {
@@ -131,8 +131,8 @@ text.addEventListener("keydown", (e) => {
     } else {
       currentEmotion = "";
     }
-    updateEmoticon(peer._id); // Mostra l'emoticon container sul tuo elemento video
-    socket.emit("message", text.value, currentEmotion); // Invia il messaggio e l'emozione corrente
+    updateEmoticon();
+    socket.emit("message", text.value);
     text.value = "";
   }
 });
@@ -160,21 +160,21 @@ function updateEmoticon(targetUserId) {
     createEmoticon("triste.png", targetUserId);
   } else if (currentEmotion === "arrabbiato") {
     createEmoticon("arrabbiato.png", targetUserId);
-  }
+
 
   // Mostra l'emoticon container nell'elemento video corrispondente
-  if (targetUserId === peer._id) {
-    let emoticonContainer = document.getElementById(`emoticon-container-${targetUserId}`);
+  if (userId) {
+    let emoticonContainer = document.getElementById(`emoticon-container-${userId}`);
     if (!emoticonContainer) {
-      emoticonContainer = createEmoticonContainer(targetUserId);
-      const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${targetUserId}"]`);
+      emoticonContainer = createEmoticonContainer(userId);
+      const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
       if (peerVideoGrid) {
         peerVideoGrid.appendChild(emoticonContainer);
       }
     }
   }
-}
-
+    }
+  }
 
 
 
