@@ -79,12 +79,16 @@ const addVideoStream = (video, stream, userId) => {
   video.addEventListener("loadedmetadata", () => {
     video.play();
     videoGrid.appendChild(video);
+
+    // Crea un nuovo elemento emoticon container
+    const emoticonContainer = document.createElement("div");
     videoGrid.appendChild(emoticonContainer);
 
-    // Memorizza l'ID di PeerJS associato all'elemento video
-    userVideoMap[userId] = video;
+    // Memorizza l'ID di PeerJS associato all'elemento video e all'emoticon container
+    userVideoMap[userId] = { video, emoticonContainer };
   });
 };
+
 
 
 let text = document.querySelector("#chat_message");
@@ -152,15 +156,15 @@ socket.on("createMessage", (message, userName, userId) => {
   if (includeEmoticon) {
     updateEmoticon();
 
-    // Ottieni l'elemento video corrispondente utilizzando l'ID di PeerJS
-    const video = userVideoMap[userId];
+    // Ottieni l'elemento video e l'emoticon container corrispondenti utilizzando l'ID di PeerJS
+    const { video, emoticonContainer } = userVideoMap[userId];
 
-    // Aggiorna l'emoticon container associato all'elemento video
-    const emoticonContainer = video.parentNode;
+    // Aggiorna l'emoticon container
     emoticonContainer.innerHTML = '';
     emoticonContainer.appendChild(emoticonImage);
   }
 });
+
 
 
 function updateEmoticon() {
