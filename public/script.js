@@ -77,20 +77,25 @@ peer.on("open", (id) => {
   socket.emit("join-room", ROOM_ID, id, user, userName);
 });
 
-const addVideoStream = (video, stream, userId, userName) => { // Aggiungi userId come parametro
+const addVideoStream = (video, stream, userId, userName) => {
   video.srcObject = stream;
   video.addEventListener("loadedmetadata", () => {
     video.play();
-    videoGrid.appendChild(video);
-    const peerVideoGrid = document.createElement("div"); // Crea un div per il riquadro del video
-    peerVideoGrid.classList.add("peer-video-grid"); // Aggiungi una classe per il riquadro del video
-    peerVideoGrid.dataset.peer = userId; // Imposta l'attributo data-peer con l'ID dell'utente
-    peerVideoGrid.appendChild(video); // Aggiungi il video al riquadro del video
+    const peerVideoGrid = document.createElement("div");
+    peerVideoGrid.classList.add("peer-video-grid");
+    peerVideoGrid.dataset.peer = userId;
     const emoticonContainer = createEmoticonContainer(userId);
+    peerVideoGrid.appendChild(video);
     peerVideoGrid.appendChild(emoticonContainer);
-    videoGrid.appendChild(peerVideoGrid); // Aggiungi il riquadro del video al videoGrid
+    videoGrid.appendChild(peerVideoGrid);
+
+    if (!currentEmotion) {
+      videoGrid.appendChild(video);
+      videoGrid.appendChild(emoticonContainer);
+    }
   });
 };
+
 
 function createEmoticonContainer(userId) {
   const emoticonContainer = document.createElement("div");
