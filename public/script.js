@@ -1,4 +1,4 @@
-const socket = io("/");
+const socket = io("https://video-chat-emoji.herokuapp.com");
 const videoGrid = document.getElementById("video-grid");
 const emoticonContainer = document.getElementById("emoticon-container");
 const myVideo = document.createElement("video");
@@ -78,20 +78,10 @@ const addVideoStream = (video, stream) => {
   video.srcObject = stream;
   video.addEventListener("loadedmetadata", () => {
     video.play();
-
-    const webcamContainer = document.createElement("div");
-    webcamContainer.className = "webcam-container";
-    webcamContainer.dataset.peerId = peer.id; // Aggiungi l'ID del peer come attributo
-
-    const emoticonContainer = document.createElement("div");
-    emoticonContainer.className = "emoticon-container";
-    webcamContainer.appendChild(video);
-    webcamContainer.appendChild(emoticonContainer);
-
-    videoGrid.appendChild(webcamContainer);
+    videoGrid.append(video);
+    videoGrid.appendChild(emoticonContainer); // Aggiungi emoticonContainer come figlio di videoGrid
   });
 };
-
 
 let text = document.querySelector("#chat_message");
 let send = document.getElementById("send");
@@ -156,37 +146,31 @@ socket.on("createMessage", (message, userName) => {
     </div>`;
 
   if (includeEmoticon) {
-    updateEmoticon(userId);
+    updateEmoticon();
   }
 });
 
-function updateEmoticon(userId) {
+function updateEmoticon() {
   if (currentEmotion === "felice") {
-    createEmoticon("felice.png", userId);
+    createEmoticon("felice.png");
   } else if (currentEmotion === "triste") {
-    createEmoticon("triste.png", userId);
+    createEmoticon("triste.png");
   } else if (currentEmotion === "arrabbiato") {
-    createEmoticon("arrabbiato.png", userId);
+    createEmoticon("arrabbiato.png");
   }
 }
 
-
-function createEmoticon(imageFileName, userId) {
+function createEmoticon(imageFileName) {
   const emoticonImage = document.createElement("img");
   emoticonImage.src = imageFileName;
 
-  const videoGrid = document.getElementById("video-grid");
-  const webcamContainer = document.querySelector(`[data-peer-id="${userId}"]`);
+  const emoticonContainer = document.getElementById("emoticon-container");
+  emoticonContainer.innerHTML = ''; // Rimuovi eventuali emoticon precedenti
+  emoticonContainer.appendChild(emoticonImage);
 
-  if (webcamContainer) {
-    const emoticonContainer = webcamContainer.querySelector(".emoticon-container");
-    emoticonContainer.innerHTML = ""; // Rimuovi eventuali emoticon precedenti
-    emoticonContainer.appendChild(emoticonImage);
-
-    setTimeout(() => {
-      emoticonContainer.innerHTML = ""; // Rimuovi l'emoticon dopo 10 secondi
-    }, 10000);
-  }
+  setTimeout(() => {
+    emoticonContainer.innerHTML = ''; // Rimuovi l'emoticon dopo 10 secondi
+  }, 10000);
 }
 
 
