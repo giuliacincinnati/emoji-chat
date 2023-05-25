@@ -64,8 +64,9 @@ const connectToNewUser = (userId, stream) => {
   console.log('I call someone' + userId);
   const call = peer.call(userId, stream);
   const video = document.createElement("video");
+  const emoticonContainer = document.createElement("emoticonContainer");//
   call.on("stream", (userVideoStream) => {
-    addVideoStream(video, userVideoStream);
+    addVideoStream(video, userVideoStream, emoticonContainer);
   });
 };
 
@@ -74,11 +75,10 @@ peer.on("open", (id) => {
   socket.emit("join-room", ROOM_ID, id, user);
 });
 
-const addVideoStream = (video, stream, emoticonContainer) => {
+const addVideoStream = (video, stream) => {
   video.srcObject = stream;
   video.addEventListener("loadedmetadata", () => {
     video.play();
-    video.emoticonContainer;
     videoGrid.append(video);
     //videoGrid.appendChild(emoticonContainer); // Aggiungi emoticonContainer come figlio di videoGrid
   });
