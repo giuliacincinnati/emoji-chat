@@ -151,7 +151,6 @@ socket.on("createMessage", (message, userName, emotion) => {
   if (emotion === "felice" || emotion === "triste" || emotion === "arrabbiato") {
     updateEmoticonContainer(userName); // Mostra l'emoticon container sull'elemento video corrispondente
   }
-  }
 
   messages.innerHTML += `
     <div class="message">
@@ -173,6 +172,7 @@ function updateEmoticon(targetUserId) {
     createEmoticon("arrabbiato.png", targetUserId);
     createEmoticon("arrabbiato.png", peer.id); // Aggiungi l'emoticon anche al riquadro video dell'utente locale
   }
+
 
   // Mostra l'emoticon container nell'elemento video corrispondente
   if (targetUserId) {
