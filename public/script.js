@@ -64,9 +64,11 @@ navigator.mediaDevices
     const call = peer.call(userId, stream);
     const video = document.createElement("video");
     call.on("stream", (userVideoStream) => {
-      addVideoStream(video, userVideoStream, userId); // Passa userId come parametro
+      addVideoStream(video, userVideoStream, userId);
+      createEmoticonContainer(userId); // Crea l'emoticon container sul riquadro del nuovo utente
     });
   };
+
 
 peer.on("open", (id) => {
   console.log('my id is' + id);
@@ -95,7 +97,6 @@ function createEmoticonContainer(userId) {
   emoticonContainer.id = `emoticon-container-${userId}`;
   return emoticonContainer;
 }
-
 
 
 let text = document.querySelector("#chat_message");
@@ -142,6 +143,8 @@ socket.on("createMessage", (message, userName, emotion) => {
 
   if (emotion === "felice" || emotion === "triste" || emotion === "arrabbiato") {
     updateEmoticon(userName); // Mostra l'emoticon container sul suo elemento video
+  } else {
+    updateEmoticon(peer._id); // Mostra l'emoticon container sul tuo elemento video se non c'è un'emozione corrente
   }
 
   messages.innerHTML += `
@@ -151,27 +154,27 @@ socket.on("createMessage", (message, userName, emotion) => {
     </div>`;
 });
 
-
-function updateEmoticon() {
-  if (currentEmotion === "felice") {
-    createEmoticon("felice.png");
-  } else if (currentEmotion === "triste") {
-    createEmoticon("triste.png");
-  } else if (currentEmotion === "arrabbiato") {
-    createEmoticon("arrabbiato.png");
-  }
-
-  // Mostra l'emoticon container nell'elemento video corrispondente
-  const myVideoId = peer._id;
-  const myVideo = peers[myVideoId];
-  if (myVideo) {
-    let emoticonContainer = document.getElementById(`emoticon-container-${myVideoId}`);
-    if (!emoticonContainer) {
-      emoticonContainer = createEmoticonContainer(myVideoId);
-      myVideo.parentElement.appendChild(emoticonContainer);
-    }
+function removeEmoticon(userId) {
+  const emoticonContainer = document.getElementById(`emoticon-container-${userId}`);
+  if (emoticonContainer) {
+    emoticonContainer.innerHTML = '';
   }
 }
+
+
+
+function updateEmoticon(userId) {
+  if (currentEmotion === "felice") {
+    createEmoticon("felice.png", userId);
+  } else if (currentEmotion === "triste") {
+    createEmoticon("triste.png", userId);
+  } else if (currentEmotion === "arrabbiato") {
+    createEmoticon("arrabbiato.png", userId);
+  } else {
+    removeEmoticon(userId); // Rimuovi l'emoticon container se non è presente un'emozione corrente
+  }
+}
+
 
 
 function createEmoticon(imageFileName, userId) {
