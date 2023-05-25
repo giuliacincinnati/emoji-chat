@@ -60,13 +60,17 @@ navigator.mediaDevices
     });
   });
 
-const connectToNewUser = (userId, stream) => {
-  const call = peer.call(userId, stream);
-  const video = document.createElement("video");
-  call.on("stream", (userVideoStream) => {
-    addVideoStream(video, userVideoStream, userId); // Passa userId come parametro
-  });
-};
+  const connectToNewUser = (userId, stream) => {
+    const call = peer.call(userId, stream);
+    const video = document.createElement("video");
+    call.on("stream", (userVideoStream) => {
+      addVideoStream(video, userVideoStream, userId); // Passa userId come parametro
+    });
+
+    // Invia l'emozione corrente al nuovo utente
+    socket.emit("message", "", currentEmotion, userId);
+  };
+
 
 peer.on("open", (id) => {
   console.log('my id is' + id);
@@ -112,7 +116,7 @@ send.addEventListener("click", (e) => {
       currentEmotion = "";
     }
     updateEmoticon();
-    socket.emit("message", text.value);
+    socket.emit("message", text.value, currentEmotion); // Invia l'emozione corrente
     text.value = "";
   }
 });
@@ -129,10 +133,11 @@ text.addEventListener("keydown", (e) => {
       currentEmotion = "";
     }
     updateEmoticon();
-    socket.emit("message", text.value);
+    socket.emit("message", text.value, currentEmotion); // Invia l'emozione corrente
     text.value = "";
   }
 });
+
 
 function updateEmoticonContainer(userId) {
   const emoticonContainer = document.getElementById(`emoticon-container-${userId}`);
