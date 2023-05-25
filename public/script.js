@@ -149,9 +149,7 @@ socket.on("createMessage", (message, userName, emotion) => {
       <span>${messageContent}</span>
     </div>`;
 
-  if (userName !== user && (emotion === "felice" || emotion === "triste" || emotion === "arrabbiato")) {
-    updateEmoticonContainer(userName); // Mostra l'emoticon container sull'elemento video dell'altro partecipante
-  }
+  updateEmoticonContainer(userName); // Mostra l'emoticon container sull'elemento video dell'altro partecipante
 });
 
 function updateEmoticonContainer(userId) {
@@ -197,6 +195,7 @@ function updateEmoticon(targetUserId) {
     }
   }
 }
+
 
 
 
