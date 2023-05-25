@@ -135,7 +135,7 @@ text.addEventListener("keydown", (e) => {
   }
 });
 
-socket.on("createMessage", (message, userName) => {
+socket.on("message", (message, userName) => {
   let messageContent = message;
   let includeEmoticon = false;
 
@@ -163,6 +163,7 @@ socket.on("createMessage", (message, userName) => {
   }
 });
 
+
 function updateEmoticon() {
   if (currentEmotion === "felice") {
     createEmoticon("felice.png");
@@ -173,12 +174,22 @@ function updateEmoticon() {
   }
 
   // Mostra l'emoticon container nell'elemento video corrispondente
-  const myVideoId = peer._id;
-  const myVideo = peers[myVideoId];
-  if (myVideo) {
-    myVideo.parentElement.appendChild(emoticonContainer);
+  for (const userId in peers) {
+    const peerVideo = peers[userId];
+    const peerVideoGrid = peerVideo.parentElement;
+    const emoticonContainer = peerVideoGrid.querySelector(".emoticon-container");
+
+    if (emoticonContainer) {
+      emoticonContainer.remove(); // Rimuovi l'emoticon container da eventuali elementi video precedenti
+    }
+
+    if (userId === peer._id && currentEmotion !== "") {
+      const myEmoticonContainer = createEmoticonContainer(userId);
+      peerVideoGrid.appendChild(myEmoticonContainer);
+    }
   }
 }
+
 
 function createEmoticon(imageFileName, userId) {
   const emoticonImage = document.createElement("img");
