@@ -62,11 +62,10 @@ navigator.mediaDevices
   });
 
   const connectToNewUser = (userId, stream) => {
-    console.log('I call someone' + userId);
     const call = peer.call(userId, stream);
     const video = document.createElement("video");
     call.on("stream", (userVideoStream) => {
-      addVideoStream(video, userVideoStream, userId); // Passa l'ID PeerJS come terzo argomento
+      addVideoStream(video, userVideoStream, userId); // Passa userId come parametro
     });
   };
 
@@ -75,15 +74,27 @@ peer.on("open", (id) => {
   socket.emit("join-room", ROOM_ID, id, user);
 });
 
-const addVideoStream = (video, stream, peerId) => {
+const addVideoStream = (video, stream, userId) => { // Aggiungi userId come parametro
   video.srcObject = stream;
   video.addEventListener("loadedmetadata", () => {
     video.play();
     videoGrid.appendChild(video);
-    videoGrid.appendChild(emoticonContainer); // Aggiungi emoticonContainer come figlio di videoGrid
-    peers[peerId] = video; // Memorizza l'ID PeerJS e l'elemento video associato nell'oggetto peers
+    const peerVideoGrid = document.createElement("div"); // Crea un div per il riquadro del video
+    peerVideoGrid.classList.add("peer-video-grid"); // Aggiungi una classe per il riquadro del video
+    peerVideoGrid.appendChild(video); // Aggiungi il video al riquadro del video
+    peerVideoGrid.appendChild(createEmoticonContainer(userId)); // Crea e aggiungi l'emoticon container al riquadro del video
+    videoGrid.appendChild(peerVideoGrid); // Aggiungi il riquadro del video al videoGrid
   });
 };
+
+// Crea una funzione per creare l'emoticon container
+function createEmoticonContainer(userId) {
+  const emoticonContainer = document.createElement("div");
+  emoticonContainer.classList.add("emoticon-container");
+  emoticonContainer.id = `emoticon-container-${userId}`; // Assegna un ID univoco all'emoticon container
+  return emoticonContainer;
+}
+
 
 let text = document.querySelector("#chat_message");
 let send = document.getElementById("send");
@@ -169,11 +180,11 @@ function updateEmoticon() {
   }
 }
 
-function createEmoticon(imageFileName) {
+function createEmoticon(imageFileName, userId) {
   const emoticonImage = document.createElement("img");
   emoticonImage.src = imageFileName;
 
-  const emoticonContainer = document.getElementById("emoticon-container");
+  const emoticonContainer = document.getElementById(`emoticon-container-${userId}`); // Seleziona l'emoticon container corretto utilizzando l'ID univoco
   emoticonContainer.innerHTML = ''; // Rimuovi eventuali emoticon precedenti
   emoticonContainer.appendChild(emoticonImage);
 
