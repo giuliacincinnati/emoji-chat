@@ -79,7 +79,7 @@ const addVideoStream = (video, stream) => {
   video.addEventListener("loadedmetadata", () => {
     video.play();
     videoGrid.append(video);
-    //videoGrid.appendChild(emoticonContainer); // Aggiungi emoticonContainer come figlio di videoGrid
+    videoGrid.appendChild(emoticonContainer); // Aggiungi emoticonContainer come figlio di videoGrid
   });
 };
 
