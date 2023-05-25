@@ -37,7 +37,6 @@ var peer = new Peer({
 });
 
 let myVideoStream;
-let myEmoticonContainer;
 navigator.mediaDevices
   .getUserMedia({
     audio: true,
@@ -46,8 +45,6 @@ navigator.mediaDevices
   .then((stream) => {
     myVideoStream = stream;
     addVideoStream(myVideo, stream);
-    myEmoticonContainer = createEmoticonContainer(user); // Chiamata alla funzione createEmoticonContainer con il nome utente
-  document.body.appendChild(myEmoticonContainer); // Aggiunge l'emoticon container al corpo del documento
 
     peer.on("call", (call) => {
       console.log('someone call me');
@@ -55,8 +52,6 @@ navigator.mediaDevices
       const video = document.createElement("video");
       call.on("stream", (userVideoStream) => {
         addVideoStream(video, userVideoStream);
-        const newUserEmoticonContainer = createEmoticonContainer(userId); // Chiamata alla funzione createEmoticonContainer con l'ID dell'utente appena connesso
-      document.Video.appendChild(newUserEmoticonContainer); // Aggiunge il nuovo emoticon container al corpo del documento
       });
     });
 
@@ -164,16 +159,10 @@ socket.on("createMessage", (message, userName, emotion) => {
     </div>`;
 
   updateEmoticonContainer(userName); // Mostra l'emoticon container sull'elemento video corrispondente
+
+  updateEmoticon(userName); // Aggiorna l'emoticon corrispondente
 });
 
-  messages.innerHTML += `
-    <div class="message">
-      <b><i class="far fa-user-circle"></i> <span>${userName === user ? "me" : userName}</span></b>
-      <span>${messageContent}</span>
-    </div>`;
-
-  updateEmoticonContainer(userName); // Mostra l'emoticon container sull'elemento video corrispondente
-});
 
 function updateEmoticon(targetUserId) {
   if (currentEmotion === "felice") {
