@@ -82,6 +82,7 @@ const addVideoStream = (video, stream, userId) => { // Aggiungi userId come para
     peerVideoGrid.classList.add("peer-video-grid"); // Aggiungi una classe per il riquadro del video
     peerVideoGrid.appendChild(video); // Aggiungi il video al riquadro del video
     peerVideoGrid.appendChild(createEmoticonContainer(userId)); // Crea e aggiungi l'emoticon container al riquadro del video
+    peers[userId] = video; // Aggiungi l'ID utente e l'elemento video all'oggetto "peers"
     videoGrid.appendChild(peerVideoGrid); // Aggiungi il riquadro del video al videoGrid
   });
 };
@@ -171,12 +172,13 @@ function updateEmoticon() {
   }
 
   // Mostra l'emoticon container nell'elemento video corrispondente
-  const myVideoId = peer._id;
+  const myVideoId = userId; // Utilizza l'ID utente corrente
   const myVideo = peers[myVideoId];
   if (myVideo) {
-    myVideo.parentElement.appendChild(emoticonContainer);
+    const peerVideoGrid = myVideo.parentElement;
+    peerVideoGrid.appendChild(emoticonContainer);
   }
-}
+
 
 function createEmoticon(imageFileName, userId) {
   const emoticonImage = document.createElement("img");
