@@ -73,50 +73,6 @@ peer.on("open", (id) => {
   socket.emit("join-room", ROOM_ID, id, user);
 });
 
-
-// Dopo che l'utente si è connesso alla stanza
-socket.on("connect", () => {
-  socket.emit("join-room", ROOM_ID, USER_ID, USER_NAME);
-
-  // Funzione per generare l'HTML per i video e le emoticon
-  function generateVideoElement(userId) {
-    const videoContainer = document.createElement("div");
-    videoContainer.id = `user${userId}`;
-    videoContainer.innerHTML = `
-      <video id="video${userId}" autoplay></video>
-      <div class="emoticon">
-        <img id="emoticon${userId}" src="" alt="">
-      </div>
-    `;
-    return videoContainer;
-  }
-
-  // Funzione per aggiungere il video e l'emoticon associati a un utente
-  function addVideoElement(userId) {
-    const videosGroup = document.getElementById("videosGroup");
-    const videoElement = generateVideoElement(userId);
-    videosGroup.appendChild(videoElement);
-  }
-
-  // Funzione per rimuovere il video e l'emoticon associati a un utente
-  function removeVideoElement(userId) {
-    const videoElement = document.getElementById(`user${userId}`);
-    videoElement.remove();
-  }
-
-  // Aggiungi l'elemento video e emoticon quando un nuovo utente si collega
-  socket.on("user-connected", (userId) => {
-    addVideoElement(userId);
-  });
-
-  // Rimuovi l'elemento video e emoticon quando un utente si disconnette
-  socket.on("user-disconnected", (userId) => {
-    removeVideoElement(userId);
-  });
-});
-
-
-
 const addVideoStream = (video, stream, userId) => {
   video.srcObject = stream;
   video.addEventListener("loadedmetadata", () => {
@@ -193,7 +149,7 @@ socket.on("createMessage", (message, userName, emotion) => {
   let messageContent = message;
 
   if (emotion === "felice" || emotion === "triste" || emotion === "arrabbiato") {
-    updateEmoticonContainer(userName); // Mostra l'emoticon container sull'elemento video corrispondente
+      updateEmoticonContainer(userName); // Mostra l'emoticon container sull'elemento video corrispondente
   }
 
   messages.innerHTML += `
@@ -227,7 +183,6 @@ function createEmoticon(imageFileName, userId) {
   const emoticonContainer = document.querySelector(`.peer-video-grid[data-peer="${userId}"] .emoticon-container`);
   emoticonContainer.innerHTML = ''; // Rimuovi eventuali emoticon precedenti
   emoticonContainer.appendChild(emoticonImage);
-
 
   setTimeout(() => {
     emoticonContainer.innerHTML = ''; // Rimuovi l'emoticon dopo 10 secondi
