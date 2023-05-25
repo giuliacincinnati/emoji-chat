@@ -177,12 +177,14 @@ function createEmoticon(imageFileName) {
 
     const newEmoticonContainer = document.createElement("div");
     newEmoticonContainer.setAttribute("id", "emoticon-container");
-newEmoticonContainer.appendChild(emoticonImage);
-videoContainer.appendChild(newEmoticonContainer);
-}
+    newEmoticonContainer.appendChild(emoticonImage);
+    videoContainer.appendChild(newEmoticonContainer);
+  }
 
   setTimeout(() => {
-    emoticonContainer.innerHTML = ''; // Rimuovi l'emoticon dopo 10 secondi
+    if (newEmoticonContainer && newEmoticonContainer.parentNode === videoContainer) {
+      videoContainer.removeChild(newEmoticonContainer); // Rimuovi l'emoticon dopo 10 secondi
+    }
   }, 10000);
 }
 
