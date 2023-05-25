@@ -73,26 +73,29 @@ peer.on("open", (id) => {
   socket.emit("join-room", ROOM_ID, id, user);
 });
 
-const addVideoStream = (video, stream, userId) => { // Aggiungi userId come parametro
+const addVideoStream = (video, stream, userId) => {
   video.srcObject = stream;
   video.addEventListener("loadedmetadata", () => {
     video.play();
-    videoGrid.appendChild(video);
-    const peerVideoGrid = document.createElement("div"); // Crea un div per il riquadro del video
-    peerVideoGrid.classList.add("peer-video-grid"); // Aggiungi una classe per il riquadro del video
-    peerVideoGrid.appendChild(video); // Aggiungi il video al riquadro del video
-    peerVideoGrid.appendChild(createEmoticonContainer(userId)); // Crea e aggiungi l'emoticon container al riquadro del video
-    videoGrid.appendChild(peerVideoGrid); // Aggiungi il riquadro del video al videoGrid
+    const peerVideoGrid = document.createElement("div");
+    peerVideoGrid.classList.add("peer-video-grid");
+    peerVideoGrid.appendChild(video);
+
+    const emoticonContainer = createEmoticonContainer(userId);
+    peerVideoGrid.appendChild(emoticonContainer);
+
+    videoGrid.appendChild(peerVideoGrid);
   });
 };
 
-// Crea una funzione per creare l'emoticon container
+
 function createEmoticonContainer(userId) {
   const emoticonContainer = document.createElement("div");
   emoticonContainer.classList.add("emoticon-container");
-  emoticonContainer.id = `emoticon-container-${userId}`; // Assegna un ID univoco all'emoticon container
+  emoticonContainer.id = `emoticon-container-${userId}`;
   return emoticonContainer;
 }
+
 
 
 let text = document.querySelector("#chat_message");
@@ -175,6 +178,7 @@ function updateEmoticon() {
   const myVideoId = peer._id;
   const myVideo = peers[myVideoId];
   if (myVideo) {
+    const emoticonContainer = createEmoticonContainer(myVideoId);
     myVideo.parentElement.appendChild(emoticonContainer);
   }
 }
