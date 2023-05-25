@@ -153,13 +153,13 @@ socket.on("createMessage", (message, userName, emotion) => {
 
 
 
-function updateEmoticon(userId) {
+function updateEmoticon(targetUserId) {
   if (currentEmotion === "felice") {
-    createEmoticon("felice.png");
+    createEmoticon("felice.png", targetUserId);
   } else if (currentEmotion === "triste") {
-    createEmoticon("triste.png");
+    createEmoticon("triste.png", targetUserId);
   } else if (currentEmotion === "arrabbiato") {
-    createEmoticon("arrabbiato.png");
+    createEmoticon("arrabbiato.png", targetUserId);
 
 
   // Mostra l'emoticon container nell'elemento video corrispondente
