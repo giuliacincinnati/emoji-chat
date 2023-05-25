@@ -114,8 +114,8 @@ send.addEventListener("click", (e) => {
     } else {
       currentEmotion = "";
     }
-    updateEmoticon();
-    socket.emit("message", text.value);
+    updateEmoticon(peer._id); // Mostra l'emoticon container sul tuo elemento video
+    socket.emit("message", text.value, currentEmotion); // Invia il messaggio e l'emozione corrente
     text.value = "";
   }
 });
@@ -137,21 +137,11 @@ text.addEventListener("keydown", (e) => {
   }
 });
 
-socket.on("createMessage", (message, userName) => {
+socket.on("createMessage", (message, userName, emotion) => {
   let messageContent = message;
-  let includeEmoticon = false;
 
-  if (message.includes("felice")) {
-    currentEmotion = "felice";
-    includeEmoticon = true;
-  } else if (message.includes("arrabbiat")) {
-    currentEmotion = "arrabbiato";
-    includeEmoticon = true;
-  } else if (message.includes("triste")) {
-    currentEmotion = "triste";
-    includeEmoticon = true;
-  } else {
-    currentEmotion = "";
+  if (emotion === "felice" || emotion === "triste" || emotion === "arrabbiato") {
+    updateEmoticon(userName); // Mostra l'emoticon container sul suo elemento video
   }
 
   messages.innerHTML += `
@@ -159,11 +149,8 @@ socket.on("createMessage", (message, userName) => {
       <b><i class="far fa-user-circle"></i> <span>${userName === user ? "me" : userName}</span></b>
       <span>${messageContent}</span>
     </div>`;
-
-  if (includeEmoticon) {
-    updateEmoticon();
-  }
 });
+
 
 function updateEmoticon() {
   if (currentEmotion === "felice") {
@@ -191,14 +178,15 @@ function createEmoticon(imageFileName, userId) {
   const emoticonImage = document.createElement("img");
   emoticonImage.src = imageFileName;
 
-  const emoticonContainer = document.getElementById(`emoticon-container-${userId}`); // Seleziona l'emoticon container corretto utilizzando l'ID univoco
-  emoticonContainer.innerHTML = ''; // Rimuovi eventuali emoticon precedenti
+  const emoticonContainer = document.getElementById(`emoticon-container-${userId}`);
+  emoticonContainer.innerHTML = '';
   emoticonContainer.appendChild(emoticonImage);
 
   setTimeout(() => {
-    emoticonContainer.innerHTML = ''; // Rimuovi l'emoticon dopo 10 secondi
+    emoticonContainer.innerHTML = '';
   }, 10000);
 }
+
 
 const inviteButton = document.querySelector("#inviteButton");
 const muteButton = document.querySelector("#muteButton");
