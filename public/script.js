@@ -78,10 +78,10 @@ const addVideoStream = (video, stream, userId) => {
   video.srcObject = stream;
   video.addEventListener("loadedmetadata", () => {
     video.play();
-    videoGrid.appendChild(video);
 
     if (userId === peer.id) {
       // L'utente corrente sta visualizzando il proprio video
+      videoGrid.appendChild(video);
       videoGrid.appendChild(emoticonContainer);
     } else {
       // Altrimenti, è un altro utente
@@ -93,6 +93,7 @@ const addVideoStream = (video, stream, userId) => {
     }
   });
 };
+
 
 function createEmoticonContainer(userId) {
   const emoticonContainer = document.createElement("div");
