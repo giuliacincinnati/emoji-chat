@@ -85,8 +85,15 @@ const addVideoStream = (video, stream, userId) => {
     const emoticonContainer = createEmoticonContainer(userId);
     peerVideoGrid.appendChild(emoticonContainer);
     videoGrid.appendChild(peerVideoGrid); // Aggiungi il riquadro del video al videoGrid
+
+    if (userId === peer.id) {
+      myEmoticonContainer = emoticonContainer; // Salva il riferimento all'emoticon container dell'utente corrente
+    } else {
+      updateEmoticonContainer(userId); // Mostra l'emoticon container sull'elemento video corrispondente
+    }
   });
 };
+
 
 function createEmoticonContainer(userId) {
   const emoticonContainer = document.createElement("div");
