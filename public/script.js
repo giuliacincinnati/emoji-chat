@@ -166,6 +166,7 @@ function updateEmoticonContainer(userId) {
 
 
 
+
 function updateEmoticon(targetUserId) {
   if (currentEmotion === "felice") {
     createEmoticon("felice.png", targetUserId);
@@ -186,15 +187,8 @@ function updateEmoticon(targetUserId) {
       }
     }
   }
-
-  // Nascondi l'emoticon container nell'elemento video corrispondente all'utente corrente
-  if (peer.id !== targetUserId) {
-    let emoticonContainer = document.getElementById(`emoticon-container-${peer.id}`);
-    if (emoticonContainer) {
-      emoticonContainer.innerHTML = '';
-    }
-  }
 }
+
 
 
 
