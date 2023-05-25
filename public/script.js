@@ -95,6 +95,7 @@ const addVideoStream = (video, stream, userId) => {
 };
 
 
+
 function createEmoticonContainer(userId) {
   const emoticonContainer = document.createElement("div");
   emoticonContainer.classList.add("emoticon-container");
@@ -142,14 +143,16 @@ text.addEventListener("keydown", (e) => {
 });
 
 function updateEmoticonContainer(userId) {
-  const emoticonContainer = document.getElementById(`emoticon-container-${userId}`);
-  if (emoticonContainer) {
-    emoticonContainer.style.display = "block"; // Mostra l'emoticon container
-    setTimeout(() => {
-      emoticonContainer.style.display = "none"; // Nascondi l'emoticon container dopo 10 secondi
-    }, 10000);
+  const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
+  if (peerVideoGrid) {
+    let emoticonContainer = peerVideoGrid.querySelector(".emoticon-container");
+    if (!emoticonContainer) {
+      emoticonContainer = createEmoticonContainer(userId);
+      peerVideoGrid.appendChild(emoticonContainer);
+    }
   }
 }
+
 
 
 socket.on("createMessage", (message, userName, emotion) => {
