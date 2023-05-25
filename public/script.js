@@ -138,7 +138,7 @@ function updateEmoticonContainer(userId) {
   const emoticonContainer = document.getElementById(`emoticon-container-${userId}`);
   if (emoticonContainer) {
     emoticonContainer.innerHTML = ''; // Rimuovi eventuali emoticon precedenti
-    if (currentEmotion && messages.innerHTML.includes(currentEmotion)) {
+    if (currentEmotion) {
       const emoticonImage = document.createElement("img");
       emoticonImage.src = `${currentEmotion}.png`;
       emoticonContainer.appendChild(emoticonImage);
@@ -151,20 +151,17 @@ function updateEmoticonContainer(userId) {
 
 
 
+
 socket.on("createMessage", (message, userName) => {
-  let messageContent = message;
-
-  if (currentEmotion === "felice" || currentEmotion === "triste" || currentEmotionemotion === "arrabbiato") {
-          updateEmoticonContainer(userName); // Mostra l'emoticon container sull'elemento video corrispondente
-    }
-
   messages.innerHTML += `
     <div class="message">
       <b><i class="far fa-user-circle"></i> <span>${userName === user ? "me" : userName}</span></b>
-      <span>${messageContent}</span>
+      <span>${message}</span>
     </div>`;
 
+  updateEmoticonContainer(userName); // Mostra l'emoticon container sull'elemento video corrispondente
 });
+
 
 
 function updateEmoticon() {
