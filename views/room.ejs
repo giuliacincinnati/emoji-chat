@@ -23,13 +23,32 @@
     </div>
     <div class="main">
       <div class="main__left">
+
         <div class="videos__group">
-        <!--       <div id="emoticon-container">
-                <img id="emoticon-image">
-              </div> -->
-               <div id="video-grid">
-               </div>
-             </div>
+      <div id="emoticon-container">
+        <img id="emoticon-image">
+      </div>
+      <div id="video-grid">
+        <!-- Esempio per l'elemento video di sinistra -->
+        <div class="peer-video-grid">
+          <video id="left-video" data-user-id="left"></video>
+          <div class="emoticon-container" id="emoticon-container-left"></div>
+        </div>
+
+        <!-- Esempio per l'elemento video di chi digita felice, triste o arrabbiato -->
+        <div class="peer-video-grid">
+          <video id="typing-video" data-user-id="typing"></video>
+          <div class="emoticon-container" id="emoticon-container-typing"></div>
+        </div>
+
+        <!-- Esempio per l'elemento video di un altro utente -->
+        <div class="peer-video-grid">
+          <video id="other-video" data-user-id="other"></video>
+          <div class="emoticon-container" id="emoticon-container-other"></div>
+        </div>
+      </div>
+    </div>
+
 
       <div class="options">
         <div class="options__left">
