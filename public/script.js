@@ -78,14 +78,10 @@ const addVideoStream = (video, stream) => {
   video.srcObject = stream;
   video.addEventListener("loadedmetadata", () => {
     video.play();
-    videoGrid.appendChild(video);
+    videoGrid.append(video);
     videoGrid.appendChild(emoticonContainer); // Aggiungi emoticonContainer come figlio di videoGrid
   });
-
-  const peerId = stream.id;
-  video.setAttribute("data-peer-id", peerId); // Aggiungi l'attributo data-peer-id all'elemento video
 };
-
 
 let text = document.querySelector("#chat_message");
 let send = document.getElementById("send");
@@ -155,56 +151,28 @@ socket.on("createMessage", (message, userName) => {
 });
 
 function updateEmoticon() {
-  const videos = document.querySelectorAll("video");
-  const peerId = peer.id;
-
-  videos.forEach((video) => {
-    const videoPeerId = video.getAttribute("data-peer-id");
-    if (videoPeerId === peerId) {
-      const emoticonImage = createEmoticonImage();
-      const videoContainer = video.parentElement;
-      videoContainer.appendChild(emoticonImage);
-    }
-  });
-}
-
-function createEmoticonImage() {
-  const emoticonImage = document.createElement("img");
-  emoticonImage.src = currentEmotion + ".png";
-  emoticonImage.id = "emoticon-image";
-
-  return emoticonImage;
+  if (currentEmotion === "felice") {
+    createEmoticon("felice.png");
+  } else if (currentEmotion === "triste") {
+    createEmoticon("triste.png");
+  } else if (currentEmotion === "arrabbiato") {
+    createEmoticon("arrabbiato.png");
+  }
 }
 
 function createEmoticon(imageFileName) {
-  const emoticonImage = createEmoticonImage();
-  const peerId = peer.id;
+  const emoticonImage = document.createElement("img");
+  emoticonImage.src = imageFileName;
 
-  const emoticonContainers = document.querySelectorAll("#emoticon-container");
-
-  emoticonContainers.forEach((container) => {
-    const containerParent = container.parentElement;
-    const video = containerParent.querySelector("video");
-    const videoPeerId = video.getAttribute("data-peer-id");
-
-    if (videoPeerId === peerId) {
-      container.innerHTML = ""; // Rimuovi l'emoticon precedente
-      container.appendChild(emoticonImage);
-    }
-  });
+  const emoticonContainer = document.getElementById("emoticon-container");
+  emoticonContainer.innerHTML = ''; // Rimuovi eventuali emoticon precedenti
+  emoticonContainer.appendChild(emoticonImage);
 
   setTimeout(() => {
-    emoticonContainers.forEach((container) => {
-      const containerParent = container.parentElement;
-      const video = containerParent.querySelector("video");
-      const videoPeerId = video.getAttribute("data-peer-id");
-
-      if (videoPeerId === peerId) {
-        container.innerHTML = ""; // Rimuovi l'emoticon dopo 10 secondi
-      }
-    });
+    emoticonContainer.innerHTML = ''; // Rimuovi l'emoticon dopo 10 secondi
   }, 10000);
 }
+
 
 
 
