@@ -74,14 +74,32 @@ peer.on("open", (id) => {
   socket.emit("join-room", ROOM_ID, id, user);
 });
 
-const addVideoStream = (video, stream) => {
+const addVideoStream = (video, stream, userId) => {
   video.srcObject = stream;
   video.addEventListener("loadedmetadata", () => {
     video.play();
-    videoGrid.append(video);
-    videoGrid.appendChild(emoticonContainer); // Aggiungi emoticonContainer come figlio di videoGrid
+    videoGrid.appendChild(video);
+
+    if (userId === peer.id) {
+      // L'utente corrente sta visualizzando il proprio video
+      videoGrid.appendChild(emoticonContainer);
+    } else {
+      // Altrimenti, è un altro utente
+      const userVideoContainer = document.createElement("div");
+      userVideoContainer.setAttribute("id", `video-container-${userId}`);
+      userVideoContainer.appendChild(video);
+      userVideoContainer.appendChild(createEmoticonContainer(userId));
+      videoGrid.appendChild(userVideoContainer);
+    }
   });
 };
+
+function createEmoticonContainer(userId) {
+  const emoticonContainer = document.createElement("div");
+  emoticonContainer.setAttribute("id", `emoticon-container-${userId}`);
+  return emoticonContainer;
+}
+
 
 let text = document.querySelector("#chat_message");
 let send = document.getElementById("send");
@@ -150,14 +168,15 @@ socket.on("createMessage", (message, userName) => {
   }
 });
 
-function updateEmoticon() {
+function updateEmoticon(userId) {
+  const emoticonContainer = document.getElementById(`emoticon-container-${userId}`);
   if (currentEmotion === "felice") {
-    createEmoticon("felice.png");
+    createEmoticon("felice.png", emoticonContainer);
   } else if (currentEmotion === "triste") {
-    createEmoticon("triste.png");
+    createEmoticon("triste.png", emoticonContainer);
   } else if (currentEmotion === "arrabbiato") {
-    createEmoticon("arrabbiato.png");
-  }
+    createEmoticon("arrabbiato.png", emoticonContainer);
+}
 }
 
 function createEmoticon(imageFileName) {
