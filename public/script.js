@@ -108,34 +108,57 @@ let currentEmotion = "";
 
 send.addEventListener("click", (e) => {
   if (text.value.length !== 0) {
+    let messageContent = text.value;
+    let includeEmoticon = false;
+
     if (text.value.includes("felice")) {
       currentEmotion = "felice";
+      includeEmoticon = true;
     } else if (text.value.includes("arrabbiato")) {
       currentEmotion = "arrabbiato";
+      includeEmoticon = true;
     } else if (text.value.includes("triste")) {
       currentEmotion = "triste";
+      includeEmoticon = true;
     } else {
       currentEmotion = "";
     }
-    updateEmoticon();
-    socket.emit("message", text.value, currentEmotion); // Invia il messaggio al server
+
+    if (includeEmoticon) {
+      updateEmoticonContainer(peer.id); // Aggiungi questa linea per mostrare l'emoticon container sul proprio video
+      updateEmoticon(peer.id); // Aggiungi questa linea per inviare l'emozione corrente agli altri partecipanti
+    }
+
+    socket.emit("message", messageContent, currentEmotion); // Invia il messaggio al server
     text.value = "";
   }
 });
 
-text.addEventListener("keydown", (e) => {
-  if (e.key === "Enter" && text.value.length !== 0) {
+
+text.addEventListener("click", (e) => {
+  if (text.value.length !== 0) {
+    let messageContent = text.value;
+    let includeEmoticon = false;
+
     if (text.value.includes("felice")) {
       currentEmotion = "felice";
+      includeEmoticon = true;
     } else if (text.value.includes("arrabbiato")) {
       currentEmotion = "arrabbiato";
+      includeEmoticon = true;
     } else if (text.value.includes("triste")) {
       currentEmotion = "triste";
+      includeEmoticon = true;
     } else {
       currentEmotion = "";
     }
-    updateEmoticon();
-    socket.emit("message", text.value, currentEmotion); // Invia il messaggio al server
+
+    if (includeEmoticon) {
+      updateEmoticonContainer(peer.id); // Aggiungi questa linea per mostrare l'emoticon container sul proprio video
+      updateEmoticon(peer.id); // Aggiungi questa linea per inviare l'emozione corrente agli altri partecipanti
+    }
+
+    socket.emit("message", messageContent, currentEmotion); // Invia il messaggio al server
     text.value = "";
   }
 });
@@ -175,8 +198,8 @@ socket.on("createMessage", (message, userName) => {
     </div>`;
 
   if (includeEmoticon) {
-    updateEmoticonContainer(userName);
-    updateEmoticon();
+    updateEmoticonContainer(userId);
+    updateEmoticon(userId);
   }
 });
 
