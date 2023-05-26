@@ -6,6 +6,7 @@ const showChat = document.querySelector("#showChat");
 const backBtn = document.querySelector(".header__back");
 myVideo.muted = true;
 const userEmotions = {};
+const userEmoticonContainers = {}; // Oggetto per memorizzare gli emoticon container degli utenti
 
 
 backBtn.addEventListener("click", () => {
@@ -93,13 +94,13 @@ const addVideoStream = (video, stream, userId) => {
 };
 
 
-
 function createEmoticonContainer(userId) {
   const emoticonContainer = document.createElement("div");
   emoticonContainer.classList.add("emoticon-container");
-  emoticonContainer.id = `emoticon-container-${userId}`; // Assegna un ID univoco all'emoticon container
+  emoticonContainer.id = `emoticon-container-${userId}`;
   return emoticonContainer;
 }
+
 
 let text = document.querySelector("#chat_message");
 let send = document.getElementById("send");
@@ -140,15 +141,15 @@ text.addEventListener("keydown", (e) => {
   }
 });
 
-const updateEmoticonContainer = (userId, emoticonContainer) => {
-  const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
-  if (peerVideoGrid && !emoticonContainer) {
+const updateEmoticonContainer = (userId) => {
+  let emoticonContainer = userEmoticonContainers[userId];
+  if (!emoticonContainer) {
     emoticonContainer = createEmoticonContainer(userId);
-    peerVideoGrid.appendChild(emoticonContainer);
+    userEmoticonContainers[userId] = emoticonContainer;
   }
+  const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
+  peerVideoGrid.appendChild(emoticonContainer);
 };
-
-
 
 
 socket.on("createMessage", (message, userName) => {
@@ -176,7 +177,7 @@ socket.on("createMessage", (message, userName) => {
 
   if (includeEmoticon) {
     updateEmoticonContainer(userName);
-    updateEmoticon();
+    updateEmoticon(userName);
   }
 });
 
@@ -206,11 +207,11 @@ function createEmoticon(imageFileName, userId) {
   emoticonImage.src = imageFileName;
 
   const emoticonContainer = document.getElementById(`emoticon-container-${userId}`);
-  emoticonContainer.innerHTML = ""; // Rimuovi eventuali emoticon precedenti
+  emoticonContainer.innerHTML = "";
   emoticonContainer.appendChild(emoticonImage);
 
   setTimeout(() => {
-    emoticonContainer.innerHTML = ""; // Rimuovi l'emoticon dopo 10 secondi
+    emoticonContainer.innerHTML = "";
   }, 10000);
 }
 
