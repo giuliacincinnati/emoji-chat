@@ -158,7 +158,7 @@ socket.on("createMessage", (message, userName) => {
   if (message.includes("felice")) {
     currentEmotion = "felice";
     includeEmoticon = true;
-  } else if (message.includes("arrabbiato")) {
+  } else if (message.includes("arrabbiat")) {
     currentEmotion = "arrabbiato";
     includeEmoticon = true;
   } else if (message.includes("triste")) {
@@ -174,12 +174,11 @@ socket.on("createMessage", (message, userName) => {
       <span>${messageContent}</span>
     </div>`;
 
-  if (includeEmoticon && userName !== user) {
+  if (includeEmoticon) {
     updateEmoticonContainer(userName);
     updateEmoticon(userName);
   }
 });
-
 
 
 function updateEmoticon(targetUserId) {
