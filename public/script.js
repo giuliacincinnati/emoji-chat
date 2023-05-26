@@ -5,7 +5,8 @@ const myVideo = document.createElement("video");
 const showChat = document.querySelector("#showChat");
 const backBtn = document.querySelector(".header__back");
 myVideo.muted = true;
-const peers = {}; // Oggetto per memorizzare gli ID PeerJS e gli elementi video associati
+const userEmotions = {};
+
 
 backBtn.addEventListener("click", () => {
   document.querySelector(".main__left").style.display = "flex";
@@ -66,6 +67,7 @@ const connectToNewUser = (userId, stream) => {
   const video = document.createElement("video");
   call.on("stream", (userVideoStream) => {
     addVideoStream(video, userVideoStream, userId); // Passa userId come parametro
+    updateEmoticonContainer(userId);
   });
 };
 
@@ -139,16 +141,14 @@ text.addEventListener("keydown", (e) => {
   }
 });
 
-function updateEmoticonContainer(userId) {
+const updateEmoticonContainer = (userId, emoticonContainer) => {
   const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
-  if (peerVideoGrid) {
-    let emoticonContainer = peerVideoGrid.querySelector(".emoticon-container");
-    if (!emoticonContainer) {
-      emoticonContainer = createEmoticonContainer(userId);
-      peerVideoGrid.appendChild(emoticonContainer);
-    }
+  if (peerVideoGrid && !emoticonContainer) {
+    emoticonContainer = createEmoticonContainer(userId);
+    peerVideoGrid.appendChild(emoticonContainer);
   }
-}
+};
+
 
 
 
@@ -182,13 +182,16 @@ socket.on("createMessage", (message, userName) => {
 });
 
 
-function updateEmoticon(targetUserId) {
+updateEmoticon(targetUserId) {
   if (currentEmotion === "felice") {
     createEmoticon("felice.png", targetUserId);
+    userEmotions[targetUserId] = "felice"; // Aggiungi questa linea per memorizzare l'emozione corrente dell'utente corrispondente
   } else if (currentEmotion === "triste") {
     createEmoticon("triste.png", targetUserId);
+    userEmotions[targetUserId] = "triste"; // Aggiungi questa linea per memorizzare l'emozione corrente dell'utente corrispondente
   } else if (currentEmotion === "arrabbiato") {
     createEmoticon("arrabbiato.png", targetUserId);
+    userEmotions[targetUserId] = "arrabbiato"; // Aggiungi questa linea per memorizzare l'emozione corrente dell'utente corrispondente
   }
 
   // Mostra l'emoticon container nell'elemento video corrispondente
