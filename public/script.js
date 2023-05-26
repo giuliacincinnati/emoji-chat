@@ -61,6 +61,7 @@ navigator.mediaDevices
   });
 
 const connectToNewUser = (userId, stream) => {
+  console.log('I call someone' + userId)
   const call = peer.call(userId, stream);
   const video = document.createElement("video");
   call.on("stream", (userVideoStream) => {
@@ -151,11 +152,21 @@ function updateEmoticonContainer(userId) {
 
 
 
-socket.on("createMessage", (message, userName, emotion) => {
+socket.on("createMessage", (message, userName) => {
   let messageContent = message;
+  let includeEmoticon = false;
 
-  if (emotion === "felice" || emotion === "triste" || emotion === "arrabbiato") {
-    updateEmoticonContainer(userName); // Mostra l'emoticon container sull'elemento video corrispondente
+  if (message.includes("felice")) {
+    currentEmotion = "felice";
+    includeEmoticon = true;
+  } else if (message.includes("arrabbiat")) {
+    currentEmotion = "arrabbiato";
+    includeEmoticon = true;
+  } else if (message.includes("triste")) {
+    currentEmotion = "triste";
+    includeEmoticon = true;
+  } else {
+    currentEmotion = "";
   }
 
   messages.innerHTML += `
@@ -164,9 +175,10 @@ socket.on("createMessage", (message, userName, emotion) => {
       <span>${messageContent}</span>
     </div>`;
 
-  updateEmoticonContainer(userName); // Mostra l'emoticon container sull'elemento video corrispondente
-
-  updateEmoticon(userName); // Aggiorna l'emoticon corrispondente
+  if (includeEmoticon) {
+    updateEmoticonContainer(userName);
+    updateEmoticon();
+  }
 });
 
 
