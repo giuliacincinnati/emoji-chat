@@ -151,7 +151,7 @@ const updateEmoticonContainer = (userId, emoticonContainer) => {
 
 
 
-socket.on("createMessage", (message, userName) => {
+ssocket.on("createMessage", (message, userName) => {
   let messageContent = message;
   let includeEmoticon = false;
 
@@ -175,8 +175,7 @@ socket.on("createMessage", (message, userName) => {
     </div>`;
 
   if (includeEmoticon) {
-    updateEmoticonContainer(userName);
-    updateEmoticon(userName);
+    updateEmoticon();
   }
 });
 
