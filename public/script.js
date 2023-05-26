@@ -6,6 +6,7 @@ const showChat = document.querySelector("#showChat");
 const backBtn = document.querySelector(".header__back");
 myVideo.muted = true;
 const userEmotions = {};
+const emoticonContainers = {};
 
 
 backBtn.addEventListener("click", () => {
@@ -66,8 +67,9 @@ const connectToNewUser = (userId, stream) => {
   const call = peer.call(userId, stream);
   const video = document.createElement("video");
   call.on("stream", (userVideoStream) => {
-    addVideoStream(video, userVideoStream, userId); // Passa userId come parametro
-    updateEmoticonContainer(userId);
+    addVideoStream(video, userVideoStream, userId);
+    createEmoticonContainer(userId); // Crea l'emoticon container per il nuovo utente
+    emoticonContainers[userId] = userId; // Aggiungi l'emoticon container all'oggetto emoticonContainers
   });
 };
 
@@ -140,15 +142,18 @@ text.addEventListener("keydown", (e) => {
   }
 });
 
-const updateEmoticonContainer = (userId, emoticonContainer) => {
+const updateEmoticonContainer = (userId) => {
   const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
-  if (peerVideoGrid && !emoticonContainer && userEmotions[userId]) {
-    emoticonContainer = createEmoticonContainer(userId);
-    peerVideoGrid.appendChild(emoticonContainer);
+  const emoticonContainer = document.getElementById(`emoticon-container-${userId}`);
+
+  if (peerVideoGrid && emoticonContainer && userEmotions[userId] === currentEmotion) {
+    emoticonContainer.style.display = "block";
+  } else {
+    if (emoticonContainer) {
+      emoticonContainer.style.display = "none";
+    }
   }
 };
-
-
 
 
 
@@ -182,24 +187,22 @@ socket.on("createMessage", (message, userName) => {
 });
 
 
-function updateEmoticon(targetUserId) {
+function updateEmoticon() {
   if (currentEmotion === "felice") {
-    userEmotions[targetUserId] = "felice"; // Aggiungi questa linea per memorizzare l'emozione corrente dell'utente corrispondente
-    createEmoticon("felice.png", targetUserId);
+    userEmotions[peer.id] = "felice";
+    createEmoticon("felice.png", peer.id);
   } else if (currentEmotion === "triste") {
-    userEmotions[targetUserId] = "triste"; // Aggiungi questa linea per memorizzare l'emozione corrente dell'utente corrispondente
-    createEmoticon("triste.png", targetUserId);
+    userEmotions[peer.id] = "triste";
+    createEmoticon("triste.png", peer.id);
   } else if (currentEmotion === "arrabbiato") {
-    userEmotions[targetUserId] = "arrabbiato"; // Aggiungi questa linea per memorizzare l'emozione corrente dell'utente corrispondente
-    createEmoticon("arrabbiato.png", targetUserId);
-
+    userEmotions[peer.id] = "arrabbiato";
+    createEmoticon("arrabbiato.png", peer.id);
   }
 
-  // Mostra l'emoticon container nell'elemento video corrispondente
-  if (targetUserId) {
-    updateEmoticonContainer(targetUserId);
-  }
+  updateEmoticonContainer(peer.id); // Mostra/nascondi l'emoticon container sull'elemento video corrispondente all'utente corrente
+  socket.emit("message", currentEmotion); // Invia l'emozione agli altri partecipanti tramite il socket
 }
+
 
 
 function createEmoticon(imageFileName, userId) {
