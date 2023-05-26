@@ -94,12 +94,14 @@ const addVideoStream = (video, stream, userId) => {
 
 
 
-function createEmoticonContainer(userId) {
+function createEmoticonContainer(userId, containerClass) {
   const emoticonContainer = document.createElement("div");
-  emoticonContainer.classList.add("emoticon-container");
-  emoticonContainer.id = `emoticon-container-${userId}`; // Assegna un ID univoco all'emoticon container
+  emoticonContainer.classList.add(containerClass);
+  emoticonContainer.id = `emoticon-container-${userId}`;
   return emoticonContainer;
 }
+
+
 
 let text = document.querySelector("#chat_message");
 let send = document.getElementById("send");
@@ -150,13 +152,17 @@ text.addEventListener("keydown", (e) => {
   }
 });
 
-const updateEmoticonContainer = (userId, emoticonContainer) => {
+
+function updateEmoticonContainer(userId, emoticonContainer) {
   const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
   if (peerVideoGrid && !emoticonContainer) {
-    emoticonContainer = createEmoticonContainer(userId);
-    peerVideoGrid.appendChild(emoticonContainer);
+    const emoticonContainerLeft = createEmoticonContainer(userId, "emoticon-container-left");
+    const emoticonContainerRight = createEmoticonContainer(userId, "emoticon-container-right");
+    peerVideoGrid.appendChild(emoticonContainerLeft);
+    peerVideoGrid.appendChild(emoticonContainerRight);
   }
-};
+}
+
 
 
 
@@ -215,14 +221,25 @@ function createEmoticon(imageFileName, userId) {
   const emoticonImage = document.createElement("img");
   emoticonImage.src = imageFileName;
 
-  const emoticonContainer = document.getElementById(`emoticon-container-${userId}`);
-  emoticonContainer.innerHTML = ""; // Rimuovi eventuali emoticon precedenti
-  emoticonContainer.appendChild(emoticonImage);
+  const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
+  const emoticonContainerLeft = peerVideoGrid.querySelector(".emoticon-container-left");
+  const emoticonContainerRight = peerVideoGrid.querySelector(".emoticon-container-right");
 
-  setTimeout(() => {
-    emoticonContainer.innerHTML = ""; // Rimuovi l'emoticon dopo 10 secondi
-  }, 10000);
+  if (peerVideoGrid.classList.contains("mirror")) {
+    emoticonContainerRight.innerHTML = "";
+    emoticonContainerRight.appendChild(emoticonImage);
+    setTimeout(() => {
+      emoticonContainerRight.innerHTML = "";
+    }, 10000);
+  } else {
+    emoticonContainerLeft.innerHTML = "";
+    emoticonContainerLeft.appendChild(emoticonImage);
+    setTimeout(() => {
+      emoticonContainerLeft.innerHTML = "";
+    }, 10000);
+  }
 }
+
 
 const inviteButton = document.querySelector("#inviteButton");
 const muteButton = document.querySelector("#muteButton");

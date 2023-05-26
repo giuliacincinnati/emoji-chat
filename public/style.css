@@ -166,6 +166,21 @@ video {
   right: 10px;
 }
 
+.mirror .emoticon-container-left {
+  display: none;
+}
+
+.mirror .emoticon-container-right {
+  display: block;
+}
+
+.emoticon-container-left {
+  display: block;
+}
+
+.emoticon-container-right {
+  display: none;
+}
 
 #showChat {
   display: none;
