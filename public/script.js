@@ -176,7 +176,7 @@ socket.on("createMessage", (message, userName) => {
 
   if (includeEmoticon) {
     updateEmoticonContainer(userName);
-    updateEmoticon(userName);
+    updateEmoticon();
   }
 });
 
