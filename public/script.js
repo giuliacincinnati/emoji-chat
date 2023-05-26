@@ -182,7 +182,7 @@ socket.on("createMessage", (message, userName) => {
 });
 
 
-updateEmoticon(targetUserId) {
+function updateEmoticon(targetUserId) {
   if (currentEmotion === "felice") {
     createEmoticon("felice.png", targetUserId);
     userEmotions[targetUserId] = "felice"; // Aggiungi questa linea per memorizzare l'emozione corrente dell'utente corrispondente
@@ -199,6 +199,7 @@ updateEmoticon(targetUserId) {
     updateEmoticonContainer(targetUserId);
   }
 }
+
 
 function createEmoticon(imageFileName, userId) {
   const emoticonImage = document.createElement("img");
