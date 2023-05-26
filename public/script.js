@@ -140,11 +140,12 @@ text.addEventListener("keydown", (e) => {
   }
 });
 
-const updateEmoticonContainer = (emoticonContainer) => {
-  const peerVideoGrids = document.querySelectorAll(".peer-video-grid");
-  peerVideoGrids.forEach((peerVideoGrid) => {
-    peerVideoGrid.appendChild(emoticonContainer.cloneNode(true));
-  });
+const updateEmoticonContainer = (userId, emoticonContainer) => {
+  const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
+  if (peerVideoGrid && !emoticonContainer && userEmotions[userId]) {
+    emoticonContainer = createEmoticonContainer(userId);
+    peerVideoGrid.appendChild(emoticonContainer);
+  }
 };
 
 
@@ -175,27 +176,30 @@ socket.on("createMessage", (message, userName) => {
     </div>`;
 
   if (includeEmoticon) {
-    updateEmoticon(userName);
+    updateEmoticonContainer(userName);
+    updateEmoticon();
   }
 });
 
 
 function updateEmoticon(targetUserId) {
   if (currentEmotion === "felice") {
+    userEmotions[targetUserId] = "felice"; // Aggiungi questa linea per memorizzare l'emozione corrente dell'utente corrispondente
     createEmoticon("felice.png", targetUserId);
-    userEmotions[targetUserId] = "felice";
   } else if (currentEmotion === "triste") {
+    userEmotions[targetUserId] = "triste"; // Aggiungi questa linea per memorizzare l'emozione corrente dell'utente corrispondente
     createEmoticon("triste.png", targetUserId);
-    userEmotions[targetUserId] = "triste";
   } else if (currentEmotion === "arrabbiato") {
+    userEmotions[targetUserId] = "arrabbiato"; // Aggiungi questa linea per memorizzare l'emozione corrente dell'utente corrispondente
     createEmoticon("arrabbiato.png", targetUserId);
-    userEmotions[targetUserId] = "arrabbiato";
+
   }
 
-  // Mostra l'emoticon container su tutti gli elementi video
-  updateEmoticonContainer(emoticonContainer);
+  // Mostra l'emoticon container nell'elemento video corrispondente
+  if (targetUserId) {
+    updateEmoticonContainer(targetUserId);
+  }
 }
-
 
 
 function createEmoticon(imageFileName, userId) {
