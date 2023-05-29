@@ -73,7 +73,7 @@ const connectToNewUser = (userId, stream) => {
 
 peer.on("open", (id) => {
   console.log('my id is' + id);
-  socket.emit("join-room", ROOM_ID, id, user);
+  socket.emit("join-room", ROOM_ID, id, userId);
 });
 
 const addVideoStream = (video, stream, userId) => {
@@ -152,7 +152,7 @@ const updateEmoticonContainer = (userId, emoticonContainer) => {
 
 
 socket.on("createMessage", (message, userName) => {
-  let messageContent = message.toLowerCase();
+  let messageContent = message;
   let includeEmoticon = false;
 
   if (message.includes("felice")) {
