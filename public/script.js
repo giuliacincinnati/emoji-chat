@@ -184,12 +184,14 @@ socket.on("createMessage", (message, userName) => {
       <span>${messageContent}</span>
     </div>`;
 
-    if (includeEmoticon) {
-      const senderUserId = getSenderId(userName);
-      updateEmoticonContainer(senderUserId);
-      updateEmoticon(senderUserId);
-    }
+  if (includeEmoticon) {
+    const senderUserId = getSenderId(userName);
+    updateEmoticonContainer(senderUserId);
+    updateEmoticon(senderUserId);
   }
+}); 
+
+
 
 
 function updateEmoticon(userId) {
