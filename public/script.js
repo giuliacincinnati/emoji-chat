@@ -107,7 +107,7 @@ let messages = document.querySelector(".messages");
 let currentEmotion = "";
 
 send.addEventListener("click", (e) => {
-  if (e.key === "Enter" && text.value.length !== 0) {
+  if (text.value.length !== 0) {
     if (text.value.includes("felice")) {
       currentEmotion = "felice";
     } else if (text.value.includes("arrabbiato")) {
@@ -124,7 +124,7 @@ send.addEventListener("click", (e) => {
 });
 
 text.addEventListener("keydown", (e) => {
-  if (e.key === "Enter" && text.value.length !== 0) {
+  if (text.value.length !== 0) {
     if (text.value.includes("felice")) {
       currentEmotion = "felice";
     } else if (text.value.includes("arrabbiato")) {
@@ -181,22 +181,22 @@ socket.on("createMessage", (message, userName) => {
 });
 
 
-function updateEmoticon(targetUserId) {
+function updateEmoticon(userId) {
   if (currentEmotion === "felice") {
-    userEmotions[targetUserId] = "felice"; // Aggiungi questa linea per memorizzare l'emozione corrente dell'utente corrispondente
-    createEmoticon("felice.png", targetUserId);
+    userEmotions[userId] = "felice"; // Aggiungi questa linea per memorizzare l'emozione corrente dell'utente corrispondente
+    createEmoticon("felice.png", userId);
   } else if (currentEmotion === "triste") {
-    userEmotions[targetUserId] = "triste"; // Aggiungi questa linea per memorizzare l'emozione corrente dell'utente corrispondente
-    createEmoticon("triste.png", targetUserId);
+    userEmotions[userId] = "triste"; // Aggiungi questa linea per memorizzare l'emozione corrente dell'utente corrispondente
+    createEmoticon("triste.png", userId);
   } else if (currentEmotion === "arrabbiato") {
-    userEmotions[targetUserId] = "arrabbiato"; // Aggiungi questa linea per memorizzare l'emozione corrente dell'utente corrispondente
-    createEmoticon("arrabbiato.png", targetUserId);
+    userEmotions[userId] = "arrabbiato"; // Aggiungi questa linea per memorizzare l'emozione corrente dell'utente corrispondente
+    createEmoticon("arrabbiato.png", userId);
 
   }
 
   // Mostra l'emoticon container nell'elemento video corrispondente
-  if (targetUserId) {
-    updateEmoticonContainer(targetUserId);
+  if (userId) {
+    updateEmoticonContainer(userId);
   }
 }
 
