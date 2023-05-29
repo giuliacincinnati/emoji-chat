@@ -146,6 +146,12 @@ const updateEmoticonContainer = (userId, emoticonContainer) => {
     emoticonContainer = createEmoticonContainer(userId);
     peerVideoGrid.appendChild(emoticonContainer);
   }
+
+  if (userId === peer.id) {
+    emoticonContainer.style.display = "block";
+  } else {
+    emoticonContainer.style.display = "none";
+  }
 };
 
 
@@ -158,7 +164,7 @@ socket.on("createMessage", (message, userName) => {
   if (message.includes("felice")) {
     currentEmotion = "felice";
     includeEmoticon = true;
-  } else if (message.includes("arrabbiat")) {
+  } else if (message.includes("arrabbiato")) {
     currentEmotion = "arrabbiato";
     includeEmoticon = true;
   } else if (message.includes("triste")) {
@@ -175,10 +181,16 @@ socket.on("createMessage", (message, userName) => {
     </div>`;
 
   if (includeEmoticon) {
-    updateEmoticonContainer(userName);
-    updateEmoticon();
+    if (userName === user) {
+      updateEmoticonContainer(peer.id);
+      updateEmoticon(peer.id);
+    } else {
+      updateEmoticonContainer(userName);
+      updateEmoticon(userName);
+    }
   }
 });
+
 
 
 function updateEmoticon(userId) {
@@ -191,15 +203,16 @@ function updateEmoticon(userId) {
   } else if (currentEmotion === "arrabbiato") {
     userEmotions[userId] = "arrabbiato"; // Aggiungi questa linea per memorizzare l'emozione corrente dell'utente corrispondente
     createEmoticon("arrabbiato.png", userId);
-
   }
 
   // Mostra l'emoticon container nell'elemento video corrispondente
   if (userId) {
-    updateEmoticonContainer(userId);
+    const emoticonContainer = document.getElementById(`emoticon-container-${userId}`);
+    if (emoticonContainer) {
+      emoticonContainer.style.display = "block";
+    }
   }
 }
-
 
 function createEmoticon(imageFileName, userId) {
   const emoticonImage = document.createElement("img");
