@@ -148,22 +148,10 @@ const updateEmoticonContainer = (userId, emoticonContainer) => {
     emoticonContainer = createEmoticonContainer(userId);
     peerVideoGrid.appendChild(emoticonContainer);
   }
-
-  // Verifica se l'utente corrente ha già inviato un'emozione
-  if (userEmotions[userId]) {
-    const imageFileName = `${userEmotions[userId]}.png`;
-    createEmoticon(imageFileName, userId);
-  }
 };
 
-// Aggiungi un listener per ricevere le faccine dagli altri utenti
-socket.on("emoticon", (userId, imageFileName) => {
-  updateEmoticonContainer(userId);
-  createEmoticon(imageFileName, userId);
-});
-
 ///////////////////////ciao
-socket.on("createMessage", (message, userName, userId) => {
+socket.on("createMessage", (message, userName) => {
   let messageContent = message;
   let includeEmoticon = false;
 
@@ -187,14 +175,9 @@ socket.on("createMessage", (message, userName, userId) => {
     </div>`;
 
   if (includeEmoticon) {
-    updateEmoticonContainer(userId);
-    updateEmoticon(userId);
+    updateEmoticonContainer(userName);
+    updateEmoticon();
   }
-});
-
-// Aggiungi un listener per ricevere le faccine dagli altri utenti
-socket.on("emoticon", (userId, imageFileName) => {
-  createEmoticon(imageFileName, userId);
 });
 
 
@@ -208,15 +191,13 @@ function updateEmoticon(userId) {
   } else if (currentEmotion === "arrabbiato") {
     userEmotions[userId] = "arrabbiato"; // Aggiungi questa linea per memorizzare l'emozione corrente dell'utente corrispondente
     createEmoticon("arrabbiato.png", userId);
+
   }
 
   // Mostra l'emoticon container nell'elemento video corrispondente
   if (userId) {
     updateEmoticonContainer(userId);
   }
-
-  // Invia l'emozione agli altri utenti tramite socket.io
-  socket.emit("emoticon", userId, `${currentEmotion}.png`);
 }
 
 
