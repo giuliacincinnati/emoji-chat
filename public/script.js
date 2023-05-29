@@ -141,24 +141,10 @@ text.addEventListener("keydown", (e) => {
 });
 
 const updateEmoticonContainer = (userId, emoticonContainer) => {
-  const allPeerVideoGrids = document.querySelectorAll('.peer-video-grid');
-  const currentUser = getCurrentUser(); // Funzione che restituisce l'ID dell'utente corrente
-
-  allPeerVideoGrids.forEach((grid) => {
-    if (grid.dataset.peer !== userId && grid.dataset.peer !== currentUser) {
-      if (!userEmoticonContainers[grid.dataset.peer]) {
-        userEmoticonContainers[grid.dataset.peer] = createEmoticonContainer(grid.dataset.peer);
-      }
-      grid.appendChild(userEmoticonContainers[grid.dataset.peer].cloneNode(true));
-    }
-  });
-
   const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
-  if (peerVideoGrid && !emoticonContainer) {
-    if (!userEmoticonContainers[userId]) {
-      userEmoticonContainers[userId] = createEmoticonContainer(userId);
-    }
-    peerVideoGrid.appendChild(userEmoticonContainers[userId]);
+  if (peerVideoGrid || !emoticonContainer) {
+    emoticonContainer = createEmoticonContainer(userId);
+    peerVideoGrid.appendChild(emoticonContainer);
   }
 };
 
