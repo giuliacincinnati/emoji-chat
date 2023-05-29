@@ -73,7 +73,7 @@ const connectToNewUser = (userId, stream) => {
 
 peer.on("open", (id) => {
   console.log('my id is' + id);
-  socket.emit("join-room", ROOM_ID, id, userId);
+  socket.emit("join-room", ROOM_ID, id, user);
 });
 
 const addVideoStream = (video, stream, userId) => {
@@ -142,13 +142,21 @@ text.addEventListener("keydown", (e) => {
 
 const updateEmoticonContainer = (userId, emoticonContainer) => {
   const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
+  const currentUser = getCurrentUser(); // Funzione che restituisce l'ID dell'utente corrente
+
   if (peerVideoGrid && !emoticonContainer) {
     emoticonContainer = createEmoticonContainer(userId);
     peerVideoGrid.appendChild(emoticonContainer);
+
+    if (userId !== currentUser) {
+      const otherPeerVideoGrids = document.querySelectorAll('.peer-video-grid:not([data-peer="${userId}"])');
+      otherPeerVideoGrids.forEach((grid) => {
+        const otherEmoticonContainer = createEmoticonContainer(userId);
+        grid.appendChild(otherEmoticonContainer);
+      });
+    }
   }
 };
-
-
 
 
 socket.on("createMessage", (message, userName) => {
