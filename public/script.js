@@ -149,10 +149,10 @@ const updateEmoticonContainer = (userId, emoticonContainer) => {
 };
 
 
-/////cazzo
+
 
 socket.on("createMessage", (message, userName) => {
-  let messageContent = message;
+  let messageContent = message.toUpperCase();
   let includeEmoticon = false;
 
   if (message.includes("felice")) {
@@ -201,20 +201,18 @@ function updateEmoticon(userId) {
 }
 
 
-function createEmoticonContainer(userId) {
-  const emoticonContainer = document.createElement("div");
-  emoticonContainer.classList.add("emoticon-container");
-  if (userId) {
-    emoticonContainer.id = `emoticon-container-${userId}`; // Assegna un ID univoco all'emoticon container
-  }
+function createEmoticon(imageFileName, userId) {
+  const emoticonImage = document.createElement("img");
+  emoticonImage.src = imageFileName;
+
+  const emoticonContainer = document.getElementById(`emoticon-container-${userId}`);
+  emoticonContainer.innerHTML = ""; // Rimuovi eventuali emoticon precedenti
+  emoticonContainer.appendChild(emoticonImage);
+
   setTimeout(() => {
     emoticonContainer.innerHTML = ""; // Rimuovi l'emoticon dopo 10 secondi
   }, 10000);
-  return emoticonContainer;
 }
-
-
-
 
 const inviteButton = document.querySelector("#inviteButton");
 const muteButton = document.querySelector("#muteButton");
