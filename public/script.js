@@ -97,7 +97,11 @@ const addVideoStream = (video, stream, userId) => {
 function createEmoticonContainer(userId) {
   const emoticonContainer = document.createElement("div");
   emoticonContainer.classList.add("emoticon-container");
-  emoticonContainer.id = `emoticon-container-${userId}`; // Assegna un ID univoco all'emoticon container
+  emoticonContainer.id = `emoticon-container-${userId}`;
+  const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
+  if (peerVideoGrid) {
+    peerVideoGrid.appendChild(emoticonContainer);
+  }
   return emoticonContainer;
 }
 
@@ -156,7 +160,6 @@ function updateEmoticonContainer(userId, emoticonContainer) {
 
 
 
-
 socket.on("createMessage", (message, userName) => {
   let messageContent = message;
   let includeEmoticon = false;
@@ -209,6 +212,7 @@ function updateEmoticon(userId) {
     }
   }
 }
+
 
 function createEmoticon(imageFileName, userId) {
   const emoticonImage = document.createElement("img");
