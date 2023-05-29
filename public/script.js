@@ -6,7 +6,7 @@ const showChat = document.querySelector("#showChat");
 const backBtn = document.querySelector(".header__back");
 myVideo.muted = true;
 const userEmotions = {};
-
+let emoticonContainerCount = 0;
 
 backBtn.addEventListener("click", () => {
   document.querySelector(".main__left").style.display = "flex";
@@ -57,11 +57,11 @@ navigator.mediaDevices
     });
 
     socket.on("user-connected", (userId) => {
-      connectToNewUser(userId, stream);
+      connectToNewUser(userId, stream, emoticonContainerCount);
     });
   });
 
-const connectToNewUser = (userId, stream) => {
+const connectToNewUser = (userId, stream, containerCount) => {
   console.log('I call someone' + userId)
   const call = peer.call(userId, stream);
   const video = document.createElement("video");
@@ -89,7 +89,7 @@ const addVideoStream = (video, stream, userId) => {
     const emoticonContainer = createEmoticonContainer(userId);
     peerVideoGrid.appendChild(emoticonContainer);
     videoGrid.appendChild(peerVideoGrid); // Aggiungi il riquadro del video al videoGrid
-    updateEmoticonContainer(userId); // Mostra l'emoticon container sull'elemento video corrispondente
+    updateEmoticonContainer(userId, containerCount);; // Mostra l'emoticon container sull'elemento video corrispondente
   });
 };
 
@@ -98,7 +98,8 @@ const addVideoStream = (video, stream, userId) => {
 function createEmoticonContainer(userId) {
   const emoticonContainer = document.createElement("div");
   emoticonContainer.classList.add("emoticon-container");
-  emoticonContainer.id = `emoticon-container-${userId}`; // Assegna un ID univoco all'emoticon container
+  emoticonContainer.id = `emoticon-container-${emoticonContainerCount}`;
+  emoticonContainerCount++;
   return emoticonContainer;
 }
 
@@ -141,13 +142,14 @@ text.addEventListener("keydown", (e) => {
   }
 });
 
-const updateEmoticonContainer = (userId, emoticonContainer) => {
-  const isLocalUser = userId === peer.id; // Controlla se l'ID dell'utente corrisponde all'utente locale
+const updateEmoticonContainer = (userId, containerCount) => {
+  const isLocalUser = userId === peer.id;
+  let emoticonContainer;
 
   if (isLocalUser) {
-    emoticonContainer = emoticonContainer || emoticonContainerLocal; // Usa l'emoticon container locale
+    emoticonContainer = emoticonContainerLocal;
   } else {
-    emoticonContainer = emoticonContainer || createEmoticonContainer(userId); // Crea un nuovo emoticon container per gli altri partecipanti
+    emoticonContainer = document.getElementById(`emoticon-container-${containerCount}`);
   }
 
   const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
@@ -185,13 +187,10 @@ socket.on("createMessage", (message, userName) => {
     </div>`;
 
   if (includeEmoticon) {
-    const senderUserId = getSenderId(userName);
-    updateEmoticonContainer(senderUserId);
-    updateEmoticon(senderUserId);
+    updateEmoticonContainer(userName);
+    updateEmoticon();
   }
-}); 
-
-
+});
 
 
 function updateEmoticon(userId) {
@@ -227,20 +226,6 @@ function createEmoticon(imageFileName, userId) {
   }, 10000);
 }
 
-function getSenderId(userName) {
-  const peerVideoGrids = document.querySelectorAll(".peer-video-grid");
-  for (let i = 0; i < peerVideoGrids.length; i++) {
-    const peerVideoGrid = peerVideoGrids[i];
-    const video = peerVideoGrid.querySelector("video");
-    if (video && video.parentElement.dataset.peer !== peer.id) {
-      const userNameElement = peerVideoGrid.querySelector("span");
-      if (userNameElement && userNameElement.textContent === userName) {
-        return video.parentElement.dataset.peer;
-      }
-    }
-  }
-  return null;
-}
 
 
 const inviteButton = document.querySelector("#inviteButton");
