@@ -158,7 +158,9 @@ const updateEmoticonContainer = (userId, emoticonContainer) => {
 
 // Aggiungi un listener per ricevere le faccine dagli altri utenti
 socket.on("emoticon", (userId, imageFileName) => {
-  updateEmoticonContainer
+  updateEmoticonContainer(userId);
+  createEmoticon(imageFileName, userId);
+});
 
 ///////////////////////ciao
 socket.on("createMessage", (message, userName, userId) => {
@@ -206,8 +208,16 @@ function updateEmoticon(userId) {
   } else if (currentEmotion === "arrabbiato") {
     userEmotions[userId] = "arrabbiato"; // Aggiungi questa linea per memorizzare l'emozione corrente dell'utente corrispondente
     createEmoticon("arrabbiato.png", userId);
-
   }
+
+  // Mostra l'emoticon container nell'elemento video corrispondente
+  if (userId) {
+    updateEmoticonContainer(userId);
+  }
+
+  // Invia l'emozione agli altri utenti tramite socket.io
+  socket.emit("emoticon", userId, `${currentEmotion}.png`);
+}
 
   // Mostra l'emoticon container nell'elemento video corrispondente
   if (userId) {
