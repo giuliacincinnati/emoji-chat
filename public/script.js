@@ -148,10 +148,20 @@ const updateEmoticonContainer = (userId, emoticonContainer) => {
     emoticonContainer = createEmoticonContainer(userId);
     peerVideoGrid.appendChild(emoticonContainer);
   }
+
+  // Verifica se l'utente corrente ha già inviato un'emozione
+  if (userEmotions[userId]) {
+    const imageFileName = `${userEmotions[userId]}.png`;
+    createEmoticon(imageFileName, userId);
+  }
 };
 
+// Aggiungi un listener per ricevere le faccine dagli altri utenti
+socket.on("emoticon", (userId, imageFileName) => {
+  updateEmoticonContainer
 
-socket.on("createMessage", (message, userName) => {
+///////////////////////ciao
+socket.on("createMessage", (message, userName, userId) => {
   let messageContent = message;
   let includeEmoticon = false;
 
@@ -175,9 +185,14 @@ socket.on("createMessage", (message, userName) => {
     </div>`;
 
   if (includeEmoticon) {
-    updateEmoticonContainer(userName);
-    updateEmoticon();
+    updateEmoticonContainer(userId);
+    updateEmoticon(userId);
   }
+});
+
+// Aggiungi un listener per ricevere le faccine dagli altri utenti
+socket.on("emoticon", (userId, imageFileName) => {
+  createEmoticon(imageFileName, userId);
 });
 
 
@@ -208,6 +223,9 @@ function createEmoticon(imageFileName, userId) {
   const emoticonContainer = document.getElementById(`emoticon-container-${userId}`);
   emoticonContainer.innerHTML = ""; // Rimuovi eventuali emoticon precedenti
   emoticonContainer.appendChild(emoticonImage);
+
+  // Invia l'emozione al server tramite socket.io
+  socket.emit("emoticon", userId, imageFileName);
 
   setTimeout(() => {
     emoticonContainer.innerHTML = ""; // Rimuovi l'emoticon dopo 10 secondi

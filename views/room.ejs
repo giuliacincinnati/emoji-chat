@@ -62,49 +62,6 @@
   <script>
     const ROOM_ID = "<%= roomId %>";
   </script>
-  <script>
-
-function renderMessages() {
-  const messageContainer = document.getElementById('message-container');
-  messageContainer.innerHTML = '';
-
-  messages.forEach((message) => {
-    const messageElement = document.createElement('div');
-    messageElement.classList.add('message');
-
-    const contentElement = document.createElement('div');
-    contentElement.classList.add('content');
-    contentElement.textContent = message.content;
-
-    const timeElement = document.createElement('div');
-    timeElement.classList.add('time');
-    timeElement.textContent = message.time;
-
-    if (message.sender === 'user') {
-      messageElement.classList.add('user-message');
-      messageElement.appendChild(contentElement);
-      messageElement.appendChild(timeElement);
-    } else {
-      const emoticonElement = document.createElement('div');
-      emoticonElement.classList.add('emoticon');
-      emoticonElement.textContent = '😊';
-
-      const messageWrapper = document.createElement('div');
-      messageWrapper.classList.add('assistant-message');
-      messageWrapper.appendChild(emoticonElement);
-      messageWrapper.appendChild(contentElement);
-      messageWrapper.appendChild(timeElement);
-
-      messageElement.appendChild(messageWrapper);
-    }
-
-    messageContainer.appendChild(messageElement);
-  });
-}
-
-// Chiamare questa funzione per renderizzare i messaggi
-renderMessages();
-</script>
   </body>
   <script src="script.js"></script>
 </html>
