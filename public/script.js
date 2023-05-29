@@ -68,7 +68,6 @@ const connectToNewUser = (userId, stream) => {
   call.on("stream", (userVideoStream) => {
     addVideoStream(video, userVideoStream, userId); // Passa userId come parametro
     updateEmoticonContainer(userId);
-    updateEmoticon(userId);
   });
 };
 
@@ -87,16 +86,16 @@ const addVideoStream = (video, stream, userId) => {
     peerVideoGrid.dataset.peer = userId; // Imposta l'attributo data-peer con l'ID dell'utente
     peerVideoGrid.appendChild(video); // Aggiungi il video al riquadro del video
     const emoticonContainer = createEmoticonContainer(userId);
-
     peerVideoGrid.appendChild(emoticonContainer);
     videoGrid.appendChild(peerVideoGrid); // Aggiungi il riquadro del video al videoGrid
     updateEmoticonContainer(userId); // Mostra l'emoticon container sull'elemento video corrispondente
   });
 };
 
-function createEmoticonContainer(userId) {
-  const emoticonContainer = document.getElementById(`emoticon-container-${userId}`);
 
+
+function createEmoticonContainer(userId) {
+  const emoticonContainer = document.createElement("div");
   emoticonContainer.classList.add("emoticon-container");
   emoticonContainer.id = `emoticon-container-${userId}`; // Assegna un ID univoco all'emoticon container
   return emoticonContainer;
@@ -142,22 +141,12 @@ text.addEventListener("keydown", (e) => {
 });
 
 const updateEmoticonContainer = (userId, emoticonContainer) => {
-  const isLocalUser = userId === peer.id;
-
-  if (isLocalUser) {
-    emoticonContainer = emoticonContainer || emoticonContainerLocal;
-  } else {
-    emoticonContainer = emoticonContainer || createEmoticonContainer(userId);
-  }
-
   const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
-  if (peerVideoGrid && !peerVideoGrid.querySelector(".emoticon-container")) {
+  if (peerVideoGrid && !emoticonContainer) {
+    emoticonContainer = createEmoticonContainer(userId);
     peerVideoGrid.appendChild(emoticonContainer);
   }
 };
-
-
-
 
 
 
@@ -224,8 +213,6 @@ function createEmoticon(imageFileName, userId) {
     emoticonContainer.innerHTML = ""; // Rimuovi l'emoticon dopo 10 secondi
   }, 10000);
 }
-
-
 
 const inviteButton = document.querySelector("#inviteButton");
 const muteButton = document.querySelector("#muteButton");
