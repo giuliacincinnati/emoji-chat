@@ -68,6 +68,7 @@ const connectToNewUser = (userId, stream) => {
   call.on("stream", (userVideoStream) => {
     addVideoStream(video, userVideoStream, userId); // Passa userId come parametro
     updateEmoticonContainer(userId);
+    updateEmoticon(userId);
   });
 };
 
@@ -159,6 +160,7 @@ const updateEmoticonContainer = (userId, emoticonContainer) => {
 
 
 
+
 socket.on("createMessage", (message, userName) => {
   let messageContent = message;
   let includeEmoticon = false;
@@ -182,11 +184,11 @@ socket.on("createMessage", (message, userName) => {
       <span>${messageContent}</span>
     </div>`;
 
-  if (includeEmoticon) {
-    updateEmoticonContainer(userName);
-    updateEmoticon();
-  }
-});
+    if (includeEmoticon) {
+      const senderUserId = getSenderId(userName);
+      updateEmoticonContainer(senderUserId);
+      updateEmoticon(senderUserId);
+    }
 
 
 function updateEmoticon(userId) {
@@ -221,6 +223,22 @@ function createEmoticon(imageFileName, userId) {
     emoticonContainer.innerHTML = ""; // Rimuovi l'emoticon dopo 10 secondi
   }, 10000);
 }
+
+function getSenderId(userName) {
+  const peerVideoGrids = document.querySelectorAll(".peer-video-grid");
+  for (let i = 0; i < peerVideoGrids.length; i++) {
+    const peerVideoGrid = peerVideoGrids[i];
+    const video = peerVideoGrid.querySelector("video");
+    if (video && video.parentElement.dataset.peer !== peer.id) {
+      const userNameElement = peerVideoGrid.querySelector("span");
+      if (userNameElement && userNameElement.textContent === userName) {
+        return video.parentElement.dataset.peer;
+      }
+    }
+  }
+  return null;
+}
+
 
 const inviteButton = document.querySelector("#inviteButton");
 const muteButton = document.querySelector("#muteButton");
