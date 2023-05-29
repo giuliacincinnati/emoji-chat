@@ -141,24 +141,25 @@ text.addEventListener("keydown", (e) => {
 });
 
 const updateEmoticonContainer = (userId, emoticonContainer) => {
-  const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
+  const allPeerVideoGrids = document.querySelectorAll('.peer-video-grid');
   const currentUser = getCurrentUser(); // Funzione che restituisce l'ID dell'utente corrente
 
-  if (peerVideoGrid) {
-    if (!emoticonContainer) {
-      emoticonContainer = createEmoticonContainer(userId);
-      peerVideoGrid.appendChild(emoticonContainer);
-    }
-
-    const allPeerVideoGrids = document.querySelectorAll('.peer-video-grid');
-    allPeerVideoGrids.forEach((grid) => {
-      if (grid.dataset.peer !== userId) {
-        const otherEmoticonContainer = createEmoticonContainer(userId);
-        grid.appendChild(otherEmoticonContainer);
+  allPeerVideoGrids.forEach((grid) => {
+    if (grid.dataset.peer !== userId && grid.dataset.peer !== currentUser) {
+      if (!emoticonContainer) {
+        emoticonContainer = createEmoticonContainer(userId);
       }
-    });
+      grid.appendChild(emoticonContainer.cloneNode(true));
+    }
+  });
+
+  const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
+  if (peerVideoGrid && !emoticonContainer) {
+    emoticonContainer = createEmoticonContainer(userId);
+    peerVideoGrid.appendChild(emoticonContainer);
   }
 };
+
 
 
 socket.on("createMessage", (message, userName) => {
