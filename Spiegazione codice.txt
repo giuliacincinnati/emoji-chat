@@ -1,0 +1,17 @@
+Questo codice crea un'applicazione di video chat usando WebRTC e Socket.IO. Alcuni punti chiave da notare sono:
+
+Viene utilizzata la libreria Peer.js per stabilire le connessioni peer-to-peer tra i partecipanti alla chat.
+
+La connessione tra i partecipanti avviene attraverso il server Socket.IO. Il server gestisce gli eventi "user-connected" e "message" per consentire ai partecipanti di connettersi tra loro e inviare messaggi.
+
+Quando un utente si unisce alla chat, viene chiesto di inserire il proprio nome. L'ID univoco del peer viene generato tramite il metodo peer.on("open", ...).
+
+Viene richiesta l'autorizzazione per l'accesso all'audio e al video dell'utente. Lo stream video viene quindi aggiunto al video grid utilizzando la funzione addVideoStream().
+
+Quando un nuovo utente si connette alla chat, viene chiamata la funzione connectToNewUser() per stabilire una connessione con il nuovo utente e aggiungere il suo stream video al video grid.
+
+Viene gestito l'invio dei messaggi nella chat tramite gli eventi "click" e "keydown". Se il messaggio contiene una parola chiave come "felice", "triste" o "arrabbiato", viene mostrata un'emoticon corrispondente nell'emoticon container dell'utente.
+
+Sono presenti anche pulsanti per controllare l'audio e il video, che consentono di disattivare/attivare l'audio e il video dello stream dell'utente.
+
+Spero che questa spiegazione dettagliata ti aiuti a comprendere il codice. Se hai altre domande, sarò lieto di aiutarti ulteriormente!
