@@ -144,17 +144,19 @@ const updateEmoticonContainer = (userId, emoticonContainer) => {
   const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
   const currentUser = getCurrentUser(); // Funzione che restituisce l'ID dell'utente corrente
 
-  if (peerVideoGrid && !emoticonContainer) {
-    emoticonContainer = createEmoticonContainer(userId);
-    peerVideoGrid.appendChild(emoticonContainer);
+  if (peerVideoGrid) {
+    if (!emoticonContainer) {
+      emoticonContainer = createEmoticonContainer(userId);
+      peerVideoGrid.appendChild(emoticonContainer);
+    }
 
-    if (userId !== currentUser) {
-      const otherPeerVideoGrids = document.querySelectorAll('.peer-video-grid:not([data-peer="${userId}"])');
-      otherPeerVideoGrids.forEach((grid) => {
+    const allPeerVideoGrids = document.querySelectorAll('.peer-video-grid');
+    allPeerVideoGrids.forEach((grid) => {
+      if (grid.dataset.peer !== userId) {
         const otherEmoticonContainer = createEmoticonContainer(userId);
         grid.appendChild(otherEmoticonContainer);
-      });
-    }
+      }
+    });
   }
 };
 
