@@ -141,12 +141,20 @@ text.addEventListener("keydown", (e) => {
 });
 
 const updateEmoticonContainer = (userId, emoticonContainer) => {
+  const isLocalUser = userId === peer.id; // Controlla se l'ID dell'utente corrisponde all'utente locale
+
+  if (isLocalUser) {
+    emoticonContainer = emoticonContainer || emoticonContainerLocal; // Usa l'emoticon container locale
+  } else {
+    emoticonContainer = emoticonContainer || createEmoticonContainer(userId); // Crea un nuovo emoticon container per gli altri partecipanti
+  }
+
   const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
-  if (peerVideoGrid && !emoticonContainer) {
-    emoticonContainer = createEmoticonContainer(userId);
+  if (peerVideoGrid && !peerVideoGrid.querySelector(".emoticon-container")) {
     peerVideoGrid.appendChild(emoticonContainer);
   }
 };
+
 
 
 
@@ -170,7 +178,7 @@ socket.on("createMessage", (message, userName) => {
 
   messages.innerHTML += `
     <div class="message">
-      <b><i class="far fa-user-circle"></i> <span>${userName === user ? "me" : myUserName}</span></b>
+      <b><i class="far fa-user-circle"></i> <span>${userName === user ? "me" : userName}</span></b>
       <span>${messageContent}</span>
     </div>`;
 
