@@ -148,10 +148,22 @@ const updateEmoticonContainer = (userId, emoticonContainer) => {
     emoticonContainer = createEmoticonContainer(userId);
     peerVideoGrid.appendChild(emoticonContainer);
   }
+
+  // Verifica se l'utente corrente ha già inviato un'emozione
+  if (userEmotions[userId]) {
+    const imageFileName = `${userEmotions[userId]}.png`;
+    createEmoticon(imageFileName, userId);
+  }
 };
 
+// Aggiungi un listener per ricevere le faccine dagli altri utenti
+socket.on("emoticon", (userId, imageFileName) => {
+  updateEmoticonContainer(userId);
+  createEmoticon(imageFileName, userId);
+});
+
 ///////////////////////ciao
-socket.on("createMessage", (message, userName) => {
+socket.on("createMessage", (message, userName, userId) => {
   let messageContent = message;
   let includeEmoticon = false;
 
@@ -175,9 +187,14 @@ socket.on("createMessage", (message, userName) => {
     </div>`;
 
   if (includeEmoticon) {
-    updateEmoticonContainer(userName);
-    updateEmoticon();
+    updateEmoticonContainer(userId);
+    updateEmoticon(userId);
   }
+});
+
+// Aggiungi un listener per ricevere le faccine dagli altri utenti
+socket.on("emoticon", (userId, imageFileName) => {
+  createEmoticon(imageFileName, userId);
 });
 
 
@@ -191,13 +208,15 @@ function updateEmoticon(userId) {
   } else if (currentEmotion === "arrabbiato") {
     userEmotions[userId] = "arrabbiato"; // Aggiungi questa linea per memorizzare l'emozione corrente dell'utente corrispondente
     createEmoticon("arrabbiato.png", userId);
-
   }
 
   // Mostra l'emoticon container nell'elemento video corrispondente
   if (userId) {
     updateEmoticonContainer(userId);
   }
+
+  // Invia l'emozione agli altri utenti tramite socket.io
+  socket.emit("emoticon", userId, `${currentEmotion}.png`);
 }
 
 
@@ -208,6 +227,9 @@ function createEmoticon(imageFileName, userId) {
   const emoticonContainer = document.getElementById(`emoticon-container-${userId}`);
   emoticonContainer.innerHTML = ""; // Rimuovi eventuali emoticon precedenti
   emoticonContainer.appendChild(emoticonImage);
+
+  // Invia l'emozione al server tramite socket.io
+  socket.emit("emoticon", userId, imageFileName);
 
   setTimeout(() => {
     emoticonContainer.innerHTML = ""; // Rimuovi l'emoticon dopo 10 secondi
