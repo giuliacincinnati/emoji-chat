@@ -87,8 +87,7 @@ const addVideoStream = (video, stream, userId) => {
     peerVideoGrid.dataset.peer = userId; // Imposta l'attributo data-peer con l'ID dell'utente
     peerVideoGrid.appendChild(video); // Aggiungi il video al riquadro del video
     const emoticonContainer = createEmoticonContainer(userId);
-    emoticonContainer.dataset.peer = userId;
-
+    
     peerVideoGrid.appendChild(emoticonContainer);
     videoGrid.appendChild(peerVideoGrid); // Aggiungi il riquadro del video al videoGrid
     updateEmoticonContainer(userId); // Mostra l'emoticon container sull'elemento video corrispondente
