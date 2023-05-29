@@ -158,7 +158,7 @@ socket.on("createMessage", (message, userName) => {
   if (message.includes("felice")) {
     currentEmotion = "felice";
     includeEmoticon = true;
-  } else if (message.includes("arrabbiato")) {
+  } else if (message.includes("arrabbiat")) {
     currentEmotion = "arrabbiato";
     includeEmoticon = true;
   } else if (message.includes("triste")) {
@@ -175,12 +175,8 @@ socket.on("createMessage", (message, userName) => {
     </div>`;
 
   if (includeEmoticon) {
-    if (userName === user) {
-      updateEmoticonContainer(); // Aggiorna l'emoticon container dell'utente corrente (tu)
-    } else {
-      updateEmoticonContainer(userName); // Aggiorna l'emoticon container dell'utente partecipante
-    }
-    updateEmoticon(userName); // Aggiorna l'emoticon per l'utente corrispondente
+    updateEmoticonContainer(userName);
+    updateEmoticon();
   }
 });
 
@@ -195,6 +191,7 @@ function updateEmoticon(userId) {
   } else if (currentEmotion === "arrabbiato") {
     userEmotions[userId] = "arrabbiato"; // Aggiungi questa linea per memorizzare l'emozione corrente dell'utente corrispondente
     createEmoticon("arrabbiato.png", userId);
+
   }
 
   // Mostra l'emoticon container nell'elemento video corrispondente
@@ -202,7 +199,6 @@ function updateEmoticon(userId) {
     updateEmoticonContainer(userId);
   }
 }
-
 
 
 function createEmoticon(imageFileName, userId) {
