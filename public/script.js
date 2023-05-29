@@ -98,10 +98,6 @@ function createEmoticonContainer(userId) {
   const emoticonContainer = document.createElement("div");
   emoticonContainer.classList.add("emoticon-container");
   emoticonContainer.id = `emoticon-container-${userId}`;
-  const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
-  if (peerVideoGrid) {
-    peerVideoGrid.appendChild(emoticonContainer);
-  }
   return emoticonContainer;
 }
 
@@ -148,11 +144,6 @@ function updateEmoticonContainer(userId, emoticonContainer) {
   const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
   if (peerVideoGrid) {
     emoticonContainer = emoticonContainer || createEmoticonContainer(userId);
-    if (userId === peer.id) {
-      emoticonContainer.style.display = "block";
-    } else {
-      emoticonContainer.style.display = "none";
-    }
     peerVideoGrid.appendChild(emoticonContainer);
   }
 }
@@ -190,19 +181,7 @@ socket.on("createMessage", (message, userName) => {
   }
 });
 
-
 function updateEmoticon(userId) {
-  if (currentEmotion === "felice") {
-    userEmotions[userId] = "felice";
-    createEmoticon("felice.png", userId);
-  } else if (currentEmotion === "triste") {
-    userEmotions[userId] = "triste";
-    createEmoticon("triste.png", userId);
-  } else if (currentEmotion === "arrabbiato") {
-    userEmotions[userId] = "arrabbiato";
-    createEmoticon("arrabbiato.png", userId);
-  }
-
   const emoticonContainer = document.getElementById(`emoticon-container-${userId}`);
   if (emoticonContainer) {
     if (userEmotions[userId] === currentEmotion) {
@@ -212,6 +191,7 @@ function updateEmoticon(userId) {
     }
   }
 }
+
 
 
 function createEmoticon(imageFileName, userId) {
