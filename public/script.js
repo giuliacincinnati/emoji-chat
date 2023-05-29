@@ -170,7 +170,7 @@ socket.on("createMessage", (message, userName) => {
 
   messages.innerHTML += `
     <div class="message">
-      <b><i class="far fa-user-circle"></i> <span>${userName === user ? "me" : userName}</span></b>
+      <b><i class="far fa-user-circle"></i> <span>${userName === user ? "me" : myUserName}</span></b>
       <span>${messageContent}</span>
     </div>`;
 
