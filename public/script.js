@@ -142,11 +142,13 @@ text.addEventListener("keydown", (e) => {
 
 const updateEmoticonContainer = (userId, emoticonContainer) => {
   const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
-  if (peerVideoGrid && !emoticonContainer && userId !== peer.id) { // Aggiungi il controllo userId !== peer.id
+  if (peerVideoGrid && !emoticonContainer) {
     emoticonContainer = createEmoticonContainer(userId);
     peerVideoGrid.appendChild(emoticonContainer);
   }
 };
+
+
 
 
 socket.on("createMessage", (message, userName) => {
@@ -156,7 +158,7 @@ socket.on("createMessage", (message, userName) => {
   if (message.includes("felice")) {
     currentEmotion = "felice";
     includeEmoticon = true;
-  } else if (message.includes("arrabbiato")) {
+  } else if (message.includes("arrabbiat")) {
     currentEmotion = "arrabbiato";
     includeEmoticon = true;
   } else if (message.includes("triste")) {
@@ -173,8 +175,12 @@ socket.on("createMessage", (message, userName) => {
     </div>`;
 
   if (includeEmoticon) {
-    updateEmoticonContainer(userName); // Mostra l'emoticon container sull'elemento video corrispondente all'altro partecipante
-    updateEmoticon(userName); // Aggiorna l'emoticon sull'elemento video corrispondente all'altro partecipante
+    if (userName === user) {
+      updateEmoticonContainer(); // Aggiorna l'emoticon container dell'utente corrente (tu)
+    } else {
+      updateEmoticonContainer(userName); // Aggiorna l'emoticon container dell'utente partecipante
+    }
+    updateEmoticon();
   }
 });
 
@@ -182,22 +188,22 @@ socket.on("createMessage", (message, userName) => {
 
 function updateEmoticon(userId) {
   if (currentEmotion === "felice") {
-    userEmotions[userId] = "felice";
+    userEmotions[userId] = "felice"; // Aggiungi questa linea per memorizzare l'emozione corrente dell'utente corrispondente
     createEmoticon("felice.png", userId);
   } else if (currentEmotion === "triste") {
-    userEmotions[userId] = "triste";
+    userEmotions[userId] = "triste"; // Aggiungi questa linea per memorizzare l'emozione corrente dell'utente corrispondente
     createEmoticon("triste.png", userId);
   } else if (currentEmotion === "arrabbiato") {
-    userEmotions[userId] = "arrabbiato";
+    userEmotions[userId] = "arrabbiato"; // Aggiungi questa linea per memorizzare l'emozione corrente dell'utente corrispondente
     createEmoticon("arrabbiato.png", userId);
+
   }
 
-  // Mostra l'emoticon container nell'elemento video corrispondente solo se il messaggio è stato inviato dall'utente corrente
-  if (userId && userId === peer.id) {
+  // Mostra l'emoticon container nell'elemento video corrispondente
+  if (userId) {
     updateEmoticonContainer(userId);
   }
 }
-
 
 
 function createEmoticon(imageFileName, userId) {
