@@ -1,18 +1,12 @@
-// Creazione delle costanti e dei selettori degli elementi HTML
 const socket = io("/");
 const videoGrid = document.getElementById("video-grid");
 const emoticonContainer = document.getElementById("emoticon-container");
 const myVideo = document.createElement("video");
 const showChat = document.querySelector("#showChat");
 const backBtn = document.querySelector(".header__back");
-
-// Impostazione del video in modalità muto
 myVideo.muted = true;
+const peers = {}; // Oggetto per memorizzare gli ID PeerJS e gli elementi video associati
 
-// Dizionario per memorizzare le emozioni degli utenti
-const userEmotions = {};
-
-// Aggiunta di un event listener al pulsante "Indietro" per tornare alla schermata principale
 backBtn.addEventListener("click", () => {
   document.querySelector(".main__left").style.display = "flex";
   document.querySelector(".main__left").style.flex = "1";
@@ -20,7 +14,6 @@ backBtn.addEventListener("click", () => {
   document.querySelector(".header__back").style.display = "none";
 });
 
-// Aggiunta di un event listener al pulsante "Mostra chat" per visualizzare la schermata della chat
 showChat.addEventListener("click", () => {
   document.querySelector(".main__right").style.display = "flex";
   document.querySelector(".main__right").style.flex = "1";
@@ -28,10 +21,8 @@ showChat.addEventListener("click", () => {
   document.querySelector(".header__back").style.display = "block";
 });
 
-// Richiesta del nome dell'utente
 const user = prompt("Enter your name");
 
-// Creazione di una nuova istanza di Peer
 var peer = new Peer({
   host: window.location.hostname,
   port: window.location.port || (window.location.protocol === 'https:' ? 443 : 80),
@@ -45,10 +36,7 @@ var peer = new Peer({
   debug: 3
 });
 
-// Variabile per memorizzare lo stream video dell'utente
 let myVideoStream;
-
-// Ottenere l'accesso all'audio e al video dell'utente
 navigator.mediaDevices
   .getUserMedia({
     audio: true,
@@ -58,7 +46,6 @@ navigator.mediaDevices
     myVideoStream = stream;
     addVideoStream(myVideo, stream);
 
-    // Gestione delle chiamate in arrivo
     peer.on("call", (call) => {
       console.log('someone call me');
       call.answer(stream);
@@ -68,30 +55,24 @@ navigator.mediaDevices
       });
     });
 
-    // Gestione della connessione di un nuovo utente
     socket.on("user-connected", (userId) => {
       connectToNewUser(userId, stream);
     });
   });
 
-// Connessione a un nuovo utente
 const connectToNewUser = (userId, stream) => {
-  console.log('I call someone' + userId);
   const call = peer.call(userId, stream);
   const video = document.createElement("video");
   call.on("stream", (userVideoStream) => {
     addVideoStream(video, userVideoStream, userId); // Passa userId come parametro
-    updateEmoticonContainer(userId);
   });
 };
 
-// Evento scatenato quando il Peer è pronto e ha un ID
 peer.on("open", (id) => {
   console.log('my id is' + id);
   socket.emit("join-room", ROOM_ID, id, user);
 });
 
-// Aggiunta dello stream video al video grid
 const addVideoStream = (video, stream, userId) => {
   video.srcObject = stream;
   video.addEventListener("loadedmetadata", () => {
@@ -104,11 +85,13 @@ const addVideoStream = (video, stream, userId) => {
     const emoticonContainer = createEmoticonContainer(userId);
     peerVideoGrid.appendChild(emoticonContainer);
     videoGrid.appendChild(peerVideoGrid); // Aggiungi il riquadro del video al videoGrid
-    updateEmoticonContainer(userId, emoticonContainer); // Mostra l'emoticon container sull'elemento video corrispondente
+
+    updateEmoticonContainer(userId); // Mostra l'emoticon container sull'elemento video corrispondente
   });
 };
 
-// Creazione di un elemento HTML per contenere le emoticon
+
+
 function createEmoticonContainer(userId) {
   const emoticonContainer = document.createElement("div");
   emoticonContainer.classList.add("emoticon-container");
@@ -116,15 +99,13 @@ function createEmoticonContainer(userId) {
   return emoticonContainer;
 }
 
-// Selettore degli elementi HTML per la chat
 let text = document.querySelector("#chat_message");
 let send = document.getElementById("send");
 let messages = document.querySelector(".messages");
 let currentEmotion = "";
 
-// Aggiunta di un event listener al pulsante di invio del messaggio
 send.addEventListener("click", (e) => {
-  if (e.key === "Enter" && text.value.length !== 0) {
+  if (text.value.length !== 0) {
     if (text.value.includes("felice")) {
       currentEmotion = "felice";
     } else if (text.value.includes("arrabbiato")) {
@@ -140,7 +121,6 @@ send.addEventListener("click", (e) => {
   }
 });
 
-// Aggiunta di un event listener alla casella di testo per inviare il messaggio premendo il tasto Invio
 text.addEventListener("keydown", (e) => {
   if (e.key === "Enter" && text.value.length !== 0) {
     if (text.value.includes("felice")) {
@@ -158,31 +138,24 @@ text.addEventListener("keydown", (e) => {
   }
 });
 
-// Aggiornamento dell'emoticon container per l'utente corrispondente
-const updateEmoticonContainer = (userId, emoticonContainer) => {
+function updateEmoticonContainer(userId) {
   const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
-  if (peerVideoGrid && !emoticonContainer) {
-    emoticonContainer = createEmoticonContainer(userId);
-    peerVideoGrid.appendChild(emoticonContainer);
+  if (peerVideoGrid) {
+    let emoticonContainer = peerVideoGrid.querySelector(".emoticon-container");
+    if (!emoticonContainer) {
+      emoticonContainer = createEmoticonContainer(userId);
+      peerVideoGrid.appendChild(emoticonContainer);
+    }
   }
-};
+}
 
-// Gestione dell'evento "createMessage" per mostrare i messaggi nella chat
-socket.on("createMessage", (message, userName) => {
+
+
+socket.on("createMessage", (message, userName, emotion) => {
   let messageContent = message;
-  let includeEmoticon = false;
 
-  if (message.includes("felice")) {
-    currentEmotion = "felice";
-    includeEmoticon = true;
-  } else if (message.includes("arrabbiato")) {
-    currentEmotion = "arrabbiato";
-    includeEmoticon = true;
-  } else if (message.includes("triste")) {
-    currentEmotion = "triste";
-    includeEmoticon = true;
-  } else {
-    currentEmotion = "";
+  if (emotion === "felice" || emotion === "triste" || emotion === "arrabbiato") {
+    updateEmoticonContainer(userName); // Mostra l'emoticon container sull'elemento video corrispondente
   }
 
   messages.innerHTML += `
@@ -191,24 +164,19 @@ socket.on("createMessage", (message, userName) => {
       <span>${messageContent}</span>
     </div>`;
 
-  if (includeEmoticon) {
-    updateEmoticonContainer(userName);
-    updateEmoticon();
-  }
+  updateEmoticonContainer(userName); // Mostra l'emoticon container sull'elemento video corrispondente
+
+  updateEmoticon(userName); // Aggiorna l'emoticon corrispondente
 });
 
-// Aggiornamento dell'emoticon per l'utente corrispondente
+
 function updateEmoticon(userId) {
   if (currentEmotion === "felice") {
-    userEmotions[userId] = "felice"; // Aggiungi questa linea per memorizzare l'emozione corrente dell'utente corrispondente
     createEmoticon("felice.png", userId);
   } else if (currentEmotion === "triste") {
-    userEmotions[userId] = "triste"; // Aggiungi questa linea per memorizzare l'emozione corrente dell'utente corrispondente
-    createEmoticon("triste.png", userId);
+    createEmoticon("triste.png", tuserId);
   } else if (currentEmotion === "arrabbiato") {
-    userEmotions[userId] = "arrabbiato"; // Aggiungi questa linea per memorizzare l'emozione corrente dell'utente corrispondente
     createEmoticon("arrabbiato.png", userId);
-
   }
 
   // Mostra l'emoticon container nell'elemento video corrispondente
@@ -217,7 +185,6 @@ function updateEmoticon(userId) {
   }
 }
 
-// Creazione di un'immagine emoticon
 function createEmoticon(imageFileName, userId) {
   const emoticonImage = document.createElement("img");
   emoticonImage.src = imageFileName;
@@ -231,7 +198,7 @@ function createEmoticon(imageFileName, userId) {
   }, 10000);
 }
 
-// Aggiunta degli event listener ai pulsanti di controllo audio/video
+const inviteButton = document.querySelector("#inviteButton");
 const muteButton = document.querySelector("#muteButton");
 const stopVideo = document.querySelector("#stopVideo");
 
@@ -263,4 +230,11 @@ stopVideo.addEventListener("click", () => {
     stopVideo.classList.toggle("background__red");
     stopVideo.innerHTML = html;
   }
+});
+
+inviteButton.addEventListener("click", (e) => {
+  prompt(
+    "Copy this link and send it to people you want to meet with",
+    window.location.href
+  );
 });
