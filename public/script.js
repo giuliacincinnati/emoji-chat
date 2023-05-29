@@ -124,7 +124,7 @@ send.addEventListener("click", (e) => {
 });
 
 text.addEventListener("keydown", (e) => {
-  if (text.value.length !== 0) {
+  if (e.key === "Enter" && text.value.length !== 0) {
     if (text.value.includes("felice")) {
       currentEmotion = "felice";
     } else if (text.value.includes("arrabbiato")) {
