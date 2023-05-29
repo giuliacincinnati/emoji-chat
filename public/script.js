@@ -6,7 +6,7 @@ const showChat = document.querySelector("#showChat");
 const backBtn = document.querySelector(".header__back");
 myVideo.muted = true;
 const userEmotions = {};
-const userEmoticonContainers = {};
+
 
 backBtn.addEventListener("click", () => {
   document.querySelector(".main__left").style.display = "flex";
@@ -81,14 +81,16 @@ const addVideoStream = (video, stream, userId) => {
   video.addEventListener("loadedmetadata", () => {
     video.play();
     videoGrid.appendChild(video);
-    const peerVideoGrid = document.createElement("div"); // Crea un div per il riquadro del video
-    peerVideoGrid.classList.add("peer-video-grid"); // Aggiungi una classe per il riquadro del video
-    peerVideoGrid.dataset.peer = userId; // Imposta l'attributo data-peer con l'ID dell'utente
-    peerVideoGrid.appendChild(video); // Aggiungi il video al riquadro del video
-    const emoticonContainer = createEmoticonContainer(userId);
-    peerVideoGrid.appendChild(emoticonContainer);
-    videoGrid.appendChild(peerVideoGrid); // Aggiungi il riquadro del video al videoGrid
-    updateEmoticonContainer(userId); // Mostra l'emoticon container sull'elemento video corrispondente
+    const peerVideoGrid = document.createElement("div");
+    peerVideoGrid.classList.add("peer-video-grid");
+    peerVideoGrid.dataset.peer = userId;
+    peerVideoGrid.appendChild(video);
+    const emoticonContainer = createEmoticonContainer(userId); // Aggiungi emoticonContainer solo se userId è definito
+    if (userId) {
+      peerVideoGrid.appendChild(emoticonContainer);
+    }
+    videoGrid.appendChild(peerVideoGrid);
+    updateEmoticonContainer(userId);
   });
 };
 
@@ -142,7 +144,7 @@ text.addEventListener("keydown", (e) => {
 
 const updateEmoticonContainer = (userId, emoticonContainer) => {
   const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
-  if (peerVideoGrid || !emoticonContainer) {
+  if (peerVideoGrid && !emoticonContainer) {
     emoticonContainer = createEmoticonContainer(userId);
     peerVideoGrid.appendChild(emoticonContainer);
   }
