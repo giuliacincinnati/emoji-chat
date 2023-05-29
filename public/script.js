@@ -152,7 +152,7 @@ const updateEmoticonContainer = (userId, emoticonContainer) => {
 
 
 socket.on("createMessage", (message, userName) => {
-  let messageContent = message;
+  let messageContent = message.toLowerCase();
   let includeEmoticon = false;
 
   if (message.includes("felice")) {
