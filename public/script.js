@@ -189,6 +189,7 @@ socket.on("createMessage", (message, userName) => {
       updateEmoticonContainer(senderUserId);
       updateEmoticon(senderUserId);
     }
+  }
 
 
 function updateEmoticon(userId) {
