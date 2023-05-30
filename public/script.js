@@ -22,7 +22,7 @@ showChat.addEventListener("click", () => {
 });
 
 const user = prompt("Enter your name");
-const currentUserId = peer.id;
+
 
 var peer = new Peer({
   host: window.location.hostname,
@@ -36,6 +36,8 @@ var peer = new Peer({
   },
   debug: 3
 });
+
+const currentUserId = peer.id;
 
 let myVideoStream;
 navigator.mediaDevices
