@@ -216,6 +216,7 @@ const createEmoticon = (userId) => {
       peerVideoGrid.appendChild(emoticonContainer);
     }
   }
+}
 
   const emoticonImage = document.createElement("img");
   emoticonImage.src = `${userEmotions[userId]}.png`;
