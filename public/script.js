@@ -6,7 +6,6 @@ const backBtn = document.querySelector(".header__back");
 myVideo.muted = true;
 const userEmotions = {};
 
-
 backBtn.addEventListener("click", () => {
   document.querySelector(".main__left").style.display = "flex";
   document.querySelector(".main__left").style.flex = "1";
@@ -62,18 +61,17 @@ navigator.mediaDevices
         updateEmoticonContainer(userId);
       }
     });
+  });
 
-
-  const connectToNewUser = (userId, stream) => {
-    console.log('I call someone' + userId);
-    const call = peer.call(userId, stream, { emotion: currentEmotion });
-    const video = document.createElement("video");
-    call.on("stream", (userVideoStream) => {
-      addVideoStream(video, userVideoStream, userId); // Passa userId come parametro
-      updateEmoticonContainer(userId);
-    });
-  };
-
+const connectToNewUser = (userId, stream) => {
+  console.log('I call someone' + userId);
+  const call = peer.call(userId, stream, { emotion: currentEmotion });
+  const video = document.createElement("video");
+  call.on("stream", (userVideoStream) => {
+    addVideoStream(video, userVideoStream, userId); // Passa userId come parametro
+    updateEmoticonContainer(userId);
+  });
+};
 
 peer.on("open", (id) => {
   console.log('my id is' + id);
@@ -97,7 +95,6 @@ const addVideoStream = (video, stream, userId) => {
     updateEmoticonContainer(userId);
   });
 };
-
 
 let text = document.querySelector("#chat_message");
 let send = document.getElementById("send");
@@ -144,7 +141,6 @@ socket.on("user-emotion", (userId, emotion) => {
   updateEmoticonImage(userId);
 });
 
-
 socket.on("createMessage", (message, userName, userId) => {
   let messageContent = message.text;
   let includeEmoticon = false;
@@ -173,10 +169,6 @@ socket.on("createMessage", (message, userName, userId) => {
   }
 });
 
-
-
-
-
 const updateEmoticonContainer = (userId) => {
   const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
   if (peerVideoGrid) {
@@ -197,8 +189,6 @@ const updateEmoticonContainer = (userId) => {
     }
   }
 };
-
-
 
 const updateEmoticonImage = (userId) => {
   const emoticonContainer = document.querySelector(`#emoticon-container-${userId}`);
@@ -235,8 +225,6 @@ const createEmoticon = (userId) => {
 
   return emoticonContainer;
 };
-
-
 
 const inviteButton = document.querySelector("#inviteButton");
 const muteButton = document.querySelector("#muteButton");
