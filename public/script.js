@@ -6,7 +6,6 @@ const backBtn = document.querySelector(".header__back");
 myVideo.muted = true;
 const userEmotions = {};
 
-
 backBtn.addEventListener("click", () => {
   document.querySelector(".main__left").style.display = "flex";
   document.querySelector(".main__left").style.flex = "1";
@@ -21,22 +20,6 @@ showChat.addEventListener("click", () => {
   document.querySelector(".header__back").style.display = "block";
 });
 
-const user = prompt("Enter your name");
-const currentUserId = peer.id;
-
-var peer = new Peer({
-  host: window.location.hostname,
-  port: window.location.port || (window.location.protocol === 'https:' ? 443 : 80),
-  path: '/peerjs',
-  config: {
-    iceServers: [
-      { urls: 'stun:stun.l.google.com:19302' },
-      { urls: 'stun:stun1.l.google.com:19302' },
-    ],
-  },
-  debug: 3
-});
-
 let myVideoStream;
 navigator.mediaDevices
   .getUserMedia({
@@ -46,6 +29,27 @@ navigator.mediaDevices
   .then((stream) => {
     myVideoStream = stream;
     addVideoStream(myVideo, stream);
+
+    var peer = new Peer({
+      host: window.location.hostname,
+      port: window.location.port || (window.location.protocol === 'https:' ? 443 : 80),
+      path: '/peerjs',
+      config: {
+        iceServers: [
+          { urls: 'stun:stun.l.google.com:19302' },
+          { urls: 'stun:stun1.l.google.com:19302' },
+        ],
+      },
+      debug: 3
+    });
+
+    const user = prompt("Enter your name");
+    const currentUserId = peer.id;
+
+    peer.on("open", (id) => {
+      console.log('my id is' + id);
+      socket.emit("join-room", ROOM_ID, id, user);
+    });
 
     peer.on("call", (call) => {
       console.log('someone call me');
@@ -71,11 +75,6 @@ const connectToNewUser = (userId, stream) => {
   });
 };
 
-peer.on("open", (id) => {
-  console.log('my id is' + id);
-  socket.emit("join-room", ROOM_ID, id, user);
-});
-
 const addVideoStream = (video, stream, userId) => {
   video.srcObject = stream;
   video.addEventListener("loadedmetadata", () => {
@@ -93,7 +92,6 @@ const addVideoStream = (video, stream, userId) => {
     updateEmoticonContainer(userId);
   });
 };
-
 
 let text = document.querySelector("#chat_message");
 let send = document.getElementById("send");
@@ -117,7 +115,6 @@ send.addEventListener("click", (e) => {
     text.value = "";
   }
 });
-
 text.addEventListener("keydown", (e) => {
   if (e.key === "Enter" && text.value.length !== 0) {
     if (text.value.includes("felice")) {
