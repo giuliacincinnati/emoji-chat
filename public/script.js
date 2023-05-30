@@ -89,10 +89,9 @@ const addVideoStream = (video, stream, userId) => {
       peerVideoGrid.appendChild(emoticonContainer);
     }
     videoGrid.appendChild(peerVideoGrid);
-    updateEmoticonContainer(userId, emoticonContainer); // Passa emoticonContainer come parametro
+    updateEmoticonContainer(userId);
   });
 };
-
 
 
 let text = document.querySelector("#chat_message");
@@ -161,12 +160,7 @@ socket.on("createMessage", (message, userName, userId) => {
   if (includeEmoticon) {
     updateEmoticonContainer(userId);
   }
-  if (userEmotions[userId]) {
-    currentEmotion = userEmotions[userId];
-    updateEmoticonContainer(userId);
-  }
 });
-
 
 
 
@@ -176,8 +170,6 @@ const updateEmoticonContainer = (userId, emoticonContainer) => {
     if (!emoticonContainer) {
       emoticonContainer = createEmoticon(userId);
       peerVideoGrid.appendChild(emoticonContainer);
-    } else {
-      peerVideoGrid.appendChild(emoticonContainer); // Aggiungi emoticonContainer se già esistente
     }
   }
 
@@ -192,8 +184,6 @@ const updateEmoticonContainer = (userId, emoticonContainer) => {
     updateEmoticonImage(userId);
   }
 };
-
-
 
 const createEmoticon = (userId) => {
   const emoticonContainerId = `emoticon-container-${userId}`;
