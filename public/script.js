@@ -55,14 +55,10 @@ navigator.mediaDevices
       });
     });
 
-    socket.on("user-connected", (userId, emotion) => {
-      connectToNewUser(userId, myVideoStream);
-      if (emotion) {
-        userEmotions[userId] = emotion;
-        updateEmoticonContainer(userId);
-      }
+    socket.on("user-connected", (userId) => {
+      connectToNewUser(userId, stream);
     });
-
+  });
 
   const connectToNewUser = (userId, stream) => {
     console.log('I call someone' + userId);
