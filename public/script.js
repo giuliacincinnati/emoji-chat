@@ -115,6 +115,7 @@ send.addEventListener("click", (e) => {
     text.value = "";
   }
 });
+
 text.addEventListener("keydown", (e) => {
   if (e.key === "Enter" && text.value.length !== 0) {
     if (text.value.includes("felice")) {
@@ -213,8 +214,6 @@ const createEmoticon = (userId) => {
       peerVideoGrid.appendChild(emoticonContainer);
     }
   }
-}
-
   const emoticonImage = document.createElement("img");
   emoticonImage.src = `${userEmotions[userId]}.png`;
   emoticonContainer.innerHTML = "";
