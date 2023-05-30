@@ -1,4 +1,3 @@
-//GIORNO30
 const socket = io("/");
 const videoGrid = document.getElementById("video-grid");
 const emoticonContainer = document.getElementById("emoticon-container");
@@ -62,15 +61,15 @@ navigator.mediaDevices
     });
   });
 
-  const connectToNewUser = (userId, stream) => {
-    console.log('I call someone' + userId)
-    const call = peer.call(userId, stream);
-    const video = document.createElement("video");
-    call.on("stream", (userVideoStream) => {
-      addVideoStream(video, userVideoStream, userId); // Passa userId come parametro
-      updateEmoticonContainer(userId); // Aggiorna l'emoticon container per l'utente corrente
-    });
-  };
+const connectToNewUser = (userId, stream) => {
+  console.log('I call someone' + userId)
+  const call = peer.call(userId, stream);
+  const video = document.createElement("video");
+  call.on("stream", (userVideoStream) => {
+    addVideoStream(video, userVideoStream, userId); // Passa userId come parametro
+    updateEmoticonContainer(userId);
+  });
+};
 
 peer.on("open", (id) => {
   console.log('my id is' + id);
@@ -100,16 +99,9 @@ const addVideoStream = (video, stream, userId) => {
 function createEmoticonContainer(userId) {
   const emoticonContainer = document.createElement("div");
   emoticonContainer.classList.add("emoticon-container");
-  emoticonContainer.id = `emoticon-container-${userId}`;
-
-  const initialEmoticon = document.createElement("img");
-  initialEmoticon.src = "placeholder.png"; // Immagine iniziale dell'emoticon container
-  emoticonContainer.appendChild(initialEmoticon);
-
+  emoticonContainer.id = `emoticon-container-${userId}`; // Assegna un ID univoco all'emoticon container
   return emoticonContainer;
 }
-
-
 
 let text = document.querySelector("#chat_message");
 let send = document.getElementById("send");
@@ -150,37 +142,30 @@ text.addEventListener("keydown", (e) => {
   }
 });
 
-const updateEmoticonContainer = (userId) => {
+const updateEmoticonContainer = (userId, emoticonContainer) => {
   const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
-  let emoticonContainer = document.getElementById(`emoticon-container-${userId}`);
-
-  if (!emoticonContainer) {
+  if (peerVideoGrid && !emoticonContainer) {
     emoticonContainer = createEmoticonContainer(userId);
     peerVideoGrid.appendChild(emoticonContainer);
   }
-
-  const message = text.value.toLowerCase(); // Converte il messaggio in minuscolo per rendere il confronto case-insensitive
-  if (message.includes("felice")) { // Controlla se il messaggio contiene "felice"
-    createEmoticon("felice.png", emoticonContainer); // Aggiorna l'immagine dell'emoticon a "felice.png"
-  }else if (message.includes("triste")) {
-    createEmoticon("triste.png", emoticonContainer);
-  }else if (message.includes("arrabbiat")) {
-    createEmoticon("arrabbiato.png", emoticonContainer);
-  }
 };
 
-socket.on("createMessage", (message, userName, senderId) => {
+
+socket.on("createMessage", (message, userName) => {
+  let messageContent = message;
   let includeEmoticon = false;
 
   if (message.includes("felice")) {
     currentEmotion = "felice";
     includeEmoticon = true;
+  } else if (message.includes("arrabbiat")) {
+    currentEmotion = "arrabbiato";
+    includeEmoticon = true;
   } else if (message.includes("triste")) {
     currentEmotion = "triste";
     includeEmoticon = true;
-  } else if (message.includes("arrabbiato")) {
-    currentEmotion = "arrabbiato";
-    includeEmoticon = true;
+  } else {
+    currentEmotion = "";
   }
 
   messages.innerHTML += `
@@ -189,51 +174,45 @@ socket.on("createMessage", (message, userName, senderId) => {
       <span>${messageContent}</span>
     </div>`;
 
-    if (includeEmoticon) {
-      if (senderId === socket.id) {
-        updateEmoticon(currentEmotion); // Aggiorna l'emoticon per l'utente corrente
-      } else {
-        updateEmoticon(senderId); // Aggiorna l'emoticon per l'altro utente
-      }
-    }
-  });
-
-
-const updateEmoticon = (emotion) => {
-  const videoElement = document.getElementById("myVideo");
-  const emoticonContainer = document.getElementById("emoticonContainer");
-
-  if (emotion === "felice") {
-    createEmoticon("felice.png", emoticonContainer);
-  } else if (emotion === "triste") {
-    createEmoticon("triste.png", emoticonContainer);
-  } else if (emotion === "arrabbiato") {
-    createEmoticon("arrabbiato.png", emoticonContainer);
-  } else {
-    removeEmoticon(emoticonContainer);
+  if (includeEmoticon) {
+    updateEmoticonContainer(userName);
+    updateEmoticon();
   }
-};
+});
 
 
+function updateEmoticon(userId) {
+  if (currentEmotion === "felice") {
+    userEmotions[userId] = "felice"; // Aggiungi questa linea per memorizzare l'emozione corrente dell'utente corrispondente
+    createEmoticon("felice.png", userId);
+  } else if (currentEmotion === "triste") {
+    userEmotions[userId] = "triste"; // Aggiungi questa linea per memorizzare l'emozione corrente dell'utente corrispondente
+    createEmoticon("triste.png", userId);
+  } else if (currentEmotion === "arrabbiato") {
+    userEmotions[userId] = "arrabbiato"; // Aggiungi questa linea per memorizzare l'emozione corrente dell'utente corrispondente
+    createEmoticon("arrabbiato.png", userId);
+
+  }
+
+  // Mostra l'emoticon container nell'elemento video corrispondente
+  if (userId) {
+    updateEmoticonContainer(userId);
+  }
+}
 
 
-
-function createEmoticon(imageFileName, emoticonContainer) {
+function createEmoticon(imageFileName, userId) {
   const emoticonImage = document.createElement("img");
   emoticonImage.src = imageFileName;
 
+  const emoticonContainer = document.getElementById(`emoticon-container-${userId}`);
   emoticonContainer.innerHTML = ""; // Rimuovi eventuali emoticon precedenti
   emoticonContainer.appendChild(emoticonImage);
 
   setTimeout(() => {
-    removeEmoticon(emoticonContainer); // Rimuovi l'emoticon dopo 10 secondi
+    emoticonContainer.innerHTML = ""; // Rimuovi l'emoticon dopo 10 secondi
   }, 10000);
 }
-
-function removeEmoticon(emoticonContainer) {
-  emoticonContainer.innerHTML = ""; // Rimuovi l'emoticon
-}
-
 
 const inviteButton = document.querySelector("#inviteButton");
 const muteButton = document.querySelector("#muteButton");
