@@ -178,12 +178,6 @@ const updateEmoticonContainer = (userId, emoticonContainer) => {
     if (!emoticonContainer) {
       emoticonContainer = createEmoticon(userId);
       peerVideoGrid.appendChild(emoticonContainer);
-    } else {
-      const existingEmoticonContainer = document.querySelector(`#emoticon-container-${userId}`);
-      if (existingEmoticonContainer) {
-        existingEmoticonContainer.innerHTML = "";
-        existingEmoticonContainer.appendChild(emoticonContainer);
-      }
     }
   }
 
@@ -209,6 +203,11 @@ const createEmoticon = (userId) => {
     emoticonContainer = document.createElement("div");
     emoticonContainer.classList.add("emoticon-container");
     emoticonContainer.id = emoticonContainerId;
+
+    const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
+    if (peerVideoGrid) {
+      peerVideoGrid.appendChild(emoticonContainer);
+    }
   }
 
   const emoticonImage = document.createElement("img");
@@ -222,7 +221,6 @@ const createEmoticon = (userId) => {
 
   return emoticonContainer;
 };
-
 
 
 
