@@ -189,6 +189,14 @@ const updateEmoticonContainer = (userId, emoticonContainer) => {
   }
 };
 
+const updateEmoticonImage = (userId) => {
+  const emoticonContainer = document.querySelector(`#emoticon-container-${userId}`);
+  if (emoticonContainer) {
+    const emoticonImage = emoticonContainer.querySelector("img");
+    emoticonImage.src = `${userEmotions[userId]}.png`;
+  }
+};
+
 
 const createEmoticon = (userId) => {
   const emoticonContainerId = `emoticon-container-${userId}`;
