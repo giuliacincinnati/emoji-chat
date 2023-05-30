@@ -197,7 +197,7 @@ const updateEmoticonContainer = (userId, emoticonContainer) => {
 
 const createEmoticon = (userId) => {
   const emoticonImage = document.createElement("img");
-  emoticonImage.src = `${userEmotions[userId]}.png`;
+  emoticonImage.src = imageFileName;
 
   const emoticonContainerId = `emoticon-container-${userId}`;
   let emoticonContainer = document.getElementById(emoticonContainerId);
