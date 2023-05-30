@@ -62,15 +62,16 @@ navigator.mediaDevices
     });
   });
 
-const connectToNewUser = (userId, stream) => {
-  console.log('I call someone' + userId)
-  const call = peer.call(userId, stream);
-  const video = document.createElement("video");
-  call.on("stream", (userVideoStream) => {
-    addVideoStream(video, userVideoStream, userId); // Passa userId come parametro
-    updateEmoticonContainer(userId);
-  });
-};
+  const connectToNewUser = (userId, stream) => {
+    console.log('I call someone' + userId)
+    const call = peer.call(userId, stream);
+    const video = document.createElement("video");
+    call.on("stream", (userVideoStream) => {
+      addVideoStream(video, userVideoStream, userId); // Passa userId come parametro
+      updateEmoticonContainer(userId);
+    });
+  };
+
 
 peer.on("open", (id) => {
   console.log('my id is' + id);
@@ -151,23 +152,25 @@ text.addEventListener("keydown", (e) => {
   }
 });
 
-const updateEmoticonContainer = (userId, emoticonContainer) => {
+const updateEmoticonContainer = (userId) => {
   const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
-  if (peerVideoGrid && !emoticonContainer) {
+  let emoticonContainer = document.getElementById(`emoticon-container-${userId}`);
+
+  if (!emoticonContainer) {
     emoticonContainer = createEmoticonContainer(userId);
     peerVideoGrid.appendChild(emoticonContainer);
   }
 };
 
 
-socket.on("createMessage", (message, userName) => {
+socket.on("createMessage", (message, userName, senderId) => {
   let messageContent = message;
   let includeEmoticon = false;
 
   if (message.includes("felice")) {
     currentEmotion = "felice";
     includeEmoticon = true;
-  } else if (message.includes("arrabbiat")) {
+  } else if (message.includes("arrabbiato")) {
     currentEmotion = "arrabbiato";
     includeEmoticon = true;
   } else if (message.includes("triste")) {
@@ -183,9 +186,15 @@ socket.on("createMessage", (message, userName) => {
       <span>${messageContent}</span>
     </div>`;
 
-    if (includeEmoticon) {
-      updateEmoticon(userId);
+  if (includeEmoticon) {
+    if (senderId === socket.id) {
+      updateEmoticonContainer(null); // Aggiorna emoticon container per l'utente corrente
+      updateEmoticon(null); // Aggiorna l'emoticon per l'utente corrente
+    } else {
+      updateEmoticonContainer(senderId); // Aggiorna emoticon container per l'altro utente
+      updateEmoticon(senderId); // Aggiorna l'emoticon per l'altro utente
     }
+  }
 });
 
 
