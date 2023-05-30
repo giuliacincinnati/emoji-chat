@@ -135,6 +135,10 @@ text.addEventListener("keydown", (e) => {
   }
 });
 
+socket.on("user-emotion", (userId, emotion) => {
+  userEmotions[userId] = emotion;
+  updateEmoticonImage(userId);
+});
 
 
 socket.on("createMessage", (message, userName, userId) => {
