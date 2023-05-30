@@ -30,33 +30,14 @@ io.on("connection", (socket) => {
     setTimeout(() => {
       socket.to(roomId).broadcast.emit("user-connected", userId);
     }, 1000);
-
     socket.on("message", (message) => {
-      const emotion = message.emotion;
-      io.to(roomId).emit("createMessage", message, userName, userId);
+  const emotion = message.emotion;
+  io.to(roomId).emit("createMessage", message, userName, userId);
 
-      if (emotion) {
-        io.to(roomId).emit("user-emotion", userId, emotion);
-      }
+  if (emotion) {
+    io.to(roomId).emit("user-emotion", userId, emotion);
+  }
     });
-  });
-
-  socket.on("createMessage", (message, userName, userId) => {
-      let messageContent = message.text;
-
-      messages.innerHTML += `
-        <div class="message">
-          <b><i class="far fa-user-circle"></i> <span>${userName === user ? "me" : userName}</span></b>
-          <span>${messageContent}</span>
-        </div>`;
-
-      if (message.emotion) {
-        currentEmotion = message.emotion;
-        updateEmoticonContainer(userId); // Aggiorna l'emoticon container per il mittente
-        socket.emit("user-emotion", userId, message.emotion); // Invia l'emozione dell'utente agli altri utenti
-      } else {
-        currentEmotion = "";
-      }
     });
   });
 

@@ -99,18 +99,14 @@ let send = document.getElementById("send");
 let messages = document.querySelector(".messages");
 let currentEmotion = "";
 
-
 send.addEventListener("click", (e) => {
   if (text.value.length !== 0) {
     if (text.value.includes("felice")) {
       currentEmotion = "felice";
-      updateEmoticonContainer(); // Update emoticon container for the current user
     } else if (text.value.includes("arrabbiat")) {
       currentEmotion = "arrabbiato";
-      updateEmoticonContainer(); // Update emoticon container for the current user
     } else if (text.value.includes("triste")) {
       currentEmotion = "triste";
-      updateEmoticonContainer(); // Update emoticon container for the current user
     } else {
       currentEmotion = "";
     }
@@ -124,22 +120,19 @@ text.addEventListener("keydown", (e) => {
   if (e.key === "Enter" && text.value.length !== 0) {
     if (text.value.includes("felice")) {
       currentEmotion = "felice";
-      updateEmoticonContainer(); // Update emoticon container for the current user
     } else if (text.value.includes("arrabbiat")) {
       currentEmotion = "arrabbiato";
-      updateEmoticonContainer(); // Update emoticon container for the current user
     } else if (text.value.includes("triste")) {
       currentEmotion = "triste";
-      updateEmoticonContainer(); // Update emoticon container for the current user
     } else {
       currentEmotion = "";
     }
-    const message = { text: text.value, emotion: currentEmotion };
-    socket.emit("message", message);
+    updateEmoticonContainer();
+    const message = { text: text.value, emotion: currentEmotion }; // Aggiungi l'emoticon container al messaggio
+    socket.emit("message", message); // Invia il messaggio al server
     text.value = "";
   }
 });
-
 
 socket.on("user-emotion", (userId, emotion) => {
   userEmotions[userId] = emotion;
