@@ -1,3 +1,4 @@
+//GIORNO30
 const socket = io("/");
 const videoGrid = document.getElementById("video-grid");
 const emoticonContainer = document.getElementById("emoticon-container");
@@ -99,9 +100,15 @@ const addVideoStream = (video, stream, userId) => {
 function createEmoticonContainer(userId) {
   const emoticonContainer = document.createElement("div");
   emoticonContainer.classList.add("emoticon-container");
-  emoticonContainer.id = `emoticon-container-${userId}`; // Assegna un ID univoco all'emoticon container
+  emoticonContainer.id = `emoticon-container-${userId}`;
+
+  const initialEmoticon = document.createElement("img");
+  initialEmoticon.src = "placeholder.png"; // Immagine iniziale dell'emoticon container
+  emoticonContainer.appendChild(initialEmoticon);
+
   return emoticonContainer;
 }
+
 
 let text = document.querySelector("#chat_message");
 let send = document.getElementById("send");
@@ -182,23 +189,15 @@ socket.on("createMessage", (message, userName) => {
 
 
 function updateEmoticon(userId) {
-  if (currentEmotion === "felice") {
-    userEmotions[userId] = "felice"; // Aggiungi questa linea per memorizzare l'emozione corrente dell'utente corrispondente
+  if (currentEmotion === "felice" && userId === peer.id) {
     createEmoticon("felice.png", userId);
-  } else if (currentEmotion === "triste") {
-    userEmotions[userId] = "triste"; // Aggiungi questa linea per memorizzare l'emozione corrente dell'utente corrispondente
+  } else if (currentEmotion === "triste" && userId === peer.id) {
     createEmoticon("triste.png", userId);
-  } else if (currentEmotion === "arrabbiato") {
-    userEmotions[userId] = "arrabbiato"; // Aggiungi questa linea per memorizzare l'emozione corrente dell'utente corrispondente
+  } else if (currentEmotion === "arrabbiato" && userId === peer.id) {
     createEmoticon("arrabbiato.png", userId);
-
-  }
-
-  // Mostra l'emoticon container nell'elemento video corrispondente
-  if (userId) {
-    updateEmoticonContainer(userId);
   }
 }
+
 
 
 function createEmoticon(imageFileName, userId) {
