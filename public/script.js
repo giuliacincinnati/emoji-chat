@@ -111,7 +111,7 @@ send.addEventListener("click", (e) => {
       currentEmotion = "";
     }
     updateEmoticonContainer();
-    socket.emit("message", text.value, currentEmotion, userEmotions); // Invia il messaggio al server
+    socket.emit("message", text.value, currentEmotion); // Invia il messaggio al server
     text.value = "";
   }
 });
@@ -128,13 +128,13 @@ text.addEventListener("keydown", (e) => {
       currentEmotion = "";
     }
     updateEmoticonContainer();
-    socket.emit("message", text.value, currentEmotion, userEmotions); // Invia il messaggio al server
+    socket.emit("message", text.value, currentEmotion); // Invia il messaggio al server
     text.value = "";
   }
 });
 
 
-socket.on("createMessage", (message, userName, emoticons) => {
+socket.on("createMessage", (message, userName, userId) => {
   let messageContent = message;
   let includeEmoticon = false;
 
@@ -158,8 +158,7 @@ socket.on("createMessage", (message, userName, emoticons) => {
     </div>`;
 
   if (includeEmoticon) {
-    userEmotions = emoticons;
-    updateEmoticonContainer(userName);
+    updateEmoticonContainer(userId);
   }
 });
 
@@ -168,54 +167,34 @@ socket.on("createMessage", (message, userName, emoticons) => {
 const updateEmoticonContainer = (userId, emoticonContainer) => {
   const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
   if (peerVideoGrid) {
-    if (userId === peer.id) {
+    if (!emoticonContainer) {
       emoticonContainer = createEmoticon(userId);
-      peerVideoGrid.appendChild(emoticonContainer); // Crea l'emoticon container sulla tua faccia
-    } else {
-      if (!emoticonContainer) {
-        emoticonContainer = createEmoticon(userId);
-        peerVideoGrid.appendChild(emoticonContainer); // Crea l'emoticon container sull'altro partecipante
-      }
+      peerVideoGrid.appendChild(emoticonContainer);
     }
   }
 
   if (currentEmotion === "felice") {
     userEmotions[userId] = "felice";
-    createEmoticon("felice.png", userId);
+    updateEmoticonImage(userId);
   } else if (currentEmotion === "triste") {
     userEmotions[userId] = "triste";
-    createEmoticon("triste.png", userId);
+    updateEmoticonImage(userId);
   } else if (currentEmotion === "arrabbiato") {
     userEmotions[userId] = "arrabbiato";
-    createEmoticon("arrabbiato.png", userId);
+    updateEmoticonImage(userId);
   }
+};
 
-  // Mostra l'emoticon container nell'elemento video corrispondente
-  if (userId) {
+const updateEmoticonImage = (userId) => {
+  const emoticonContainer = document.querySelector(`#emoticon-container-${userId}`);
+  if (emoticonContainer) {
     const emoticonImage = emoticonContainer.querySelector("img");
     emoticonImage.src = `${userEmotions[userId]}.png`;
   }
-
-  // Invia le informazioni sull'emoticon agli altri partecipanti nella video chat
-  socket.emit("update-emoticon", userEmotions);
 };
 
-socket.on("update-emoticon", (emoticons) => {
-  userEmotions = emoticons;
-  // Aggiorna l'emoticon container per tutti gli utenti
-  const peerVideoGrids = document.querySelectorAll(".peer-video-grid");
-  peerVideoGrids.forEach((peerVideoGrid) => {
-    const userId = peerVideoGrid.dataset.peer;
-    const emoticonContainer = peerVideoGrid.querySelector(".emoticon-container");
-    updateEmoticonContainer(userId, emoticonContainer);
-  });
-});
 
-
-const createEmoticon = (imageFileName, userId) => {
-  const emoticonImage = document.createElement("img");
-  emoticonImage.src = `${userEmotions[userId]}.png`;
-
+const createEmoticon = (userId) => {
   const emoticonContainerId = `emoticon-container-${userId}`;
   let emoticonContainer = document.getElementById(emoticonContainerId);
 
@@ -230,6 +209,8 @@ const createEmoticon = (imageFileName, userId) => {
     }
   }
 
+  const emoticonImage = document.createElement("img");
+  emoticonImage.src = `${userEmotions[userId]}.png`;
   emoticonContainer.innerHTML = "";
   emoticonContainer.appendChild(emoticonImage);
 
@@ -239,6 +220,7 @@ const createEmoticon = (imageFileName, userId) => {
 
   return emoticonContainer;
 };
+
 
 
 const inviteButton = document.querySelector("#inviteButton");
