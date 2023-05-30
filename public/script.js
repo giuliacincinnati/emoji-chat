@@ -42,6 +42,7 @@ navigator.mediaDevices
       },
       debug: 3
     });
+  }
 
     const user = prompt("Enter your name");
     const currentUserId = peer.id;
