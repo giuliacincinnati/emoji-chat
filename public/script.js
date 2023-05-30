@@ -1,6 +1,5 @@
 const socket = io("/");
 const videoGrid = document.getElementById("video-grid");
-const emoticonContainer = document.getElementById("emoticon-container");
 const myVideo = document.createElement("video");
 const showChat = document.querySelector("#showChat");
 const backBtn = document.querySelector(".header__back");
@@ -85,7 +84,7 @@ const addVideoStream = (video, stream, userId) => {
     peerVideoGrid.classList.add("peer-video-grid");
     peerVideoGrid.dataset.peer = userId;
     peerVideoGrid.appendChild(video);
-    const emoticonContainer = createEmoticonContainer(userId); // Aggiungi emoticonContainer solo se userId è definito
+    const emoticonContainer = createEmoticon(userId); // Aggiungi emoticonContainer solo se userId è definito
     if (userId) {
       peerVideoGrid.appendChild(emoticonContainer);
     }
@@ -94,14 +93,6 @@ const addVideoStream = (video, stream, userId) => {
   });
 };
 
-
-
-function createEmoticonContainer(userId) {
-  const emoticonContainer = document.createElement("div");
-  emoticonContainer.classList.add("emoticon-container");
-  emoticonContainer.id = `emoticon-container-${userId}`; // Assegna un ID univoco all'emoticon container
-  return emoticonContainer;
-}
 
 let text = document.querySelector("#chat_message");
 let send = document.getElementById("send");
@@ -146,11 +137,11 @@ const updateEmoticonContainer = (userId, emoticonContainer) => {
   const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
   if (peerVideoGrid) {
     if (userId === peer.id) {
-      emoticonContainer = createEmoticonContainer(userId);
+      emoticonContainer = createEmoticon(userId);
       peerVideoGrid.appendChild(emoticonContainer); // Crea l'emoticon container sulla tua faccia
     } else {
       if (!emoticonContainer) {
-        emoticonContainer = createEmoticonContainer(userId);
+        emoticonContainer = createEmoticon(userId);
         peerVideoGrid.appendChild(emoticonContainer); // Crea l'emoticon container sull'altro partecipante
       }
     }
@@ -213,14 +204,28 @@ function createEmoticon(imageFileName, userId) {
   const emoticonImage = document.createElement("img");
   emoticonImage.src = imageFileName;
 
-  const emoticonContainer = document.getElementById(`emoticon-container-${userId}`);
-  emoticonContainer.innerHTML = ""; // Rimuovi eventuali emoticon precedenti
+  const emoticonContainerId = `emoticon-container-${userId}`;
+  let emoticonContainer = document.getElementById(emoticonContainerId);
+
+  if (!emoticonContainer) {
+    emoticonContainer = document.createElement("div");
+    emoticonContainer.classList.add("emoticon-container");
+    emoticonContainer.id = emoticonContainerId;
+
+    const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
+    if (peerVideoGrid) {
+      peerVideoGrid.appendChild(emoticonContainer);
+    }
+  }
+
+  emoticonContainer.innerHTML = "";
   emoticonContainer.appendChild(emoticonImage);
 
   setTimeout(() => {
-    emoticonContainer.innerHTML = ""; // Rimuovi l'emoticon dopo 10 secondi
+    emoticonContainer.innerHTML = "";
   }, 10000);
 }
+
 
 const inviteButton = document.querySelector("#inviteButton");
 const muteButton = document.querySelector("#muteButton");
