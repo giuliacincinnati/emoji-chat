@@ -111,7 +111,7 @@ send.addEventListener("click", (e) => {
       currentEmotion = "";
     }
     updateEmoticonContainer(userId, emoticonContainer, currentEmotion);
-    socket.emit("message", text.value, currentEmotion); // Invia il messaggio al server
+    socket.emit("message", text.value);
     text.value = "";
   }
 });
@@ -128,7 +128,7 @@ text.addEventListener("keydown", (e) => {
       currentEmotion = "";
     }
     updateEmoticonContainer(userId, emoticonContainer, currentEmotion);
-    socket.emit("message", text.value, currentEmotion); // Invia il messaggio al server
+    socket.emit("message", text.value); 
     text.value = "";
   }
 });
