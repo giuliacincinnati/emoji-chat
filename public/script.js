@@ -100,18 +100,8 @@ function createEmoticonContainer(userId) {
   const emoticonContainer = document.createElement("div");
   emoticonContainer.classList.add("emoticon-container");
   emoticonContainer.id = `emoticon-container-${userId}`; // Assegna un ID univoco all'emoticon container
-
-  // Verifica se l'utente corrente corrisponde a userId
-  if (userId === peer.id) {
-    myVideo.parentNode.appendChild(emoticonContainer);
-  } else {
-    const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
-    peerVideoGrid.appendChild(emoticonContainer);
-  }
-
   return emoticonContainer;
 }
-
 
 let text = document.querySelector("#chat_message");
 let send = document.getElementById("send");
@@ -154,11 +144,19 @@ text.addEventListener("keydown", (e) => {
 
 const updateEmoticonContainer = (userId, emoticonContainer) => {
   const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
-  if (peerVideoGrid && !emoticonContainer) {
-    emoticonContainer = createEmoticonContainer(userId);
-    peerVideoGrid.appendChild(emoticonContainer);
+  if (peerVideoGrid) {
+    if (userId === peer.id) {
+      emoticonContainer = createEmoticonContainer(userId);
+      peerVideoGrid.appendChild(emoticonContainer); // Crea l'emoticon container sulla tua faccia
+    } else {
+      if (!emoticonContainer) {
+        emoticonContainer = createEmoticonContainer(userId);
+        peerVideoGrid.appendChild(emoticonContainer); // Crea l'emoticon container sull'altro partecipante
+      }
+    }
   }
 };
+
 
 
 socket.on("createMessage", (message, userName) => {
