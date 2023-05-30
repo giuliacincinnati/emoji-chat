@@ -183,10 +183,9 @@ socket.on("createMessage", (message, userName) => {
 
   if (includeEmoticon) {
     updateEmoticonContainer(userName);
-    updateEmoticon(userName); // Aggiorna le emoticon per l'utente corrente
+    updateEmoticon();
   }
 });
-
 
 
 function updateEmoticon(userId) {
