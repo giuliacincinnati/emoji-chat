@@ -189,30 +189,35 @@ socket.on("createMessage", (message, userName) => {
 
 
 function updateEmoticon(userId) {
+  const emoticonContainer = document.getElementById(`emoticon-container-${userId}`);
+
   if (currentEmotion === "felice") {
-    createEmoticon("felice.png", userId);
+    createEmoticon("felice.png", emoticonContainer);
   } else if (currentEmotion === "triste") {
-    createEmoticon("triste.png", userId);
+    createEmoticon("triste.png", emoticonContainer);
   } else if (currentEmotion === "arrabbiato") {
-    createEmoticon("arrabbiato.png", userId);
+    createEmoticon("arrabbiato.png", emoticonContainer);
+  } else {
+    removeEmoticon(emoticonContainer);
   }
 }
 
-
-
-
-function createEmoticon(imageFileName, userId) {
+function createEmoticon(imageFileName, emoticonContainer) {
   const emoticonImage = document.createElement("img");
   emoticonImage.src = imageFileName;
 
-  const emoticonContainer = document.getElementById(`emoticon-container-${userId}`);
   emoticonContainer.innerHTML = ""; // Rimuovi eventuali emoticon precedenti
   emoticonContainer.appendChild(emoticonImage);
 
   setTimeout(() => {
-    emoticonContainer.innerHTML = ""; // Rimuovi l'emoticon dopo 10 secondi
+    removeEmoticon(emoticonContainer); // Rimuovi l'emoticon dopo 10 secondi
   }, 10000);
 }
+
+function removeEmoticon(emoticonContainer) {
+  emoticonContainer.innerHTML = ""; // Rimuovi l'emoticon
+}
+
 
 const inviteButton = document.querySelector("#inviteButton");
 const muteButton = document.querySelector("#muteButton");
