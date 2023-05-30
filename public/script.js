@@ -203,8 +203,9 @@ const updateEmoticonImage = (userId) => {
 
 
 const createEmoticon = (userId) => {
+  const createEmoticon = (userId) => {
   const emoticonContainerId = `emoticon-container-${userId}`;
-    let emoticonContainer = document.getElementById(emoticonContainerId);
+  let emoticonContainer = document.getElementById(emoticonContainerId);
 
   if (!emoticonContainer) {
     emoticonContainer = document.createElement("div");
@@ -216,7 +217,6 @@ const createEmoticon = (userId) => {
       peerVideoGrid.appendChild(emoticonContainer);
     }
   }
-}
 
   const emoticonImage = document.createElement("img");
   emoticonImage.src = `${userEmotions[userId]}.png`;
