@@ -66,7 +66,7 @@ const connectToNewUser = (userId, stream) => {
   const video = document.createElement("video");
   call.on("stream", (userVideoStream) => {
     addVideoStream(video, userVideoStream, userId); // Passa userId come parametro
-    updateEmoticonContainer(userId, emoticonContainer, currentEmotion);
+    updateEmoticonContainer(userId);
   });
 };
 
@@ -89,7 +89,7 @@ const addVideoStream = (video, stream, userId) => {
       peerVideoGrid.appendChild(emoticonContainer);
     }
     videoGrid.appendChild(peerVideoGrid);
-    updateEmoticonContainer(userId, emoticonContainer, currentEmotion);
+    updateEmoticonContainer(userId);
   });
 };
 
@@ -110,8 +110,8 @@ send.addEventListener("click", (e) => {
     } else {
       currentEmotion = "";
     }
-    updateEmoticonContainer(userId, emoticonContainer, currentEmotion);
-    socket.emit("message", text.value);
+    updateEmoticonContainer();
+    socket.emit("message", text.value, currentEmotion); // Invia il messaggio al server
     text.value = "";
   }
 });
@@ -127,8 +127,8 @@ text.addEventListener("keydown", (e) => {
     } else {
       currentEmotion = "";
     }
-    updateEmoticonContainer(userId, emoticonContainer, currentEmotion);
-    socket.emit("message", text.value); 
+    updateEmoticonContainer();
+    socket.emit("message", text.value, currentEmotion); // Invia il messaggio al server
     text.value = "";
   }
 });
@@ -158,12 +158,12 @@ socket.on("createMessage", (message, userName) => {
     </div>`;
 
   if (includeEmoticon) {
-    updateEmoticonContainer(userId, emoticonContainer, currentEmotion);
+    updateEmoticonContainer(userName);
   }
 });
 
 
-const updateEmoticonContainer = (userId, emoticonContainer, imageFileName) => {
+const updateEmoticonContainer = (userId, emoticonContainer) => {
   const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
   if (peerVideoGrid) {
     if (userId === peer.id) {
@@ -191,13 +191,13 @@ const updateEmoticonContainer = (userId, emoticonContainer, imageFileName) => {
   // Mostra l'emoticon container nell'elemento video corrispondente
   if (userId) {
     const emoticonImage = emoticonContainer.querySelector("img");
-    emoticonImage.src = imageFileName;
+    emoticonImage.src = `${userEmotions[userId]}.png`;
   }
 };
 
 const createEmoticon = (imageFileName, userId) => {
   const emoticonImage = document.createElement("img");
-  emoticonImage.src = imageFileName;
+  emoticonImage.src = `${userEmotions[userId]}.png`;
 
   const emoticonContainerId = `emoticon-container-${userId}`;
   let emoticonContainer = document.getElementById(emoticonContainerId);
