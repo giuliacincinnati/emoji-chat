@@ -103,7 +103,7 @@ send.addEventListener("click", (e) => {
   if (text.value.length !== 0) {
     if (text.value.includes("felice")) {
       currentEmotion = "felice";
-    } else if (text.value.includes("arrabbiato")) {
+    } else if (text.value.includes("arrabbiat")) {
       currentEmotion = "arrabbiato";
     } else if (text.value.includes("triste")) {
       currentEmotion = "triste";
@@ -111,7 +111,7 @@ send.addEventListener("click", (e) => {
       currentEmotion = "";
     }
     updateEmoticonContainer();
-    socket.emit("message", text.value, currentEmotion); // Invia il messaggio al server
+    socket.emit("message", text.value, currentEmotion, userEmotions); // Invia il messaggio al server
     text.value = "";
   }
 });
@@ -120,7 +120,7 @@ text.addEventListener("keydown", (e) => {
   if (e.key === "Enter" && text.value.length !== 0) {
     if (text.value.includes("felice")) {
       currentEmotion = "felice";
-    } else if (text.value.includes("arrabbiato")) {
+    } else if (text.value.includes("arrabbiat")) {
       currentEmotion = "arrabbiato";
     } else if (text.value.includes("triste")) {
       currentEmotion = "triste";
@@ -128,13 +128,13 @@ text.addEventListener("keydown", (e) => {
       currentEmotion = "";
     }
     updateEmoticonContainer();
-    socket.emit("message", text.value, currentEmotion); // Invia il messaggio al server
+    socket.emit("message", text.value, currentEmotion, userEmotions); // Invia il messaggio al server
     text.value = "";
   }
 });
 
 
-socket.on("createMessage", (message, userName) => {
+socket.on("createMessage", (message, userName, emoticons) => {
   let messageContent = message;
   let includeEmoticon = false;
 
@@ -158,9 +158,11 @@ socket.on("createMessage", (message, userName) => {
     </div>`;
 
   if (includeEmoticon) {
+    userEmotions = emoticons;
     updateEmoticonContainer(userName);
   }
 });
+
 
 
 const updateEmoticonContainer = (userId, emoticonContainer) => {
@@ -193,7 +195,22 @@ const updateEmoticonContainer = (userId, emoticonContainer) => {
     const emoticonImage = emoticonContainer.querySelector("img");
     emoticonImage.src = `${userEmotions[userId]}.png`;
   }
+
+  // Invia le informazioni sull'emoticon agli altri partecipanti nella video chat
+  socket.emit("update-emoticon", userEmotions);
 };
+
+socket.on("update-emoticon", (emoticons) => {
+  userEmotions = emoticons;
+  // Aggiorna l'emoticon container per tutti gli utenti
+  const peerVideoGrids = document.querySelectorAll(".peer-video-grid");
+  peerVideoGrids.forEach((peerVideoGrid) => {
+    const userId = peerVideoGrid.dataset.peer;
+    const emoticonContainer = peerVideoGrid.querySelector(".emoticon-container");
+    updateEmoticonContainer(userId, emoticonContainer);
+  });
+});
+
 
 const createEmoticon = (imageFileName, userId) => {
   const emoticonImage = document.createElement("img");
