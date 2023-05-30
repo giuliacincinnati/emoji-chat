@@ -110,9 +110,8 @@ send.addEventListener("click", (e) => {
     } else {
       currentEmotion = "";
     }
-    updateEmoticonContainer();
-    const message = { text: text.value, emotion: currentEmotion }; // Aggiungi l'emoticon container al messaggio
-    socket.emit("message", message); // Invia il messaggio al server
+    const message = { text: text.value, emotion: currentEmotion };
+    socket.emit("message", message);
     text.value = "";
   }
 });
@@ -172,24 +171,25 @@ socket.on("createMessage", (message, userName, userId) => {
 
 
 
-const updateEmoticonContainer = (userId, emoticonContainer) => {
+
+const updateEmoticonContainer = (userId) => {
   const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
   if (peerVideoGrid) {
+    let emoticonContainer = document.querySelector(`#emoticon-container-${userId}`);
     if (!emoticonContainer) {
       emoticonContainer = createEmoticon(userId);
       peerVideoGrid.appendChild(emoticonContainer);
     }
-  }
-
-  if (currentEmotion === "felice") {
-    userEmotions[userId] = "felice";
-    updateEmoticonImage(userId);
-  } else if (currentEmotion === "triste") {
-    userEmotions[userId] = "triste";
-    updateEmoticonImage(userId);
-  } else if (currentEmotion === "arrabbiato") {
-    userEmotions[userId] = "arrabbiato";
-    updateEmoticonImage(userId);
+    if (currentEmotion === "felice") {
+      userEmotions[userId] = "felice";
+      updateEmoticonImage(userId);
+    } else if (currentEmotion === "triste") {
+      userEmotions[userId] = "triste";
+      updateEmoticonImage(userId);
+    } else if (currentEmotion === "arrabbiato") {
+      userEmotions[userId] = "arrabbiato";
+      updateEmoticonImage(userId);
+    }
   }
 };
 
