@@ -178,6 +178,12 @@ const updateEmoticonContainer = (userId, emoticonContainer) => {
     if (!emoticonContainer) {
       emoticonContainer = createEmoticon(userId);
       peerVideoGrid.appendChild(emoticonContainer);
+    } else {
+      const existingEmoticonContainer = document.querySelector(`#emoticon-container-${userId}`);
+      if (existingEmoticonContainer) {
+        existingEmoticonContainer.innerHTML = "";
+        existingEmoticonContainer.appendChild(emoticonContainer);
+      }
     }
   }
 
@@ -195,15 +201,6 @@ const updateEmoticonContainer = (userId, emoticonContainer) => {
 
 
 
-const updateEmoticonImage = (userId) => {
-  const emoticonContainer = document.querySelector(`#emoticon-container-${userId}`);
-  if (emoticonContainer) {
-    const emoticonImage = emoticonContainer.querySelector("img");
-    emoticonImage.src = `${userEmotions[userId]}.png`;
-  }
-};
-
-
 const createEmoticon = (userId) => {
   const emoticonContainerId = `emoticon-container-${userId}`;
   let emoticonContainer = document.getElementById(emoticonContainerId);
@@ -212,11 +209,6 @@ const createEmoticon = (userId) => {
     emoticonContainer = document.createElement("div");
     emoticonContainer.classList.add("emoticon-container");
     emoticonContainer.id = emoticonContainerId;
-
-    const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
-    if (peerVideoGrid) {
-      peerVideoGrid.appendChild(emoticonContainer);
-    }
   }
 
   const emoticonImage = document.createElement("img");
@@ -230,6 +222,7 @@ const createEmoticon = (userId) => {
 
   return emoticonContainer;
 };
+
 
 
 
