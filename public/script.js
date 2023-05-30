@@ -66,7 +66,7 @@ const connectToNewUser = (userId, stream) => {
   const video = document.createElement("video");
   call.on("stream", (userVideoStream) => {
     addVideoStream(video, userVideoStream, userId); // Passa userId come parametro
-    updateEmoticonContainer(userId);
+    updateEmoticonContainer(userId, emoticonContainer, currentEmotion);
   });
 };
 
@@ -89,7 +89,7 @@ const addVideoStream = (video, stream, userId) => {
       peerVideoGrid.appendChild(emoticonContainer);
     }
     videoGrid.appendChild(peerVideoGrid);
-    updateEmoticonContainer(userId);
+    updateEmoticonContainer(userId, emoticonContainer, currentEmotion);
   });
 };
 
@@ -110,7 +110,7 @@ send.addEventListener("click", (e) => {
     } else {
       currentEmotion = "";
     }
-    updateEmoticonContainer();
+    updateEmoticonContainer(userId, emoticonContainer, currentEmotion);
     socket.emit("message", text.value, currentEmotion); // Invia il messaggio al server
     text.value = "";
   }
@@ -127,7 +127,7 @@ text.addEventListener("keydown", (e) => {
     } else {
       currentEmotion = "";
     }
-    updateEmoticonContainer();
+    updateEmoticonContainer(userId, emoticonContainer, currentEmotion);
     socket.emit("message", text.value, currentEmotion); // Invia il messaggio al server
     text.value = "";
   }
@@ -158,7 +158,7 @@ socket.on("createMessage", (message, userName) => {
     </div>`;
 
   if (includeEmoticon) {
-    updateEmoticonContainer(userName);
+    updateEmoticonContainer(userId, emoticonContainer, currentEmotion);
   }
 });
 
