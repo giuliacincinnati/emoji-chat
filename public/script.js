@@ -60,15 +60,18 @@ navigator.mediaDevices
     });
   });
 
-const connectToNewUser = (userId, stream) => {
-  console.log('I call someone' + userId)
-  const call = peer.call(userId, stream);
-  const video = document.createElement("video");
-  call.on("stream", (userVideoStream) => {
-    addVideoStream(video, userVideoStream, userId); // Passa userId come parametro
+  const connectToNewUser = (userId, stream) => {
+    console.log('I call someone' + userId);
+    const call = peer.call(userId, stream);
+    const video = document.createElement("video");
+    call.on("stream", (userVideoStream) => {
+      addVideoStream(video, userVideoStream, userId); // Passa userId come parametro
+      updateEmoticonContainer(userId);
+    });
+    // Aggiungiamo questa chiamata per creare l'emoticon container per l'altro utente
     updateEmoticonContainer(userId);
-  });
-};
+  };
+
 
 peer.on("open", (id) => {
   console.log('my id is' + id);
