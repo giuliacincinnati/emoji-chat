@@ -198,11 +198,14 @@ const updateEmoticonContainer = (userId, emoticonContainer) => {
 const updateEmoticonImage = (userId) => {
   const emoticonContainer = document.querySelector(`#emoticon-container-${userId}`);
   if (emoticonContainer) {
-    const emoticonImage = emoticonContainer.querySelector("img");
+    let emoticonImage = emoticonContainer.querySelector("img");
+    if (!emoticonImage) {
+      emoticonImage = document.createElement("img");
+      emoticonContainer.appendChild(emoticonImage);
+    }
     emoticonImage.src = `${userEmotions[userId]}.png`;
   }
 };
-
 
 const createEmoticon = (userId) => {
   const emoticonContainerId = `emoticon-container-${userId}`;
@@ -219,10 +222,7 @@ const createEmoticon = (userId) => {
     }
   }
 
-  const emoticonImage = document.createElement("img");
-  emoticonImage.src = `${userEmotions[userId]}.png`;
-  emoticonContainer.innerHTML = "";
-  emoticonContainer.appendChild(emoticonImage);
+  updateEmoticonImage(userId);
 
   setTimeout(() => {
     emoticonContainer.innerHTML = "";
