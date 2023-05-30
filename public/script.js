@@ -100,8 +100,13 @@ function createEmoticonContainer(userId) {
   const emoticonContainer = document.createElement("div");
   emoticonContainer.classList.add("emoticon-container");
   emoticonContainer.id = `emoticon-container-${userId}`; // Assegna un ID univoco all'emoticon container
+
+  const videoElement = userId === peer.id ? myVideo : document.querySelector(`.peer-video-grid[data-peer="${userId}"] video`);
+  videoElement.parentNode.appendChild(emoticonContainer);
+
   return emoticonContainer;
 }
+
 
 let text = document.querySelector("#chat_message");
 let send = document.getElementById("send");
