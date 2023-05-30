@@ -188,8 +188,12 @@ socket.on("createMessage", (message, userName) => {
 });
 
 
-function updateEmoticon(userId) {
+const updateEmoticon = (userId) => {
   const emoticonContainer = document.getElementById(`emoticon-container-${userId}`);
+
+  if (!emoticonContainer) {
+    return; // Esci se l'emoticon container non è presente
+  }
 
   if (currentEmotion === "felice") {
     createEmoticon("felice.png", emoticonContainer);
@@ -200,7 +204,7 @@ function updateEmoticon(userId) {
   } else {
     removeEmoticon(emoticonContainer);
   }
-}
+};
 
 function createEmoticon(imageFileName, emoticonContainer) {
   const emoticonImage = document.createElement("img");
