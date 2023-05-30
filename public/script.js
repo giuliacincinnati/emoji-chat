@@ -101,8 +101,13 @@ function createEmoticonContainer(userId) {
   emoticonContainer.classList.add("emoticon-container");
   emoticonContainer.id = `emoticon-container-${userId}`; // Assegna un ID univoco all'emoticon container
 
-  const videoElement = userId === peer.id ? myVideo : document.querySelector(`.peer-video-grid[data-peer="${userId}"] video`);
-  videoElement.parentNode.appendChild(emoticonContainer);
+  // Verifica se l'utente corrente corrisponde a userId
+  if (userId === peer.id) {
+    myVideo.parentNode.appendChild(emoticonContainer);
+  } else {
+    const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
+    peerVideoGrid.appendChild(emoticonContainer);
+  }
 
   return emoticonContainer;
 }
