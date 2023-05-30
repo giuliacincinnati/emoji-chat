@@ -84,7 +84,7 @@ const addVideoStream = (video, stream, userId) => {
     peerVideoGrid.classList.add("peer-video-grid");
     peerVideoGrid.dataset.peer = userId;
     peerVideoGrid.appendChild(video);
-    const emoticonContainer = createEmoticonContainer(userId); // Aggiungi emoticonContainer solo se userId è definito
+    const emoticonContainer = createEmoticon(userId); // Aggiungi emoticonContainer solo se userId è definito
     if (userId) {
       peerVideoGrid.appendChild(emoticonContainer);
     }
@@ -93,14 +93,6 @@ const addVideoStream = (video, stream, userId) => {
   });
 };
 
-
-
-function createEmoticonContainer(userId) {
-  const emoticonContainer = document.createElement("div");
-  emoticonContainer.classList.add("emoticon-container");
-  emoticonContainer.id = `emoticon-container-${userId}`; // Assegna un ID univoco all'emoticon container
-  return emoticonContainer;
-}
 
 let text = document.querySelector("#chat_message");
 let send = document.getElementById("send");
@@ -183,11 +175,12 @@ socket.on("createMessage", (message, userName, userId) => {
 const updateEmoticonContainer = (userId, emoticonContainer) => {
   const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
   if (peerVideoGrid) {
-    if (!emoticonContainer && userId === currentUserId) { // Modifica questa condizione
+    if (!emoticonContainer) {
       emoticonContainer = createEmoticon(userId);
       peerVideoGrid.appendChild(emoticonContainer);
     }
   }
+
   if (currentEmotion === "felice") {
     userEmotions[userId] = "felice";
     updateEmoticonImage(userId);
@@ -200,6 +193,8 @@ const updateEmoticonContainer = (userId, emoticonContainer) => {
   }
 };
 
+
+
 const updateEmoticonImage = (userId) => {
   const emoticonContainer = document.querySelector(`#emoticon-container-${userId}`);
   if (emoticonContainer) {
@@ -211,7 +206,7 @@ const updateEmoticonImage = (userId) => {
 
 const createEmoticon = (userId) => {
   const emoticonContainerId = `emoticon-container-${userId}`;
-    let emoticonContainer = document.getElementById(emoticonContainerId);
+  let emoticonContainer = document.getElementById(emoticonContainerId);
 
   if (!emoticonContainer) {
     emoticonContainer = document.createElement("div");
@@ -223,6 +218,7 @@ const createEmoticon = (userId) => {
       peerVideoGrid.appendChild(emoticonContainer);
     }
   }
+
   const emoticonImage = document.createElement("img");
   emoticonImage.src = `${userEmotions[userId]}.png`;
   emoticonContainer.innerHTML = "";
