@@ -27,11 +27,15 @@ app.get("/:room", (req, res) => {
 io.on("connection", (socket) => {
   socket.on("join-room", (roomId, userId, userName) => {
     socket.join(roomId);
-    setTimeout(()=>{
+    setTimeout(() => {
       socket.to(roomId).broadcast.emit("user-connected", userId);
-    }, 1000)
-    socket.on("message", (message, emotion) => {
-      io.to(roomId).emit("createMessage", message, userName, emotion);
+    }, 1000);
+    socket.on("message", (message) => {
+      const emotion = message.emotion;
+      io.to(roomId).emit("createMessage", message, userName, userId);
+      if (emotion) {
+        io.to(roomId).emit("user-emotion", userId, emotion);
+      }
     });
   });
 });
