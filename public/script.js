@@ -111,7 +111,8 @@ send.addEventListener("click", (e) => {
       currentEmotion = "";
     }
     updateEmoticonContainer();
-    socket.emit("message", text.value, currentEmotion); // Invia il messaggio al server
+    const message = { text: text.value, emotion: currentEmotion }; // Aggiungi l'emoticon container al messaggio
+    socket.emit("message", message); // Invia il messaggio al server
     text.value = "";
   }
 });
@@ -128,23 +129,25 @@ text.addEventListener("keydown", (e) => {
       currentEmotion = "";
     }
     updateEmoticonContainer();
-    socket.emit("message", text.value, currentEmotion); // Invia il messaggio al server
+    const message = { text: text.value, emotion: currentEmotion }; // Aggiungi l'emoticon container al messaggio
+    socket.emit("message", message); // Invia il messaggio al server
     text.value = "";
   }
 });
 
 
+
 socket.on("createMessage", (message, userName, userId) => {
-  let messageContent = message;
+  let messageContent = message.text;
   let includeEmoticon = false;
 
-  if (message.includes("felice")) {
+  if (message.emotion === "felice") {
     currentEmotion = "felice";
     includeEmoticon = true;
-  } else if (message.includes("arrabbiat")) {
+  } else if (message.emotion === "arrabbiato") {
     currentEmotion = "arrabbiato";
     includeEmoticon = true;
-  } else if (message.includes("triste")) {
+  } else if (message.emotion === "triste") {
     currentEmotion = "triste";
     includeEmoticon = true;
   } else {
@@ -161,6 +164,7 @@ socket.on("createMessage", (message, userName, userId) => {
     updateEmoticonContainer(userId);
   }
 });
+
 
 
 
@@ -184,6 +188,8 @@ const updateEmoticonContainer = (userId, emoticonContainer) => {
     updateEmoticonImage(userId);
   }
 };
+
+
 
 const updateEmoticonImage = (userId) => {
   const emoticonContainer = document.querySelector(`#emoticon-container-${userId}`);
