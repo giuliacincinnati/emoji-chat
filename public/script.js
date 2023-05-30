@@ -107,6 +107,8 @@ function createEmoticonContainer(userId) {
   emoticonContainer.appendChild(initialEmoticon);
 
   return emoticonContainer;
+  emoticonContainer.id = `emoticon-container-${userId}`;
+
 }
 
 
@@ -181,18 +183,16 @@ socket.on("createMessage", (message, userName) => {
       <span>${messageContent}</span>
     </div>`;
 
-  if (includeEmoticon) {
-    updateEmoticonContainer(userId);
-    updateEmoticon(userId);
-  }
+    if (includeEmoticon) {
+      updateEmoticon(userId);
+    }
 });
 
 
 const updateEmoticon = (userId) => {
-  const emoticonContainer = document.getElementById(`emoticon-container-${userId}`);
-
-  if (!emoticonContainer) {
-    return; // Esci se l'emoticon container non è presente
+  const videoElement = document.querySelector(`video[data-peer="${userId}"]`);
+  if (!videoElement) {
+    return; // Esci se l'elemento video non è presente
   }
 
   if (currentEmotion === "felice") {
