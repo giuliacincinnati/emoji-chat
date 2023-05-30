@@ -151,14 +151,19 @@ text.addEventListener("keydown", (e) => {
 });
 
 const updateEmoticonContainer = (userId) => {
-  const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
-  let emoticonContainer = document.getElementById(`emoticon-container-${userId}`);
+  const isCurrentUser = userId === null;
+  const videoElement = isCurrentUser ? myVideo : document.querySelector(`video[data-peer="${userId}"]`);
+  let emoticonContainer = isCurrentUser ? emoticonContainer : document.getElementById(`emoticon-container-${userId}`);
 
   if (!emoticonContainer) {
     emoticonContainer = createEmoticonContainer(userId);
+    const peerVideoGrid = isCurrentUser ? videoGrid : document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
     peerVideoGrid.appendChild(emoticonContainer);
   }
+
+  updateEmoticon(userId);
 };
+
 
 socket.on("createMessage", (message, userName, senderId) => {
   let messageContent = message;
@@ -196,8 +201,9 @@ socket.on("createMessage", (message, userName, senderId) => {
 
 
 const updateEmoticon = (userId) => {
-  const videoElement = userId ? document.querySelector(`video[data-peer="${userId}"]`) : myVideo;
-  const emoticonContainer = userId ? document.getElementById(`emoticon-container-${userId}`) : emoticonContainer;
+  const isCurrentUser = userId === null;
+  const videoElement = isCurrentUser ? myVideo : document.querySelector(`video[data-peer="${userId}"]`);
+  const emoticonContainer = isCurrentUser ? emoticonContainer : document.getElementById(`emoticon-container-${userId}`);
 
   if (currentEmotion === "felice") {
     createEmoticon("felice.png", emoticonContainer);
@@ -209,6 +215,7 @@ const updateEmoticon = (userId) => {
     removeEmoticon(emoticonContainer);
   }
 };
+
 
 
 
