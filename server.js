@@ -30,15 +30,16 @@ io.on("connection", (socket) => {
     setTimeout(() => {
       socket.to(roomId).broadcast.emit("user-connected", userId);
     }, 1000);
-    socket.on("message", (message) => {
-  const emotion = message.emotion;
-  io.to(roomId).emit("createMessage", message, userName, userId);
 
-  if (emotion) {
-    io.to(roomId).emit("user-emotion", userId, emotion);
-  }
+    socket.on("message", (message) => {
+      const emotion = message.emotion;
+      io.to(roomId).emit("createMessage", message, userName, userId);
+
+      if (emotion) {
+        io.to(roomId).emit("user-emotion", userId, emotion);
+      }
     });
-    });
+  });
 
   socket.on("createMessage", (message, userName, userId) => {
       let messageContent = message.text;
