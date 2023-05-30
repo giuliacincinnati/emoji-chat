@@ -62,16 +62,15 @@ navigator.mediaDevices
     });
   });
 
-  connectToNewUser(userId, stream) {
-    console.log('I call someone' + userId)
-    const call = peer.call(userId, stream);
-    const video = document.createElement("video");
-    call.on("stream", (userVideoStream) => {
-      addVideoStream(video, userVideoStream, userId); // Passa userId come parametro
-      updateEmoticonContainer(userId, emoticonContainer); // Aggiungi emoticonContainer come secondo argomento
-    });
-  }
-;
+const connectToNewUser = (userId, stream) => {
+  console.log('I call someone' + userId)
+  const call = peer.call(userId, stream);
+  const video = document.createElement("video");
+  call.on("stream", (userVideoStream) => {
+    addVideoStream(video, userVideoStream, userId); // Passa userId come parametro
+    updateEmoticonContainer(userId);
+  });
+};
 
 peer.on("open", (id) => {
   console.log('my id is' + id);
@@ -127,7 +126,7 @@ send.addEventListener("click", (e) => {
     } else {
       currentEmotion = "";
     }
-    updateEmoticon();
+    updateEmoticon(peer.id);
     socket.emit("message", text.value, currentEmotion); // Invia il messaggio al server
     text.value = "";
   }
@@ -144,7 +143,7 @@ text.addEventListener("keydown", (e) => {
     } else {
       currentEmotion = "";
     }
-    updateEmoticon();
+    updateEmoticon(peer.id);
     socket.emit("message", text.value, currentEmotion); // Invia il messaggio al server
     text.value = "";
   }
@@ -183,11 +182,10 @@ socket.on("createMessage", (message, userName) => {
     </div>`;
 
   if (includeEmoticon) {
-    updateEmoticonContainer(userName, emoticonContainer); // Aggiungi emoticonContainer come secondo argomento
-    updateEmoticon();
+    updateEmoticonContainer(userId);
+    updateEmoticon(userId);
   }
 });
-
 
 
 function updateEmoticon(userId) {
