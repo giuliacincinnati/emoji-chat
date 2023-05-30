@@ -22,6 +22,7 @@ showChat.addEventListener("click", () => {
 });
 
 const user = prompt("Enter your name");
+const currentUserId = peer.id;
 
 var peer = new Peer({
   host: window.location.hostname,
@@ -175,12 +176,11 @@ socket.on("createMessage", (message, userName, userId) => {
 const updateEmoticonContainer = (userId, emoticonContainer) => {
   const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
   if (peerVideoGrid) {
-    if (!emoticonContainer) {
+    if (!emoticonContainer && userId === currentUserId) { // Modifica questa condizione
       emoticonContainer = createEmoticon(userId);
       peerVideoGrid.appendChild(emoticonContainer);
     }
   }
-
   if (currentEmotion === "felice") {
     userEmotions[userId] = "felice";
     updateEmoticonImage(userId);
@@ -204,7 +204,7 @@ const updateEmoticonImage = (userId) => {
 
 const createEmoticon = (userId) => {
   const emoticonContainerId = `emoticon-container-${userId}`;
-  let emoticonContainer = document.getElementById(emoticonContainerId);
+    let emoticonContainer = document.getElementById(emoticonContainerId);
 
   if (!emoticonContainer) {
     emoticonContainer = document.createElement("div");
