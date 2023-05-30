@@ -37,7 +37,7 @@ var peer = new Peer({
   debug: 3
 });
 
-const currentUserId = peer.id;
+//const currentUserId = peer.id;
 
 let myVideoStream;
 navigator.mediaDevices
