@@ -188,11 +188,16 @@ const updateEmoticonContainer = (userId, emoticonContainer) => {
     createEmoticon("arrabbiato.png", userId);
   }
 
+  // Mostra l'emoticon container nell'elemento video corrispondente
+  if (userId) {
+    const emoticonImage = emoticonContainer.querySelector("img");
+    emoticonImage.src = `${userEmotions[userId]}.png`;
+  }
 };
 
 const createEmoticon = (userId) => {
   const emoticonImage = document.createElement("img");
-  emoticonImage.src = imageFileName;
+  emoticonImage.src = `${userEmotions[userId]}.png`;
 
   const emoticonContainerId = `emoticon-container-${userId}`;
   let emoticonContainer = document.getElementById(emoticonContainerId);
