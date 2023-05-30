@@ -100,11 +100,6 @@ function createEmoticonContainer(userId) {
   const emoticonContainer = document.createElement("div");
   emoticonContainer.classList.add("emoticon-container");
   emoticonContainer.id = `emoticon-container-${userId}`; // Assegna un ID univoco all'emoticon container
-//qua
-const initialEmoticon = document.createElement("img");
-initialEmoticon.src = "placeholder.png"; // Immagine iniziale dell'emoticon container
-emoticonContainer.appendChild(initialEmoticon);
-
   return emoticonContainer;
 }
 
