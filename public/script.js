@@ -68,10 +68,9 @@ navigator.mediaDevices
     const video = document.createElement("video");
     call.on("stream", (userVideoStream) => {
       addVideoStream(video, userVideoStream, userId); // Passa userId come parametro
-      updateEmoticonContainer(userId);
+      updateEmoticonContainer(userId); // Aggiorna l'emoticon container per l'utente corrente
     });
   };
-
 
 peer.on("open", (id) => {
   console.log('my id is' + id);
@@ -108,7 +107,6 @@ function createEmoticonContainer(userId) {
   emoticonContainer.appendChild(initialEmoticon);
 
   return emoticonContainer;
-  emoticonContainer.id = `emoticon-container-${userId}`;
 
 }
 
@@ -162,7 +160,6 @@ const updateEmoticonContainer = (userId) => {
   }
 };
 
-
 socket.on("createMessage", (message, userName, senderId) => {
   let messageContent = message;
   let includeEmoticon = false;
@@ -188,10 +185,10 @@ socket.on("createMessage", (message, userName, senderId) => {
 
   if (includeEmoticon) {
     if (senderId === socket.id) {
-      updateEmoticonContainer(null); // Aggiorna emoticon container per l'utente corrente
+      updateEmoticonContainer(null); // Aggiorna l'emoticon container per l'utente corrente
       updateEmoticon(null); // Aggiorna l'emoticon per l'utente corrente
     } else {
-      updateEmoticonContainer(senderId); // Aggiorna emoticon container per l'altro utente
+      updateEmoticonContainer(senderId); // Aggiorna l'emoticon container per l'altro utente
       updateEmoticon(senderId); // Aggiorna l'emoticon per l'altro utente
     }
   }
@@ -200,8 +197,10 @@ socket.on("createMessage", (message, userName, senderId) => {
 
 const updateEmoticon = (userId) => {
   const videoElement = document.querySelector(`video[data-peer="${userId}"]`);
-  if (!videoElement) {
-    return; // Esci se l'elemento video non è presente
+  const emoticonContainer = document.getElementById(`emoticon-container-${userId}`);
+
+  if (!videoElement || !emoticonContainer) {
+    return; // Esci se l'elemento video o l'emoticon container non sono presenti
   }
 
   if (currentEmotion === "felice") {
@@ -214,6 +213,7 @@ const updateEmoticon = (userId) => {
     removeEmoticon(emoticonContainer);
   }
 };
+
 
 function createEmoticon(imageFileName, emoticonContainer) {
   const emoticonImage = document.createElement("img");
