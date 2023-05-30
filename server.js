@@ -31,14 +31,16 @@ io.on("connection", (socket) => {
       socket.to(roomId).broadcast.emit("user-connected", userId);
     }, 1000);
     socket.on("message", (message) => {
-      const emotion = message.emotion;
-      io.to(roomId).emit("createMessage", message, userName, userId);
-      if (emotion) {
-        io.to(roomId).emit("user-emotion", userId, emotion);
-      }
+  const emotion = message.emotion;
+  io.to(roomId).emit("createMessage", message, userName, userId);
+
+  if (emotion) {
+    io.to(roomId).emit("user-emotion", userId, emotion);
+  }
+    });
     });
   });
-});
+
 
 server.listen(process.env.PORT || 3030, () => {
   console.log('Server listening on port', process.env.PORT || 3030);
