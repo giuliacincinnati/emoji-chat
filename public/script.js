@@ -196,12 +196,8 @@ socket.on("createMessage", (message, userName, senderId) => {
 
 
 const updateEmoticon = (userId) => {
-  const videoElement = document.querySelector(`video[data-peer="${userId}"]`);
-  const emoticonContainer = document.getElementById(`emoticon-container-${userId}`);
-
-  if (!videoElement || !emoticonContainer) {
-    return; // Esci se l'elemento video o l'emoticon container non sono presenti
-  }
+  const videoElement = userId ? document.querySelector(`video[data-peer="${userId}"]`) : myVideo;
+  const emoticonContainer = userId ? document.getElementById(`emoticon-container-${userId}`) : emoticonContainer;
 
   if (currentEmotion === "felice") {
     createEmoticon("felice.png", emoticonContainer);
@@ -213,6 +209,7 @@ const updateEmoticon = (userId) => {
     removeEmoticon(emoticonContainer);
   }
 };
+
 
 
 function createEmoticon(imageFileName, emoticonContainer) {
