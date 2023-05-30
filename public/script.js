@@ -183,20 +183,22 @@ socket.on("createMessage", (message, userName) => {
 
   if (includeEmoticon) {
     updateEmoticonContainer(userName);
-    updateEmoticon();
+    updateEmoticon(userName); // Aggiorna le emoticon per l'utente corrente
   }
 });
 
 
+
 function updateEmoticon(userId) {
-  if (currentEmotion === "felice" && userId === peer.id) {
+  if (currentEmotion === "felice") {
     createEmoticon("felice.png", userId);
-  } else if (currentEmotion === "triste" && userId === peer.id) {
+  } else if (currentEmotion === "triste") {
     createEmoticon("triste.png", userId);
-  } else if (currentEmotion === "arrabbiato" && userId === peer.id) {
+  } else if (currentEmotion === "arrabbiato") {
     createEmoticon("arrabbiato.png", userId);
   }
 }
+
 
 
 
