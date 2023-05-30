@@ -101,9 +101,9 @@ function createEmoticonContainer(userId) {
   emoticonContainer.classList.add("emoticon-container");
   emoticonContainer.id = `emoticon-container-${userId}`; // Assegna un ID univoco all'emoticon container
 //qua
-  const initialEmoticon = document.createElement("img");
-  initialEmoticon.src = "placeholder.png"; // Immagine iniziale dell'emoticon container
-  emoticonContainer.appendChild(initialEmoticon);
+const initialEmoticon = document.createElement("img");
+initialEmoticon.src = "placeholder.png"; // Immagine iniziale dell'emoticon container
+emoticonContainer.appendChild(initialEmoticon);
 
   return emoticonContainer;
 }
@@ -149,7 +149,7 @@ text.addEventListener("keydown", (e) => {
 
 const updateEmoticonContainer = (userId, emoticonContainer) => {
   const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
-  if (!emoticonContainer) {
+  if (peerVideoGrid && !emoticonContainer) {
     emoticonContainer = createEmoticonContainer(userId);
     peerVideoGrid.appendChild(emoticonContainer);
   }
@@ -197,6 +197,11 @@ function updateEmoticon(userId) {
     userEmotions[userId] = "arrabbiato"; // Aggiungi questa linea per memorizzare l'emozione corrente dell'utente corrispondente
     createEmoticon("arrabbiato.png", userId);
 
+  }
+
+  // Mostra l'emoticon container nell'elemento video corrispondente
+  if (userId) {
+    updateEmoticonContainer(userId);
   }
 }
 
