@@ -163,7 +163,7 @@ socket.on("createMessage", (message, userName) => {
 });
 
 
-const updateEmoticonContainer = (userId, emoticonContainer) => {
+const updateEmoticonContainer = (userId, emoticonContainer, imageFileName) => {
   const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
   if (peerVideoGrid) {
     if (userId === peer.id) {
@@ -191,13 +191,13 @@ const updateEmoticonContainer = (userId, emoticonContainer) => {
   // Mostra l'emoticon container nell'elemento video corrispondente
   if (userId) {
     const emoticonImage = emoticonContainer.querySelector("img");
-    emoticonImage.src = `${userEmotions[userId]}.png`;
+    emoticonImage.src = imageFileName;
   }
 };
 
-const createEmoticon = (userId) => {
+const createEmoticon = (imageFileName, userId) => {
   const emoticonImage = document.createElement("img");
-  emoticonImage.src = `${userEmotions[userId]}.png`;
+  emoticonImage.src = imageFileName;
 
   const emoticonContainerId = `emoticon-container-${userId}`;
   let emoticonContainer = document.getElementById(emoticonContainerId);
