@@ -126,7 +126,7 @@ send.addEventListener("click", (e) => {
     } else {
       currentEmotion = "";
     }
-    updateEmoticon(peer.id);
+    updateEmoticon();
     socket.emit("message", text.value, currentEmotion); // Invia il messaggio al server
     text.value = "";
   }
@@ -143,7 +143,7 @@ text.addEventListener("keydown", (e) => {
     } else {
       currentEmotion = "";
     }
-    updateEmoticon(peer.id);
+    updateEmoticon();
     socket.emit("message", text.value, currentEmotion); // Invia il messaggio al server
     text.value = "";
   }
