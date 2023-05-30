@@ -150,7 +150,7 @@ const updateEmoticonContainer = (userId, emoticonContainer) => {
   }
 };
 
-///////////////////////ciao
+
 socket.on("createMessage", (message, userName) => {
   let messageContent = message;
   let includeEmoticon = false;
@@ -208,9 +208,6 @@ function createEmoticon(imageFileName, userId) {
   const emoticonContainer = document.getElementById(`emoticon-container-${userId}`);
   emoticonContainer.innerHTML = ""; // Rimuovi eventuali emoticon precedenti
   emoticonContainer.appendChild(emoticonImage);
-
-  // Invia l'emozione al server tramite socket.io
-  socket.emit("emoticon", userId, imageFileName);
 
   setTimeout(() => {
     emoticonContainer.innerHTML = ""; // Rimuovi l'emoticon dopo 10 secondi
