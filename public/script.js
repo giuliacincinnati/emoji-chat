@@ -62,15 +62,16 @@ navigator.mediaDevices
     });
   });
 
-const connectToNewUser = (userId, stream) => {
-  console.log('I call someone' + userId)
-  const call = peer.call(userId, stream);
-  const video = document.createElement("video");
-  call.on("stream", (userVideoStream) => {
-    addVideoStream(video, userVideoStream, userId); // Passa userId come parametro
-    updateEmoticonContainer(userId);
-  });
-};
+  connectToNewUser(userId, stream) {
+    console.log('I call someone' + userId)
+    const call = peer.call(userId, stream);
+    const video = document.createElement("video");
+    call.on("stream", (userVideoStream) => {
+      addVideoStream(video, userVideoStream, userId); // Passa userId come parametro
+      updateEmoticonContainer(userId, emoticonContainer); // Aggiungi emoticonContainer come secondo argomento
+    });
+  }
+;
 
 peer.on("open", (id) => {
   console.log('my id is' + id);
@@ -182,10 +183,11 @@ socket.on("createMessage", (message, userName) => {
     </div>`;
 
   if (includeEmoticon) {
-    updateEmoticonContainer(userName);
+    updateEmoticonContainer(userName, emoticonContainer); // Aggiungi emoticonContainer come secondo argomento
     updateEmoticon();
   }
 });
+
 
 
 function updateEmoticon(userId) {
