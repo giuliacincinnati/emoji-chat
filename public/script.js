@@ -107,8 +107,8 @@ function createEmoticonContainer(userId) {
   emoticonContainer.appendChild(initialEmoticon);
 
   return emoticonContainer;
-
 }
+
 
 
 let text = document.querySelector("#chat_message");
@@ -151,35 +151,36 @@ text.addEventListener("keydown", (e) => {
 });
 
 const updateEmoticonContainer = (userId) => {
-  const isCurrentUser = userId === null;
-  const videoElement = isCurrentUser ? myVideo : document.querySelector(`video[data-peer="${userId}"]`);
-  let emoticonContainer = isCurrentUser ? emoticonContainer : document.getElementById(`emoticon-container-${userId}`);
+  const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
+  let emoticonContainer = document.getElementById(`emoticon-container-${userId}`);
 
   if (!emoticonContainer) {
     emoticonContainer = createEmoticonContainer(userId);
-    const peerVideoGrid = isCurrentUser ? videoGrid : document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
     peerVideoGrid.appendChild(emoticonContainer);
   }
 
-  updateEmoticon(userId);
+  const message = text.value.toLowerCase(); // Converte il messaggio in minuscolo per rendere il confronto case-insensitive
+  if (message.includes("felice")) { // Controlla se il messaggio contiene "felice"
+    createEmoticon("felice.png", emoticonContainer); // Aggiorna l'immagine dell'emoticon a "felice.png"
+  }else if (message.includes("triste")) {
+    createEmoticon("triste.png", emoticonContainer);
+  }else if (message.includes("arrabbiat")) {
+    createEmoticon("arrabbiato.png", emoticonContainer);
+  }
 };
 
-
 socket.on("createMessage", (message, userName, senderId) => {
-  let messageContent = message;
   let includeEmoticon = false;
 
   if (message.includes("felice")) {
     currentEmotion = "felice";
     includeEmoticon = true;
-  } else if (message.includes("arrabbiato")) {
-    currentEmotion = "arrabbiato";
-    includeEmoticon = true;
   } else if (message.includes("triste")) {
     currentEmotion = "triste";
     includeEmoticon = true;
-  } else {
-    currentEmotion = "";
+  } else if (message.includes("arrabbiato")) {
+    currentEmotion = "arrabbiato";
+    includeEmoticon = true;
   }
 
   messages.innerHTML += `
@@ -188,33 +189,31 @@ socket.on("createMessage", (message, userName, senderId) => {
       <span>${messageContent}</span>
     </div>`;
 
-  if (includeEmoticon) {
-    if (senderId === socket.id) {
-      updateEmoticonContainer(null); // Aggiorna l'emoticon container per l'utente corrente
-      updateEmoticon(null); // Aggiorna l'emoticon per l'utente corrente
-    } else {
-      updateEmoticonContainer(senderId); // Aggiorna l'emoticon container per l'altro utente
-      updateEmoticon(senderId); // Aggiorna l'emoticon per l'altro utente
+    if (includeEmoticon) {
+      if (senderId === socket.id) {
+        updateEmoticon(currentEmotion); // Aggiorna l'emoticon per l'utente corrente
+      } else {
+        updateEmoticon(senderId); // Aggiorna l'emoticon per l'altro utente
+      }
     }
-  }
-});
+  });
 
 
-const updateEmoticon = (userId) => {
-  const isCurrentUser = userId === null;
-  const videoElement = isCurrentUser ? myVideo : document.querySelector(`video[data-peer="${userId}"]`);
-  const emoticonContainer = isCurrentUser ? emoticonContainer : document.getElementById(`emoticon-container-${userId}`);
+const updateEmoticon = (emotion) => {
+  const videoElement = document.getElementById("myVideo");
+  const emoticonContainer = document.getElementById("emoticonContainer");
 
-  if (currentEmotion === "felice") {
+  if (emotion === "felice") {
     createEmoticon("felice.png", emoticonContainer);
-  } else if (currentEmotion === "triste") {
+  } else if (emotion === "triste") {
     createEmoticon("triste.png", emoticonContainer);
-  } else if (currentEmotion === "arrabbiato") {
+  } else if (emotion === "arrabbiato") {
     createEmoticon("arrabbiato.png", emoticonContainer);
   } else {
     removeEmoticon(emoticonContainer);
   }
 };
+
 
 
 
