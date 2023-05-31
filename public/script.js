@@ -151,7 +151,7 @@ text.addEventListener("keydown", (e) => {
     } else {
       currentEmotion = "";
     }
-    updateEmoticonContainer();
+//    updateEmoticonContainer();
     const message = { text: text.value, emotion: currentEmotion };
     socket.emit("message", message);
     text.value = "";
