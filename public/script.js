@@ -61,20 +61,23 @@ navigator.mediaDevices
   });
 
   const connectToNewUser = (userId, stream) => {
-    console.log('I call someone' + userId);
-    setTimeout(() => {
-      const call = peer.call(userId, stream);
-      const video = document.createElement("video");
-      call.on("stream", (userVideoStream) => {
-        addVideoStream(video, userVideoStream, userId);
-        updateEmoticonContainer(userId);
-      });
-      // Aggiungi questa parte per inviare l'emozione corrente all'utente appena connesso
-      if (currentEmotion !== "") {
-        socket.emit("user-emotion", userId, currentEmotion);
-      }
-    }, 1000);
-  };
+  console.log('I call someone' + userId);
+  setTimeout(() => {
+    const call = peer.call(userId, stream);
+    const video = document.createElement("video");
+    call.on("stream", (userVideoStream) => {
+      addVideoStream(video, userVideoStream, userId);
+      updateEmoticonContainer(userId);
+    });
+    // Aggiungi questa parte per inviare l'emozione corrente all'utente appena connesso
+    if (currentEmotion !== "") {
+      socket.emit("user-emotion", userId, currentEmotion);
+    }
+    // Aggiorna la riga seguente per impostare correttamente l'emozione dell'utente appena connesso
+    userEmotions[userId] = currentEmotion;
+  }, 1000);
+};
+
 
 
 
@@ -202,9 +205,16 @@ const updateEmoticonContainer = (userId) => {
     } else if (currentEmotion === "arrabbiato") {
       userEmotions[userId] = "arrabbiato";
       updateEmoticonImage(userId);
+
+      const userEmotion = userEmotions[userId];
+        if (userEmotion) {
+          currentEmotion = userEmotion;
+          updateEmoticonImage(userId);
+        }
+      }
     }
-  }
-};
+    };
+
 
 
 

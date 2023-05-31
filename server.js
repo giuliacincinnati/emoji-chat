@@ -26,25 +26,20 @@ app.get("/:room", (req, res) => {
 
 io.on("connection", (socket) => {
   socket.on("join-room", (roomId, userId, userName, userPeerId) => {
-    socket.join(roomId);
-    setTimeout(() => {
-      socket.to(roomId).broadcast.emit("user-connected", userPeerId);
-      // Aggiungi questa parte per inviare l'emozione corrente all'utente appena connesso
-      if (currentEmotion !== "") {
-        io.to(roomId).emit("user-emotion", userId, currentEmotion);
-      }
-    }, 1000);
-    socket.on("message", (message) => {
-      const emotion = message.emotion;
-      io.to(roomId).emit("createMessage", message, userName, userId);
+  socket.join(roomId);
+  setTimeout(() => {
+    socket.to(roomId).broadcast.emit("user-connected", userPeerId);
+  }, 1000);
+  socket.on("message", (message) => {
+  const emotion = message.emotion;
+  io.to(roomId).emit("createMessage", message, userName, userId);
 
-      if (emotion) {
-        io.to(roomId).emit("user-emotion", userId, emotion);
-      }
+  if (emotion) {
+    io.to(roomId).emit("user-emotion", userId, emotion);
+  }
+    });
     });
   });
-});
-
 
 
 server.listen(process.env.PORT || 3030, () => {
