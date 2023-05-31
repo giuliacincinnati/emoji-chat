@@ -26,21 +26,36 @@ app.get("/:room", (req, res) => {
 
 io.on("connection", (socket) => {
   socket.on("join-room", (roomId, userId, userName, userPeerId) => {
-  socket.join(roomId);
-  setTimeout(() => {
-    socket.to(roomId).broadcast.emit("user-connected", userPeerId);
-    socket.emit("user-connected", userPeerId);
-  }, 1000);
-  socket.on("message", (message) => {
-  const emotion = message.emotion;
-  io.to(roomId).emit("createMessage", message, userName, userId);
+    socket.join(roomId);
+    setTimeout(() => {
+      socket.to(roomId).broadcast.emit("user-connected", userPeerId);
 
-  if (emotion) {
-    io.to(roomId).emit("user-emotion", userId, emotion);
-  }
-    });
+      // Ottieni l'elenco delle emozioni degli utenti già connessi
+      const connectedSockets = io.sockets.adapter.rooms.get(roomId);
+      const userEmotions = {};
+      for (const socketId of connectedSockets) {
+        const socket = io.sockets.sockets.get(socketId);
+        const emotion = socket.data.emotion;
+        userEmotions[socketId] = emotion;
+      }
+
+      // Invia l'elenco delle emozioni agli utenti appena connessi
+      socket.emit("connected-users-emotions", userEmotions);
+      socket.data.emotion = ""; // Imposta l'emozione iniziale dell'utente su vuota
+      socket.emit("user-connected", userPeerId);
+    }, 1000);
+
+    socket.on("message", (message) => {
+      const emotion = message.emotion;
+      io.to(roomId).emit("createMessage", message, userName, userId);
+
+      if (emotion) {
+        io.to(roomId).emit("user-emotion", userId, emotion);
+      }
     });
   });
+});
+
 
 
 server.listen(process.env.PORT || 3030, () => {
