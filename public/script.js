@@ -69,8 +69,13 @@ navigator.mediaDevices
         addVideoStream(video, userVideoStream, userId);
         updateEmoticonContainer(userId);
       });
-    }, 1000); // Attendi 1 secondo prima di effettuare la chiamata
+      // Aggiungi questa parte per inviare l'emozione corrente all'utente appena connesso
+      if (currentEmotion !== "") {
+        socket.emit("user-emotion", userId, currentEmotion);
+      }
+    }, 1000);
   };
+
 
 
 
