@@ -5,6 +5,9 @@ const showChat = document.querySelector("#showChat");
 const backBtn = document.querySelector(".header__back");
 myVideo.muted = true;
 const userEmotions = {};
+if (peer.id) {
+  updateEmoticonContainer(peer.id);
+}
 
 
 backBtn.addEventListener("click", () => {
@@ -67,7 +70,11 @@ navigator.mediaDevices
     const video = document.createElement("video");
     call.on("stream", (userVideoStream) => {
       addVideoStream(video, userVideoStream, userId);
-      updateEmoticonContainer(userId);
+      if (userId !== peer.id) {
+        updateEmoticonContainer(userId);
+      }
+
+    //  updateEmoticonContainer(userId);
     });
 
     // Aggiungi questa parte per inviare l'emozione corrente all'utente appena connesso
@@ -78,10 +85,6 @@ navigator.mediaDevices
     // Aggiorna la riga seguente per impostare correttamente l'emozione dell'utente appena connesso
     userEmotions[userId] = currentEmotion;
 
-    // Aggiungi questo controllo per creare l'emoticon container anche per l'utente che avvia l'app
-    if (userId === peer.id) {
-      updateEmoticonContainer(userId);
-    }
   }, 1000);
 };
 
