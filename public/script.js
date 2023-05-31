@@ -226,6 +226,9 @@ const updateEmoticonContainer = (userId) => {
         }
       }
     }
+    setTimeout(() => {
+      emoticonContainer.innerHTML = "";
+    }, 10000)
     };
 
 
