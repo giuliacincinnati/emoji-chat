@@ -74,6 +74,7 @@ navigator.mediaDevices
 
 
 
+
 peer.on("open", (id) => {
   console.log('my id is' + id);
   socket.emit("join-room", ROOM_ID, id, user, peer.id);
@@ -88,14 +89,17 @@ const addVideoStream = (video, stream, userId) => {
     peerVideoGrid.classList.add("peer-video-grid");
     peerVideoGrid.dataset.peer = userId;
     peerVideoGrid.appendChild(video);
-    const emoticonContainer = createEmoticon(userId); // Aggiungi emoticonContainer solo se userId è definito
+
     if (userId) {
+      const emoticonContainer = createEmoticon(userId);
       peerVideoGrid.appendChild(emoticonContainer);
     }
+
     videoGrid.appendChild(peerVideoGrid);
     updateEmoticonContainer(userId);
   });
 };
+
 
 
 let text = document.querySelector("#chat_message");
