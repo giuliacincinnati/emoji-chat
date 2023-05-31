@@ -71,7 +71,7 @@ socket.on("user-connected", (userId) => {
     updateEmoticonContainer(userId);
   }
 });
-
+});
 
   const connectToNewUser = (userId, stream) => {
   console.log('I call someone' + userId);
