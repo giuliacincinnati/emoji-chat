@@ -129,14 +129,10 @@ send.addEventListener("click", (e) => {
     } else {
       currentEmotion = "";
     }
+    updateEmoticonContainer();
     const message = { text: text.value, emotion: currentEmotion };
     socket.emit("message", message);
     text.value = "";
-
-    // Aggiungi questo controllo per aggiornare l'emoticon container per l'utente che avvia l'app
-    if (peer.id === userId) {
-      updateEmoticonContainer(userId);
-    }
   }
 });
 
@@ -151,15 +147,10 @@ text.addEventListener("keydown", (e) => {
     } else {
       currentEmotion = "";
     }
-//    updateEmoticonContainer();
+    updateEmoticonContainer();
     const message = { text: text.value, emotion: currentEmotion };
     socket.emit("message", message);
     text.value = "";
-
-    // Aggiungi questo controllo per aggiornare l'emoticon container per l'utente che avvia l'app
-    if (peer.id === userId) {
-      updateEmoticonContainer(userId);
-    }
   }
 });
 
