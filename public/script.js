@@ -153,7 +153,14 @@ text.addEventListener("keydown", (e) => {
 
 socket.on("user-emotion", (userId, emotion) => {
   userEmotions[userId] = emotion;
-  updateEmoticonImage(userId);
+//  updateEmoticonImage(userId);
+  if (userId === peer.id) {
+    currentEmotion = emotion;
+  updateEmoticonContainer(peer.id);
+} else {
+  userEmotions[userId] = emotion;
+ updateEmoticonContainer(userId);
+}
 });
 
 

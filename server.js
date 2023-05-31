@@ -30,6 +30,9 @@ io.on("connection", (socket) => {
   setTimeout(() => {
     socket.to(roomId).broadcast.emit("user-connected", userPeerId);
     socket.emit("user-connected", userPeerId);
+    // Invia lo stato dell'emoticon all'utente appena connesso
+    socket.to(roomId).broadcast.emit("user-emotion", userPeerId, userEmotions[userPeerId]);
+
   }, 1000);
   socket.on("message", (message) => {
   const emotion = message.emotion;
