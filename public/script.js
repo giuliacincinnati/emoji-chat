@@ -69,18 +69,21 @@ navigator.mediaDevices
       addVideoStream(video, userVideoStream, userId);
       updateEmoticonContainer(userId);
     });
+
     // Aggiungi questa parte per inviare l'emozione corrente all'utente appena connesso
     if (currentEmotion !== "") {
       socket.emit("user-emotion", userId, currentEmotion);
     }
+
     // Aggiorna la riga seguente per impostare correttamente l'emozione dell'utente appena connesso
     userEmotions[userId] = currentEmotion;
+
+    // Aggiungi questo controllo per creare l'emoticon container anche per l'utente che avvia l'app
+    if (userId === peer.id) {
+      updateEmoticonContainer(userId);
+    }
   }, 1000);
 };
-
-
-
-
 
 
 peer.on("open", (id) => {

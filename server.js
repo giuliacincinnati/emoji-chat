@@ -29,6 +29,7 @@ io.on("connection", (socket) => {
   socket.join(roomId);
   setTimeout(() => {
     socket.to(roomId).broadcast.emit("user-connected", userPeerId);
+    socket.emit("user-connected", userPeerId);
   }, 1000);
   socket.on("message", (message) => {
   const emotion = message.emotion;
