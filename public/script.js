@@ -55,21 +55,13 @@ navigator.mediaDevices
       });
     });
 
-socket.on("connected-users-emotions", (userEmotions) => {
-  for (const userId in userEmotions) {
-    if (userId !== peer.id) {
-      const emotion = userEmotions[userId];
-      userEmotions[userId] = emotion;
-      updateEmoticonContainer(userId);
-    }
-  }
-});
 
 socket.on("user-connected", (userId) => {
   connectToNewUser(userId, myVideoStream);
   if (userEmotions[userId]) {
     updateEmoticonContainer(userId);
   }
+   updateEmoticonContainer(peer.id);
 });
 });
 
@@ -107,14 +99,15 @@ const addVideoStream = (video, stream, userId) => {
     peerVideoGrid.dataset.peer = userId;
     peerVideoGrid.appendChild(video);
 
-    const emoticonContainer = createEmoticon(userId);
-    peerVideoGrid.appendChild(emoticonContainer);
+    if (userId) {
+      const emoticonContainer = createEmoticon(userId);
+      peerVideoGrid.appendChild(emoticonContainer);
+    }
 
     videoGrid.appendChild(peerVideoGrid);
     updateEmoticonContainer(userId);
   });
 };
-
 
 
 
@@ -199,7 +192,7 @@ socket.on("createMessage", (message, userName, userId) => {
 const updateEmoticonContainer = (userId) => {
   const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
   if (peerVideoGrid) {
-    let emoticonContainer = getEmoticonContainer(userId);
+    let emoticonContainer = document.querySelector(`#emoticon-container-${userId}`);
     if (!emoticonContainer) {
       emoticonContainer = createEmoticon(userId);
       peerVideoGrid.appendChild(emoticonContainer);
@@ -214,10 +207,11 @@ const updateEmoticonContainer = (userId) => {
       userEmotions[userId] = "arrabbiato";
       updateEmoticonImage(userId);
 
-      const getEmoticonContainer = (userId) => {
-        const emoticonContainerId = `emoticon-container-${userId}`;
-        return document.getElementById(emoticonContainerId);
-      };
+      const userEmotion = userEmotions[userId];
+        if (userEmotion) {
+          currentEmotion = userEmotion;
+          updateEmoticonImage(userId);
+        }
       }
     }
     };
