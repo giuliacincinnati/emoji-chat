@@ -80,7 +80,6 @@ socket.on("user-connected", (userId) => {
     const video = document.createElement("video");
     call.on("stream", (userVideoStream) => {
       addVideoStream(video, userVideoStream, userId);
-    //  updateEmoticonContainer(userId);
     });
     if (currentEmotion !== "") {
       socket.emit("user-emotion", userId, currentEmotion);
@@ -90,17 +89,13 @@ socket.on("user-connected", (userId) => {
       updateEmoticonContainer(userId);
     }
   }, 1000);
-  updateEmoticonContainer(userId);
-
 };
 
 
 peer.on("open", (id) => {
   console.log('my id is' + id);
   socket.emit("join-room", ROOM_ID, id, user, peer.id);
-  updateEmoticonContainer(peer.id);
 });
-
 
 const addVideoStream = (video, stream, userId) => {
   video.srcObject = stream;
