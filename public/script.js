@@ -65,7 +65,7 @@ socket.on("user-connected", (userId) => {
 });
 });
 
-  const connectToNewUser = (userId, stream) => {
+const connectToNewUser = (userId, stream) => {
   console.log('I call someone' + userId);
   setTimeout(() => {
     const call = peer.call(userId, stream);
@@ -79,9 +79,13 @@ socket.on("user-connected", (userId) => {
     userEmotions[userId] = currentEmotion;
     if (userId === peer.id) {
       updateEmoticonContainer(userId);
+    } else {
+      // Aggiorna l'emoticon container per la persona che si unisce alla chiamata
+      updateEmoticonContainer(userId);
     }
   }, 1000);
 };
+
 
 
 peer.on("open", (id) => {
