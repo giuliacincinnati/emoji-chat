@@ -73,34 +73,34 @@ socket.on("user-connected", (userId) => {
 });
 });
 
-const connectToNewUser = (userId, stream) => {
+  const connectToNewUser = (userId, stream) => {
   console.log('I call someone' + userId);
   setTimeout(() => {
     const call = peer.call(userId, stream);
     const video = document.createElement("video");
     call.on("stream", (userVideoStream) => {
       addVideoStream(video, userVideoStream, userId);
-      const emoticonContainer = document.querySelector(`#emoticon-container-${userId}`);
-      if (!emoticonContainer) {
-        createEmoticon(userId);
-      }
-      if (currentEmotion !== "") {
-        socket.emit("user-emotion", userId, currentEmotion);
-      }
-      userEmotions[userId] = currentEmotion;
-      if (userId === peer.id) {
-        updateEmoticonContainer(userId);
-      }
+    //  updateEmoticonContainer(userId);
     });
+    if (currentEmotion !== "") {
+      socket.emit("user-emotion", userId, currentEmotion);
+    }
+    userEmotions[userId] = currentEmotion;
+    if (userId === peer.id) {
+      updateEmoticonContainer(userId);
+    }
   }, 1000);
-};
+  updateEmoticonContainer(userId);
 
+};
 
 
 peer.on("open", (id) => {
   console.log('my id is' + id);
   socket.emit("join-room", ROOM_ID, id, user, peer.id);
+  updateEmoticonContainer(peer.id);
 });
+
 
 const addVideoStream = (video, stream, userId) => {
   video.srcObject = stream;
