@@ -62,12 +62,14 @@ navigator.mediaDevices
 
   const connectToNewUser = (userId, stream) => {
     console.log('I call someone' + userId);
-    const call = peer.call(userId, stream);
-    const video = document.createElement("video");
-    call.on("stream", (userVideoStream) => {
-      addVideoStream(video, userVideoStream, userId);
-      updateEmoticonContainer(userId);
-    });
+    setTimeout(() => {
+      const call = peer.call(userId, stream);
+      const video = document.createElement("video");
+      call.on("stream", (userVideoStream) => {
+        addVideoStream(video, userVideoStream, userId);
+        updateEmoticonContainer(userId);
+      });
+    }, 1000); // Attendi 1 secondo prima di effettuare la chiamata
   };
 
 
