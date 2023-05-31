@@ -41,6 +41,9 @@ navigator.mediaDevices
   .getUserMedia({
     audio: true,
     video: true,
+    addVideoStream(myVideo, stream, peer.id);
+    updateEmoticonContainer(peer.id);
+
   })
   .then((stream) => {
     myVideoStream = stream;
@@ -91,6 +94,7 @@ const connectToNewUser = (userId, stream) => {
 peer.on("open", (id) => {
   console.log('my id is' + id);
   socket.emit("join-room", ROOM_ID, id, user, peer.id);
+  updateEmoticonContainer(id);
 });
 
 const addVideoStream = (video, stream, userId) => {
