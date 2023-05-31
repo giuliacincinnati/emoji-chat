@@ -41,9 +41,6 @@ navigator.mediaDevices
   .getUserMedia({
     audio: true,
     video: true,
-    addVideoStream(myVideo, stream, peer.id);
-    updateEmoticonContainer(peer.id);
-
   })
   .then((stream) => {
     myVideoStream = stream;
