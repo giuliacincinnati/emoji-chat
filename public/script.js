@@ -158,15 +158,13 @@ text.addEventListener("keydown", (e) => {
 });
 
 socket.on("user-emotion", (userId, emotion) => {
-  //userEmotions[userId] = emotion;
-//  updateEmoticonImage(userId);
-  if (userId === peer.id) {
-  //  currentEmotion = emotion;
-  updateEmoticonContainer(peer.id);
-} else {
-//  userEmotions[userId] = emotion;
- updateEmoticonContainer(userId);
-}
+  updateEmoticonContainer(userId); // Aggiorna emoticon per l'utente che emette l'emozione
+  // Aggiorna emoticon per tutti gli altri utenti
+  Object.keys(userEmotions).forEach(user => {
+    if (user != userId) {
+      updateEmoticonContainer(user);
+    }
+  })
 });
 
 
