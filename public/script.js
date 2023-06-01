@@ -76,6 +76,8 @@ const connectToNewUser = (userId, stream) => {
     });
     if (currentEmotion !== "") {
       socket.emit("user-emotion", userId, currentEmotion);
+      updateEmoticonContainer(peer.id);
+      socket.broadcast.emit("user-emotion", peer.id, currentEmotion);
     }
     userEmotions[userId] = currentEmotion;
     if (userId === peer.id) {
@@ -158,14 +160,9 @@ text.addEventListener("keydown", (e) => {
 });
 
 socket.on("user-emotion", (userId, emotion) => {
-  updateEmoticonContainer(userId); // Aggiorna emoticon per l'utente che emette l'emozione
-  // Aggiorna emoticon per tutti gli altri utenti
-  Object.keys(userEmotions).forEach(user => {
-    if (user != userId) {
-      updateEmoticonContainer(user);
-    }
-  })
-});
+  updateEmoticonContainer(userId);
+})
+
 
 
 socket.on("createMessage", (message, userName, userId) => {
