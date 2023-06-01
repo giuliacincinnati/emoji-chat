@@ -72,6 +72,7 @@ const connectToNewUser = (userId, stream) => {
     const video = document.createElement("video");
     call.on("stream", (userVideoStream) => {
       addVideoStream(video, userVideoStream, userId);
+      updateEmoticonContainer(userId);
     });
     if (currentEmotion !== "") {
       socket.emit("user-emotion", userId, currentEmotion);
@@ -157,13 +158,13 @@ text.addEventListener("keydown", (e) => {
 });
 
 socket.on("user-emotion", (userId, emotion) => {
-  userEmotions[userId] = emotion;
+  //userEmotions[userId] = emotion;
 //  updateEmoticonImage(userId);
   if (userId === peer.id) {
-    currentEmotion = emotion;
+  //  currentEmotion = emotion;
   updateEmoticonContainer(peer.id);
 } else {
-  userEmotions[userId] = emotion;
+//  userEmotions[userId] = emotion;
  updateEmoticonContainer(userId);
 }
 });
