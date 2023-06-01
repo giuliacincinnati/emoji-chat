@@ -77,7 +77,6 @@ const connectToNewUser = (userId, stream) => {
     if (currentEmotion !== "") {
       socket.emit("user-emotion", userId, currentEmotion);
       updateEmoticonContainer(peer.id);
-      socket.broadcast.emit("user-emotion", peer.id, currentEmotion);
     }
     userEmotions[userId] = currentEmotion;
     if (userId === peer.id) {
@@ -160,9 +159,8 @@ text.addEventListener("keydown", (e) => {
 });
 
 socket.on("user-emotion", (userId, emotion) => {
-  updateEmoticonContainer(userId);
-})
-
+ updateEmoticonContainer(userId);
+});
 
 
 socket.on("createMessage", (message, userName, userId) => {
