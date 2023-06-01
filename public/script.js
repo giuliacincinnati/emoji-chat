@@ -58,11 +58,18 @@ navigator.mediaDevices
 
 socket.on("user-connected", (userId) => {
   connectToNewUser(userId, myVideoStream);
+  if (userEmotions[userId]) {
+    updateEmoticonContainer(userId);
+  }
+   updateEmoticonContainer(peer.id);
+});
+
+socket.on("user-connected", (userId) => {
+  // ...
   for (const existingUserId in userEmotions) {
     socket.emit("user-emotion", existingUserId, userEmotions[existingUserId]);
   }
 });
-
 
 const connectToNewUser = (userId, stream) => {
   console.log('I call someone' + userId);
@@ -74,7 +81,7 @@ const connectToNewUser = (userId, stream) => {
       updateEmoticonContainer(userId);
     });
     if (currentEmotion !== "") {
-      socket.broadcast.emit("user-emotion", userId, currentEmotion);
+      socket.emit("user-emotion", userId, currentEmotion);
       updateEmoticonContainer(peer.id);
     }
     userEmotions[userId] = currentEmotion;
