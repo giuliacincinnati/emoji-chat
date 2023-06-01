@@ -63,12 +63,6 @@ socket.on("user-connected", (userId) => {
   }
    updateEmoticonContainer(peer.id);
 });
-
-socket.on("user-connected", (userId) => {
-  // ...
-  for (const existingUserId in userEmotions) {
-    socket.emit("user-emotion", existingUserId, userEmotions[existingUserId]);
-  }
 });
 
 const connectToNewUser = (userId, stream) => {
