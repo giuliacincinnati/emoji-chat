@@ -55,14 +55,29 @@ navigator.mediaDevices
       });
     });
 
+    socket.on("user-emotion", (userId, emotion) => {
+  if (userId === peer.id) {
+    currentEmotion = emotion;
+    updateEmoticonContainer(peer.id);
+  } else {
+    userEmotions[userId] = emotion;
+    updateEmoticonContainer(userId);
+  }
+});
 
-    socket.on("user-connected", (userId) => {
-      connectToNewUser(userId, myVideoStream);
-      if (userEmotions[userId]) {
-        updateEmoticonContainer(userId);
-      }
-      updateEmoticonContainer(peer.id); // Aggiorna l'emoticon container per l'utente corrente (quello che ha avviato la chiamata)
-    });
+socket.on("user-connected", (userId) => {
+  connectToNewUser(userId, myVideoStream);
+
+  // Invia l'evento "user-emotion" per tutti gli utenti connessi
+  Object.entries(userEmotions).forEach(([connectedUserId, emotion]) => {
+    socket.emit("user-emotion", connectedUserId, emotion);
+  });
+
+  // Invia l'evento "user-emotion" per l'utente corrente
+  if (currentEmotion !== "") {
+    socket.emit("user-emotion", peer.id, currentEmotion);
+  }
+});
     });
 
 
@@ -162,27 +177,16 @@ text.addEventListener("keydown", (e) => {
   }
 });
 
-socket.on("user-emotion", (userId, emotion) => {
-  userEmotions[userId] = emotion; // Aggiorna l'emozione dell'utente
-  updateEmoticonContainer(userId); // Aggiorna l'emoticon container per l'utente
-});
-
-
 socket.on("createMessage", (message, userName, userId) => {
   let messageContent = message.text;
   let includeEmoticon = false;
 
   if (message.emotion === "felice") {
-    currentEmotion = "felice";
     includeEmoticon = true;
   } else if (message.emotion === "arrabbiato") {
-    currentEmotion = "arrabbiato";
     includeEmoticon = true;
   } else if (message.emotion === "triste") {
-    currentEmotion = "triste";
     includeEmoticon = true;
-  } else {
-    currentEmotion = "";
   }
 
   messages.innerHTML += `
@@ -192,6 +196,7 @@ socket.on("createMessage", (message, userName, userId) => {
     </div>`;
 
   if (includeEmoticon) {
+    userEmotions[userId] = message.emotion;
     updateEmoticonContainer(userId);
   }
 });
