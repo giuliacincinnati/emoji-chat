@@ -86,10 +86,11 @@ navigator.mediaDevices
     });
 
     socket.on("user-connected", (userId, userOriginalId, userOriginalEmotion) => {
-      connectToNewUser(userId, myVideoStream);
-      createEmoticon(userOriginalId);
-      updateEmoticonImage(userOriginalId, userOriginalEmotion);
-    }
+    connectToNewUser(userId, myVideoStream);
+    createEmoticon(userOriginalId);
+    updateEmoticonImage(userOriginalId, userOriginalEmotion);
+
+    });
 
     socket.on("new-user-joined", (userId) => {
       updateEmoticonContainer(userId);
