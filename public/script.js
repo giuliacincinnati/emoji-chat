@@ -63,6 +63,7 @@ navigator.mediaDevices
       }
       updateEmoticonContainer(peer.id); // Aggiorna l'emoticon container per l'utente corrente (quello che ha avviato la chiamata)
     });
+    });
 
 
 const connectToNewUser = (userId, stream) => {
