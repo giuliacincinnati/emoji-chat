@@ -63,16 +63,20 @@ navigator.mediaDevices
         const call = peer.call(userId, stream);
         const video = document.createElement("video");
         call.on("stream", async (userVideoStream) => {
-        await addVideoStream(video, userVideoStream, userId);
-        updateEmoticonContainer(userId); // Aggiorna l'emoticon container per il nuovo utente con l'emozione corrente dell'utente originale
-      });
+          await addVideoStream(video, userVideoStream, userId);
+          updateEmoticonContainer(userId); // Aggiorna l'emoticon container per il nuovo utente con l'emozione corrente dell'utente originale
+        });
+
         if (currentEmotion !== "") {
           socket.emit("user-emotion", peer.id, currentEmotion); // Invia l'emozione al server con l'ID del chiamante
         }
+
         userEmotions[peer.id] = currentEmotion; // Aggiorna l'emozione del chiamante
+
         socket.emit("new-user-joined", userId); // Informa gli altri utenti che un nuovo utente si è unito
       }, 1000);
     };
+
 
     socket.on("new-user-joined", (userId) => {
       updateEmoticonContainer(userId);
@@ -208,11 +212,7 @@ socket.on("createMessage", (message, userName, userId) => {
 
 
 
-
 const updateEmoticonContainer = (userId, emotion) => {
-  if (!userId) {
-  return;
-}
   const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
   if (peerVideoGrid) {
     let emoticonContainer = document.querySelector(`#emoticon-container-${userId}`);
@@ -220,11 +220,11 @@ const updateEmoticonContainer = (userId, emotion) => {
       emoticonContainer = createEmoticon(userId);
       peerVideoGrid.appendChild(emoticonContainer);
     }
-    if (currentEmotion === "felice" || currentEmotion === "triste" || currentEmotion === "arrabbiato") {
-        userEmotions[userId] = currentEmotion;
-        updateEmoticonImage(userId);
-        socket.emit("user-emotion", userId, currentEmotion);
-      }
+    if (currentEmotion !== "") {
+      userEmotions[userId] = currentEmotion;
+      updateEmoticonImage(userId);
+      socket.emit("user-emotion", userId, currentEmotion);
+    }
   }
 };
 
@@ -233,9 +233,6 @@ const updateEmoticonContainer = (userId, emotion) => {
 
 
 const updateEmoticonImage = (userId) => {
-  if (!userId) {
-  return;
-}
   const emoticonContainer = document.querySelector(`#emoticon-container-${userId}`);
   if (emoticonContainer) {
     let emoticonImage = emoticonContainer.querySelector("img");
