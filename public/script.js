@@ -63,9 +63,9 @@ navigator.mediaDevices
         const call = peer.call(userId, stream);
         const video = document.createElement("video");
         call.on("stream", async (userVideoStream) => {
-          await addVideoStream(video, userVideoStream, userId);
-          updateEmoticonContainer(userId);
-        });
+        await addVideoStream(video, userVideoStream, userId);
+        updateEmoticonContainer(userId, currentEmotion); // Aggiorna l'emoticon container per il nuovo utente con l'emozione corrente dell'utente originale
+      });
         if (currentEmotion !== "") {
           socket.emit("user-emotion", peer.id, currentEmotion); // Invia l'emozione al server con l'ID del chiamante
         }
@@ -85,12 +85,19 @@ navigator.mediaDevices
       updateEmoticonContainer(peer.id); // Crea l'elemento emoticon container per il chiamante
     });
 
-    socket.on("user-connected", (userId, userOriginalId, userOriginalEmotion) => {
-    connectToNewUser(userId, myVideoStream);
-    createEmoticon(userOriginalId);
-    updateEmoticonImage(userOriginalId, userOriginalEmotion);
-
+    socket.on("user-connected", (userId) => {
+      connectToNewUser(userId, myVideoStream);
+      if (userEmotions[userId]) {
+        updateEmoticonContainer(userId);
+      }
+      if (userId !== peer.id) {
+        socket.emit("get-user-emotion", userId, (emotion) => {
+          userEmotions[userId] = emotion;
+          updateEmoticonContainer(userId, currentEmotion); // Passa l'emozione corrente dell'utente originale al nuovo utente
+        });
+      }
     });
+
 
     socket.on("new-user-joined", (userId) => {
       updateEmoticonContainer(userId);
@@ -202,7 +209,7 @@ socket.on("createMessage", (message, userName, userId) => {
 
 
 
-const updateEmoticonContainer = (userId) => {
+const updateEmoticonContainer = (userId, emotion) => {
   const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
   if (peerVideoGrid) {
     let emoticonContainer = document.querySelector(`#emoticon-container-${userId}`);
@@ -211,10 +218,10 @@ const updateEmoticonContainer = (userId) => {
       peerVideoGrid.appendChild(emoticonContainer);
     }
     if (currentEmotion === "felice" || currentEmotion === "triste" || currentEmotion === "arrabbiato") {
-      userEmotions[userId] = currentEmotion;
-      updateEmoticonImage(userId);
-      socket.emit("user-emotion", userId, currentEmotion); // Invia l'emozione al server per l'utente rappresentato da userId
-    }
+        userEmotions[userId] = currentEmotion;
+        updateEmoticonImage(userId);
+        socket.emit("user-emotion", userId, currentEmotion);
+      }
   }
 };
 
