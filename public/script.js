@@ -205,6 +205,9 @@ socket.on("createMessage", (message, userName, userId) => {
 });
 
 
+
+
+
 const updateEmoticonContainer = (userId) => {
   const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
   if (peerVideoGrid) {
@@ -213,13 +216,15 @@ const updateEmoticonContainer = (userId) => {
       emoticonContainer = createEmoticon(userId);
       peerVideoGrid.appendChild(emoticonContainer);
     }
-    if (currentEmotion !== userEmotions[userId]) {
+    if (currentEmotion === "felice" || currentEmotion === "triste" || currentEmotion === "arrabbiato") {
       userEmotions[userId] = currentEmotion;
       updateEmoticonImage(userId);
-      socket.emit("user-emotion", userId, currentEmotion);
+      socket.emit("user-emotion", userId, currentEmotion); // Invia l'emozione al server per l'utente rappresentato da userId
     }
   }
 };
+
+
 
 
 
@@ -249,8 +254,6 @@ const createEmoticon = (userId) => {
       peerVideoGrid.appendChild(emoticonContainer);
     }
   }
-
-  userEmotions[userId] = ""; // Inizializza l'emozione dell'utente come stringa vuota
 
   updateEmoticonImage(userId);
 
