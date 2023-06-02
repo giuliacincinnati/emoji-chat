@@ -58,7 +58,7 @@ navigator.mediaDevices
 
 
     const connectToNewUser = (userId, stream) => {
-      console.log('I call someone' + userId);
+      console.log("I call someone" + userId);
       setTimeout(() => {
         const call = peer.call(userId, stream);
         const video = document.createElement("video");
@@ -77,10 +77,6 @@ navigator.mediaDevices
       }, 1000);
     };
 
-
-    socket.on("new-user-joined", (userId) => {
-      updateEmoticonContainer(userId);
-    });
 
 
     peer.on("open", (id) => {
@@ -154,6 +150,7 @@ send.addEventListener("click", (e) => {
     const message = { text: text.value, emotion: currentEmotion };
     socket.emit("message", message);
     text.value = "";
+    updateEmoticonContainer(peer.id);
   }
 });
 
@@ -171,7 +168,7 @@ text.addEventListener("keydown", (e) => {
     const message = { text: text.value, emotion: currentEmotion };
     socket.emit("message", message);
     text.value = "";
-    updateEmoticonContainer();
+    updateEmoticonContainer(peer.id);
   }
 });
 
@@ -210,9 +207,7 @@ socket.on("createMessage", (message, userName, userId) => {
 });
 
 
-
-
-const updateEmoticonContainer = (userId, emotion) => {
+const updateEmoticonContainer = (userId) => {
   const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
   if (peerVideoGrid) {
     let emoticonContainer = document.querySelector(`#emoticon-container-${userId}`);
@@ -227,7 +222,6 @@ const updateEmoticonContainer = (userId, emotion) => {
     }
   }
 };
-
 
 
 
