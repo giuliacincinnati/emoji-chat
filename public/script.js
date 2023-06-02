@@ -75,6 +75,7 @@ navigator.mediaDevices
     };
 
 
+
     peer.on("open", (id) => {
       console.log('my id is' + id);
       socket.emit("join-room", ROOM_ID, id, user, peer.id);
@@ -214,10 +215,25 @@ const updateEmoticonContainer = (userId) => {
     if (currentEmotion === "felice" || currentEmotion === "triste" || currentEmotion === "arrabbiato") {
       userEmotions[userId] = currentEmotion;
       updateEmoticonImage(userId);
-      socket.emit("user-emotion", userId, currentEmotion); // Invia l'emozione al server per l'utente rappresentato da userId
+      socket.emit("user-emotion", userId, currentEmotion);
+    }
+  }
+
+  // Aggiungi una condizione per gestire anche il caso in cui userId sia uguale a peer.id
+  if (userId === peer.id) {
+    let emoticonContainer = document.querySelector(`#emoticon-container-${peer.id}`);
+    if (!emoticonContainer) {
+      emoticonContainer = createEmoticon(peer.id);
+      peerVideoGrid.appendChild(emoticonContainer);
+    }
+    if (currentEmotion === "felice" || currentEmotion === "triste" || currentEmotion === "arrabbiato") {
+      userEmotions[peer.id] = currentEmotion;
+      updateEmoticonImage(peer.id);
+      socket.emit("user-emotion", peer.id, currentEmotion);
     }
   }
 };
+
 
 
 
