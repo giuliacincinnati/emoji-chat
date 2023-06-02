@@ -56,14 +56,14 @@ navigator.mediaDevices
     });
 
 
-socket.on("user-connected", (userId) => {
-  connectToNewUser(userId, myVideoStream);
-  if (userEmotions[userId]) {
-    updateEmoticonContainer(userId);
-  }
-   updateEmoticonContainer(peer.id);
-});
-});
+    socket.on("user-connected", (userId) => {
+      connectToNewUser(userId, myVideoStream);
+      if (userEmotions[userId]) {
+        updateEmoticonContainer(userId);
+      }
+      updateEmoticonContainer(peer.id); // Aggiorna l'emoticon container per l'utente corrente (quello che ha avviato la chiamata)
+    });
+
 
 const connectToNewUser = (userId, stream) => {
   console.log('I call someone' + userId);
@@ -95,7 +95,9 @@ peer.on("open", (id) => {
   console.log('my id is' + id);
   socket.emit("join-room", ROOM_ID, id, user, peer.id);
   updateEmoticonContainer(id);
+  updateEmoticonContainer(peer.id); // Aggiorna l'emoticon container per l'utente corrente (quello che ha avviato la chiamata)
 });
+
 
 const addVideoStream = (video, stream, userId) => {
   video.srcObject = stream;
