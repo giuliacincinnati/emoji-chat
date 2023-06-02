@@ -54,27 +54,6 @@ navigator.mediaDevices
         addVideoStream(video, userVideoStream);
       });
     });
-
-    socket.on("user-connected", (userId) => {
-      connectToNewUser(userId, myVideoStream);
-      if (userEmotions[userId]) {
-        updateEmoticonContainer(userId);
-      }
-      if (userId === peer.id) {
-        updateEmoticonContainer(peer.id);
-      } else {
-        socket.emit("get-user-emotion", userId, (emotion) => {
-          userEmotions[userId] = emotion;
-          updateEmoticonContainer(userId);
-        });
-      }
-    });
-
-
-    socket.on("get-user-emotion", (userId, callback) => {
-      callback(userEmotions[userId]);
-    });
-
     });
 
 
@@ -95,17 +74,32 @@ navigator.mediaDevices
       }, 1000);
     };
 
+
+    peer.on("open", (id) => {
+      console.log('my id is' + id);
+      socket.emit("join-room", ROOM_ID, id, user, peer.id);
+    });
+
+    socket.on("user-connected", (userId) => {
+      connectToNewUser(userId, myVideoStream);
+      if (userEmotions[userId]) {
+        updateEmoticonContainer(userId);
+      }
+      if (userId !== peer.id) {
+        socket.emit("get-user-emotion", userId, (emotion) => {
+          userEmotions[userId] = emotion;
+          updateEmoticonContainer(userId);
+        });
+      }
+    });
+
     socket.on("new-user-joined", (userId) => {
       updateEmoticonContainer(userId);
     });
 
-
-peer.on("open", (id) => {
-  console.log('my id is' + id);
-  socket.emit("join-room", ROOM_ID, id, user, peer.id);
-  updateEmoticonContainer(id);
-  updateEmoticonContainer(peer.id); // Aggiorna l'emoticon container per l'utente corrente (quello che ha avviato la chiamata)
-});
+    peer.on("open", () => {
+      updateEmoticonContainer(peer.id);
+    });
 
 
 const addVideoStream = (video, stream, userId) => {
