@@ -86,10 +86,10 @@ navigator.mediaDevices
     });
 
     socket.on("user-connected", (userId) => {
-      if (userEmotions[userId]) {
-        updateEmoticonContainer(userId); // Crea l'elemento emoticon container per l'utente appena connesso
-      }
       connectToNewUser(userId, myVideoStream);
+      if (userEmotions[userId]) {
+        updateEmoticonContainer(userId);
+      }
       if (userId !== peer.id) {
         socket.emit("get-user-emotion", userId, (emotion) => {
           userEmotions[userId] = emotion;
@@ -205,9 +205,6 @@ socket.on("createMessage", (message, userName, userId) => {
 });
 
 
-
-
-
 const updateEmoticonContainer = (userId) => {
   const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
   if (peerVideoGrid) {
@@ -216,15 +213,13 @@ const updateEmoticonContainer = (userId) => {
       emoticonContainer = createEmoticon(userId);
       peerVideoGrid.appendChild(emoticonContainer);
     }
-    if (currentEmotion === "felice" || currentEmotion === "triste" || currentEmotion === "arrabbiato") {
+    if (currentEmotion !== userEmotions[userId]) {
       userEmotions[userId] = currentEmotion;
       updateEmoticonImage(userId);
-      socket.emit("user-emotion", userId, currentEmotion); // Invia l'emozione al server per l'utente rappresentato da userId
+      socket.emit("user-emotion", userId, currentEmotion);
     }
   }
 };
-
-
 
 
 
@@ -254,6 +249,8 @@ const createEmoticon = (userId) => {
       peerVideoGrid.appendChild(emoticonContainer);
     }
   }
+
+  userEmotions[userId] = ""; // Inizializza l'emozione dell'utente come stringa vuota
 
   updateEmoticonImage(userId);
 
