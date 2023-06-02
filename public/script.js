@@ -64,7 +64,9 @@ navigator.mediaDevices
         const video = document.createElement("video");
         call.on("stream", async (userVideoStream) => {
           await addVideoStream(video, userVideoStream, userId);
-          updateEmoticonContainer(userId); // Aggiorna l'emoticon container per il nuovo utente con l'emozione corrente dell'utente originale
+          if (userEmotions[userId]) {
+            updateEmoticonContainer(userId, currentEmotion);
+          }
         });
 
         if (currentEmotion !== "") {
@@ -222,6 +224,7 @@ const updateEmoticonContainer = (userId, emotion) => {
     }
   }
 };
+
 
 
 
