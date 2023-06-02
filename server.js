@@ -26,23 +26,23 @@ app.get("/:room", (req, res) => {
 
 io.on("connection", (socket) => {
   socket.on("join-room", (roomId, userId, userName, userPeerId) => {
-  socket.join(roomId);
-  setTimeout(() => {
-    socket.to(roomId).broadcast.emit("user-connected", userPeerId);
-    socket.emit("user-connected", userPeerId);
-    // Invia lo stato dell'emoticon all'utente appena connesso
-  //  socket.to(roomId).broadcast.emit("user-emotion", userPeerId, userEmotions[userPeerId]);
+    socket.join(roomId);
+    setTimeout(() => {
+      socket.to(roomId).broadcast.emit("user-connected", userPeerId);
+      socket.emit("user-connected", userPeerId);
+      // Invia lo stato dell'emoticon all'utente appena connesso
+      socket.to(roomId).broadcast.emit("user-emotion", userPeerId, userEmotions[userPeerId]);
+    }, 1000);
+    socket.on("message", (message) => {
+      const emotion = message.emotion;
+      io.to(roomId).emit("createMessage", message, userName, userId);
 
-  }, 1000);
-  socket.on("message", (message) => {
-  const emotion = message.emotion;
-  io.to(roomId).emit("createMessage", message, userName, userId);
+      if (emotion) {
+        io.to(roomId).emit("user-emotion", userId, emotion);
+      }
+    });
+  });
 
-  if (emotion) {
-    io.to(roomId).emit("user-emotion", userId, emotion);
-  }
-    });
-    });
   });
 
 
