@@ -75,18 +75,19 @@ const connectToNewUser = (userId, stream) => {
       updateEmoticonContainer(userId);
     });
     if (currentEmotion !== "") {
-      socket.emit("user-emotion", userId, currentEmotion);
-      updateEmoticonContainer(peer.id);
+      socket.emit("user-emotion", peer.id, currentEmotion); // Invia l'emozione al server con l'ID del chiamante
     }
-    userEmotions[userId] = currentEmotion;
+    userEmotions[peer.id] = currentEmotion; // Aggiorna l'emozione del chiamante
     if (userId === peer.id) {
-      updateEmoticonContainer(userId);
+      updateEmoticonContainer(peer.id);
     } else {
       // Aggiorna l'emoticon container per la persona che si unisce alla chiamata
+      socket.emit("user-emotion", userId, userEmotions[userId]);
       updateEmoticonContainer(userId);
     }
   }, 1000);
 };
+
 
 
 
@@ -159,15 +160,8 @@ text.addEventListener("keydown", (e) => {
 });
 
 socket.on("user-emotion", (userId, emotion) => {
-  //userEmotions[userId] = emotion;
-//  updateEmoticonImage(userId);
-  if (userId === peer.id) {
-    currentEmotion = emotion;
-  updateEmoticonContainer(peer.id);
-} else {
-  userEmotions[userId] = emotion;
- updateEmoticonContainer(userId);
-}
+  userEmotions[userId] = emotion; // Aggiorna l'emozione dell'utente
+  updateEmoticonContainer(userId); // Aggiorna l'emoticon container per l'utente
 });
 
 
