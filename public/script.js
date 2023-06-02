@@ -152,22 +152,17 @@ send.addEventListener("click", (e) => {
   }
 });
 
-text.addEventListener("keydown", (e) => {
-  if (e.key === "Enter" && text.value.length !== 0) {
-    if (text.value.includes("felice")) {
-      currentEmotion = "felice";
-    } else if (text.value.includes("arrabbiat")) {
-      currentEmotion = "arrabbiato";
-    } else if (text.value.includes("triste")) {
-      currentEmotion = "triste";
-    } else {
-      currentEmotion = "";
-    }
-    updateEmoticonContainer();
-    const message = { text: text.value, emotion: currentEmotion };
-    socket.emit("message", message);
-    text.value = "";
+text.addEventListener("keyup", (e) => {
+  if (text.value.includes("felice")) {
+    currentEmotion = "felice";
+  } else if (text.value.includes("arrabbiato")) {
+    currentEmotion = "arrabbiato";
+  } else if (text.value.includes("triste")) {
+    currentEmotion = "triste";
+  } else {
+    currentEmotion = "";
   }
+  socket.emit("user-emotion", userId, currentEmotion); // Invia l'emozione al server
 });
 
 socket.on("user-emotion", (userId, emotion) => {
