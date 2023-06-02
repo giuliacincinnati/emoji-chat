@@ -82,24 +82,21 @@ navigator.mediaDevices
     peer.on("open", (id) => {
       console.log('my id is' + id);
       socket.emit("join-room", ROOM_ID, id, user, peer.id);
+      updateEmoticonContainer(peer.id); // Crea l'elemento emoticon container per il chiamante
     });
 
     socket.on("user-connected", (userId) => {
-      connectToNewUser(userId, myVideoStream);
       if (userEmotions[userId]) {
-        updateEmoticonContainer(userId);
+        updateEmoticonContainer(userId); // Crea l'elemento emoticon container per l'utente appena connesso
       }
+      connectToNewUser(userId, myVideoStream);
       if (userId !== peer.id) {
         socket.emit("get-user-emotion", userId, (emotion) => {
           userEmotions[userId] = emotion;
           updateEmoticonContainer(userId);
         });
-      } else {
-        // Chiamata aggiuntiva per aggiornare l'emoticon container del primo utente per il secondo utente appena connesso
-        updateEmoticonContainer(peer.id);
       }
     });
-
 
     socket.on("new-user-joined", (userId) => {
       updateEmoticonContainer(userId);
