@@ -163,7 +163,6 @@ text.addEventListener("keydown", (e) => {
     } else {
       currentEmotion = "";
     }
-
     const message = { text: text.value, emotion: currentEmotion };
     socket.emit("message", message);
     text.value = "";
@@ -218,15 +217,12 @@ const updateEmoticonContainer = (userId) => {
       peerVideoGrid.appendChild(emoticonContainer);
     }
     if (currentEmotion === "felice" || currentEmotion === "triste" || currentEmotion === "arrabbiato") {
+      updateEmoticonImage(userId);  // Aggiorna l'immagine qui
       userEmotions[userId] = currentEmotion;
-      updateEmoticonImage(userId);
-      socket.emit("user-emotion", userId, currentEmotion); // Invia l'emozione al server per l'utente rappresentato da userId
+      socket.emit("user-emotion", userId, currentEmotion);
     }
   }
 };
-
-
-
 
 
 const updateEmoticonImage = (userId) => {
