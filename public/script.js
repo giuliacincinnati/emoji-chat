@@ -168,7 +168,7 @@ text.addEventListener("keydown", (e) => {
     const message = { text: text.value, emotion: currentEmotion };
     socket.emit("message", message);
     text.value = "";
-    updateEmoticonContainer(peer.id);
+    updateEmoticonContainer();
   }
 });
 
@@ -207,7 +207,7 @@ socket.on("createMessage", (message, userName, userId) => {
 });
 
 
-const updateEmoticonContainer = (userId) => {
+const updateEmoticonContainer = (userId, emotion) => {
   const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
   if (peerVideoGrid) {
     let emoticonContainer = document.querySelector(`#emoticon-container-${userId}`);
@@ -222,7 +222,6 @@ const updateEmoticonContainer = (userId) => {
     }
   }
 };
-
 
 
 
