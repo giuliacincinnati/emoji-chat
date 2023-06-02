@@ -150,7 +150,7 @@ send.addEventListener("click", (e) => {
     const message = { text: text.value, emotion: currentEmotion };
     socket.emit("message", message);
     text.value = "";
-    updateEmoticonContainer(peer.id);
+    updateEmoticonContainer();
   }
 });
 
