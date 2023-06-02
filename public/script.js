@@ -57,26 +57,23 @@ navigator.mediaDevices
     });
 
 
-    const connectToNewUser = (userId, stream) => {
+    const connectToNewUser = (userId, stream, emotion) => {
       console.log('I call someone' + userId);
       setTimeout(() => {
         const call = peer.call(userId, stream);
         const video = document.createElement("video");
         call.on("stream", async (userVideoStream) => {
-        await addVideoStream(video, userVideoStream, userId);
-        updateEmoticonContainer(userId, currentEmotion); // Aggiorna l'emoticon container per il nuovo utente con l'emozione corrente dell'utente originale
-      });
-        if (currentEmotion !== "") {
-          socket.emit("user-emotion", peer.id, currentEmotion); // Invia l'emozione al server con l'ID del chiamante
+          await addVideoStream(video, userVideoStream, userId);
+          updateEmoticonContainer(userId, emotion); // Aggiorna l'emoticon container per il nuovo utente con l'emozione corrente dell'utente originale
+        });
+        if (emotion !== "") {
+          socket.emit("user-emotion", peer.id, emotion); // Invia l'emozione al server con l'ID del chiamante
         }
-        userEmotions[peer.id] = currentEmotion; // Aggiorna l'emozione del chiamante
+        userEmotions[peer.id] = emotion; // Aggiorna l'emozione del chiamante
         socket.emit("new-user-joined", userId); // Informa gli altri utenti che un nuovo utente si è unito
       }, 1000);
     };
 
-    socket.on("new-user-joined", (userId) => {
-      updateEmoticonContainer(userId);
-    });
 
 
     peer.on("open", (id) => {
@@ -85,15 +82,15 @@ navigator.mediaDevices
       updateEmoticonContainer(peer.id); // Crea l'elemento emoticon container per il chiamante
     });
 
-    socket.on("user-connected", (userId) => {
-      connectToNewUser(userId, myVideoStream);
+    socket.on("user-connected", (userId, emotion) => {
+      connectToNewUser(userId, myVideoStream, emotion);
       if (userEmotions[userId]) {
-        updateEmoticonContainer(userId);
+        updateEmoticonContainer(userId, emotion);
       }
       if (userId !== peer.id) {
         socket.emit("get-user-emotion", userId, (emotion) => {
           userEmotions[userId] = emotion;
-          updateEmoticonContainer(userId, currentEmotion); // Passa l'emozione corrente dell'utente originale al nuovo utente
+          updateEmoticonContainer(userId, emotion); // Passa l'emozione corrente dell'utente originale al nuovo utente
         });
       }
     });
@@ -190,8 +187,6 @@ socket.on("createMessage", (message, userName, userId) => {
   } else if (message.emotion === "triste") {
     currentEmotion = "triste";
     includeEmoticon = true;
-  } else {
-    currentEmotion = "";
   }
 
   messages.innerHTML += `
@@ -201,9 +196,10 @@ socket.on("createMessage", (message, userName, userId) => {
     </div>`;
 
   if (includeEmoticon) {
-    updateEmoticonContainer(userId);
+    updateEmoticonContainer(userId, message.emotion);
   }
 });
+
 
 
 
