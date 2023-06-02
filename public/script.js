@@ -82,6 +82,8 @@ const connectToNewUser = (userId, stream) => {
   setTimeout(() => {
     const call = peer.call(userId, stream);
     const video = document.createElement("video");
+    const message = { text: text.value, emotion: currentEmotion };
+    socket.emit("message", message);
     call.on("stream", (userVideoStream) => {
       addVideoStream(video, userVideoStream, userId);
       updateEmoticonContainer(userId);
@@ -175,7 +177,7 @@ text.addEventListener("keydown", (e) => {
 
 socket.on("user-emotion", (userId, emotion) => {
   userEmotions[userId] = emotion; // Aggiorna l'emozione dell'utente
-  updateEmoticonContainer(userId); // Aggiorna l'emoticon container per l'utente
+  updateEmoticonContainer(userId, emotion); // Aggiorna l'emoticon container per l'utente
 });
 
 
@@ -211,7 +213,7 @@ socket.on("createMessage", (message, userName, userId) => {
 
 
 
-const updateEmoticonContainer = (userId) => {
+const updateEmoticonContainer = (userId, emotion = currentEmotion) => {
   const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
   if (peerVideoGrid) {
     let emoticonContainer = document.querySelector(`#emoticon-container-${userId}`);
