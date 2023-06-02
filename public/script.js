@@ -163,10 +163,11 @@ text.addEventListener("keydown", (e) => {
     } else {
       currentEmotion = "";
     }
-    updateEmoticonContainer();
+
     const message = { text: text.value, emotion: currentEmotion };
     socket.emit("message", message);
     text.value = "";
+    updateEmoticonContainer();
   }
 });
 
