@@ -94,8 +94,12 @@ navigator.mediaDevices
           userEmotions[userId] = emotion;
           updateEmoticonContainer(userId);
         });
+      } else {
+        // Chiamata aggiuntiva per aggiornare l'emoticon container del primo utente per il secondo utente appena connesso
+        updateEmoticonContainer(peer.id);
       }
     });
+
 
     socket.on("new-user-joined", (userId) => {
       updateEmoticonContainer(userId);
