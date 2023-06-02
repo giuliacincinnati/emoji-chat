@@ -95,9 +95,7 @@ navigator.mediaDevices
           updateEmoticonContainer(userId);
         });
       }
-      updateEmoticonContainer(peer.id); // Aggiorna l'emoticon container del primo utente
     });
-
 
     socket.on("new-user-joined", (userId) => {
       updateEmoticonContainer(userId);
@@ -220,21 +218,10 @@ const updateEmoticonContainer = (userId) => {
     if (currentEmotion === "felice" || currentEmotion === "triste" || currentEmotion === "arrabbiato") {
       userEmotions[userId] = currentEmotion;
       updateEmoticonImage(userId);
-      socket.emit("user-emotion", userId, currentEmotion);
+      socket.emit("user-emotion", userId, currentEmotion); // Invia l'emozione al server per l'utente rappresentato da userId
     }
-  }
-
-  // Aggiorna anche l'emoticon container del primo utente
-  if (userId === peer.id) {
-    let emoticonContainer = document.querySelector(`#emoticon-container-${userId}`);
-    if (!emoticonContainer) {
-      emoticonContainer = createEmoticon(userId);
-      peerVideoGrid.appendChild(emoticonContainer);
-    }
-    updateEmoticonImage(userId);
   }
 };
-
 
 
 
