@@ -78,30 +78,26 @@ navigator.mediaDevices
     });
 
 
-const connectToNewUser = (userId, stream) => {
-  console.log('I call someone' + userId);
-  setTimeout(() => {
-    const call = peer.call(userId, stream);
-    const video = document.createElement("video");
-    call.on("stream", (userVideoStream) => {
-      addVideoStream(video, userVideoStream, userId);
+    const connectToNewUser = (userId, stream) => {
+      console.log('I call someone' + userId);
+      setTimeout(() => {
+        const call = peer.call(userId, stream);
+        const video = document.createElement("video");
+        call.on("stream", async (userVideoStream) => {
+          await addVideoStream(video, userVideoStream, userId);
+          updateEmoticonContainer(userId);
+        });
+        if (currentEmotion !== "") {
+          socket.emit("user-emotion", peer.id, currentEmotion); // Invia l'emozione al server con l'ID del chiamante
+        }
+        userEmotions[peer.id] = currentEmotion; // Aggiorna l'emozione del chiamante
+        socket.emit("new-user-joined", userId); // Informa gli altri utenti che un nuovo utente si è unito
+      }, 1000);
+    };
+
+    socket.on("new-user-joined", (userId) => {
       updateEmoticonContainer(userId);
     });
-    if (currentEmotion !== "") {
-      socket.emit("user-emotion", peer.id, currentEmotion); // Invia l'emozione al server con l'ID del chiamante
-    }
-    userEmotions[peer.id] = currentEmotion; // Aggiorna l'emozione del chiamante
-    if (userId === peer.id) {
-      updateEmoticonContainer(peer.id);
-    } else {
-      // Aggiorna l'emoticon container per la persona che si unisce alla chiamata
-      socket.emit("user-emotion", userId, userEmotions[userId]);
-      updateEmoticonContainer(userId);
-    }
-  }, 1000);
-};
-
-
 
 
 peer.on("open", (id) => {
@@ -113,25 +109,26 @@ peer.on("open", (id) => {
 
 
 const addVideoStream = (video, stream, userId) => {
-  video.srcObject = stream;
-  video.addEventListener("loadedmetadata", () => {
-    video.play();
-    videoGrid.appendChild(video);
-    const peerVideoGrid = document.createElement("div");
-    peerVideoGrid.classList.add("peer-video-grid");
-    peerVideoGrid.dataset.peer = userId;
-    peerVideoGrid.appendChild(video);
+  return new Promise((resolve) => {
+    video.srcObject = stream;
+    video.addEventListener("loadedmetadata", () => {
+      video.play();
+      videoGrid.appendChild(video);
+      const peerVideoGrid = document.createElement("div");
+      peerVideoGrid.classList.add("peer-video-grid");
+      peerVideoGrid.dataset.peer = userId;
+      peerVideoGrid.appendChild(video);
 
-    if (userId) {
-      const emoticonContainer = createEmoticon(userId);
-      peerVideoGrid.appendChild(emoticonContainer);
-    }
+      if (userId) {
+        const emoticonContainer = createEmoticon(userId);
+        peerVideoGrid.appendChild(emoticonContainer);
+      }
 
-    videoGrid.appendChild(peerVideoGrid);
-    updateEmoticonContainer(userId);
+      videoGrid.appendChild(peerVideoGrid);
+      resolve();
+    });
   });
 };
-
 
 
 let text = document.querySelector("#chat_message");
