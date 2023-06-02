@@ -63,7 +63,7 @@ navigator.mediaDevices
         const call = peer.call(userId, stream);
         const video = document.createElement("video");
         call.on("stream", async (userVideoStream) => {
-          await addVideoStream(video, userVideoStream, userId);
+          await addVideoStream(video, userVideoStream, userId, currentEmotion);
           if (userEmotions[userId]) {
             updateEmoticonContainer(userId, currentEmotion);
           }
@@ -88,7 +88,7 @@ navigator.mediaDevices
     });
 
     socket.on("user-connected", (userId) => {
-      connectToNewUser(userId, myVideoStream);
+      connectToNewUser(userId, myVideoStream, currentEmotion); // Passa l'emozione corrente come parametro
       if (userEmotions[userId]) {
         updateEmoticonContainer(userId);
       }
@@ -110,27 +110,31 @@ navigator.mediaDevices
     });
 
 
-const addVideoStream = (video, stream, userId) => {
-  return new Promise((resolve) => {
-    video.srcObject = stream;
-    video.addEventListener("loadedmetadata", () => {
-      video.play();
-      videoGrid.appendChild(video);
-      const peerVideoGrid = document.createElement("div");
-      peerVideoGrid.classList.add("peer-video-grid");
-      peerVideoGrid.dataset.peer = userId;
-      peerVideoGrid.appendChild(video);
+    const addVideoStream = (video, stream, userId, currentEmotion) => {
+      return new Promise((resolve) => {
+        video.srcObject = stream;
+        video.addEventListener("loadedmetadata", () => {
+          video.play();
+          videoGrid.appendChild(video);
+          const peerVideoGrid = document.createElement("div");
+          peerVideoGrid.classList.add("peer-video-grid");
+          peerVideoGrid.dataset.peer = userId;
+          peerVideoGrid.appendChild(video);
 
-      if (userId) {
-        const emoticonContainer = createEmoticon(userId);
-        peerVideoGrid.appendChild(emoticonContainer);
-      }
+          if (userId) {
+            const emoticonContainer = createEmoticon(userId);
+            peerVideoGrid.appendChild(emoticonContainer);
+            if (currentEmotion !== "") {
+              userEmotions[userId] = currentEmotion;
+              updateEmoticonImage(userId);
+            }
+          }
 
-      videoGrid.appendChild(peerVideoGrid);
-      resolve();
-    });
-  });
-};
+          videoGrid.appendChild(peerVideoGrid);
+          resolve();
+        });
+      });
+    };
 
 
 let text = document.querySelector("#chat_message");
