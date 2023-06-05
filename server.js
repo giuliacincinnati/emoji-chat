@@ -24,27 +24,36 @@ app.get("/:room", (req, res) => {
   res.render("room", { roomId: req.params.room });
 });
 
+// Memorizza lo stato dell'emoticon per ogni utente
+const userEmotions = {};
+
 io.on("connection", (socket) => {
   socket.on("join-room", (roomId, userId, userName, userPeerId) => {
-  socket.join(roomId);
-  setTimeout(() => {
-    socket.to(roomId).broadcast.emit("user-connected", userPeerId);
-    socket.emit("user-connected", userPeerId);
-    // Invia lo stato dell'emoticon all'utente appena connesso
-  //  socket.to(roomId).broadcast.emit("user-emotion", userPeerId, userEmotions[userPeerId]);
-  socket.to(roomId).broadcast.emit("user-emotion", userPeerId, userEmotions[userPeerId]);
-  }, 1000);
-  socket.on("message", (message) => {
-  const emotion = message.emotion;
-  io.to(roomId).emit("createMessage", message, userName, userId);
+    socket.join(roomId);
+    setTimeout(() => {
+      socket.to(roomId).broadcast.emit("user-connected", userPeerId);
+      socket.emit("user-connected", userPeerId);
 
-  if (emotion) {
-    io.to(roomId).emit("user-emotion", userId, emotion);
-  }
-    });
+      // Invia lo stato dell'emoticon all'utente appena connesso
+      if (userEmotions[userPeerId]) {
+        socket.emit("user-emotion", userPeerId, userEmotions[userPeerId]);
+      }
+    }, 1000);
+
+    socket.on("message", (message) => {
+      const emotion = message.emotion;
+      io.to(roomId).emit("createMessage", message, userName, userId);
+
+      if (emotion) {
+        // Memorizza lo stato dell'emoticon dell'utente
+        userEmotions[userId] = emotion;
+
+        // Invia lo stato dell'emoticon a tutti gli utenti nella stanza
+        io.to(roomId).emit("user-emotion", userId, emotion);
+      }
     });
   });
-
+});
 
 server.listen(process.env.PORT || 3030, () => {
   console.log('Server listening on port', process.env.PORT || 3030);
