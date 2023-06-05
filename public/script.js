@@ -50,9 +50,9 @@ navigator.mediaDevices
       console.log('someone call me');
       call.answer(stream);
       const video = document.createElement("video");
-      call.on("stream", (userVideoStream) => {
-        addVideoStream(video, userVideoStream);
-      });
+      call.on("stream", async (userVideoStream) => {
+      await addVideoStream(video, userVideoStream, userId, currentEmotion);
+    });
     });
     });
 
@@ -70,15 +70,14 @@ navigator.mediaDevices
         });
 
         if (currentEmotion !== "") {
-          socket.emit("user-emotion", peer.id, currentEmotion); // Invia l'emozione al server con l'ID del chiamante
+          socket.emit("user-emotion", peer.id, currentEmotion);
         }
 
-        userEmotions[peer.id] = currentEmotion; // Aggiorna l'emozione del chiamante
+        userEmotions[peer.id] = currentEmotion;
 
-        socket.emit("new-user-joined", userId); // Informa gli altri utenti che un nuovo utente si è unito
+        socket.emit("new-user-joined", userId);
       }, 1000);
     };
-
 
 
     peer.on("open", (id) => {
