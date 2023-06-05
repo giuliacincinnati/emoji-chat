@@ -63,19 +63,14 @@ navigator.mediaDevices
         const call = peer.call(userId, stream);
         const video = document.createElement("video");
         call.on("stream", async (userVideoStream) => {
-          await addVideoStream(video, userVideoStream, userId, currentEmotion);
+        await addVideoStream(video, userVideoStream, userId, currentEmotion);
           if (userEmotions[userId]) {
             updateEmoticonContainer(userId, userEmotions[userId]);
-          } else {
-            socket.emit("get-user-emotion", userId, (emotion) => {
-              userEmotions[userId] = emotion;
-              updateEmoticonContainer(userId, emotion);
-            });
           }
         });
 
         if (currentEmotion !== "") {
-          socket.emit("user-emotion", userId, currentEmotion);
+          socket.emit("user-emotion", peer.id, currentEmotion);
         }
 
         userEmotions[peer.id] = currentEmotion;
@@ -83,7 +78,6 @@ navigator.mediaDevices
         socket.emit("new-user-joined", userId);
       }, 1000);
     };
-
 
 
     peer.on("open", (id) => {
