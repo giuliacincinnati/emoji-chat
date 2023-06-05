@@ -58,26 +58,27 @@ navigator.mediaDevices
 
 
     const connectToNewUser = (userId, stream, currentEmotion) => {
-      console.log("I call someone" + userId);
-      setTimeout(() => {
-        const call = peer.call(userId, stream);
-        const video = document.createElement("video");
-        call.on("stream", async (userVideoStream) => {
+    console.log("I call someone" + userId);
+    setTimeout(() => {
+      const call = peer.call(userId, stream);
+      const video = document.createElement("video");
+      call.on("stream", async (userVideoStream) => {
         await addVideoStream(video, userVideoStream, userId, currentEmotion);
-          if (userEmotions[userId]) {
-            updateEmoticonContainer(userId, userEmotions[userId]);
-          }
-        });
-
-        if (currentEmotion !== "") {
-          socket.emit("user-emotion", peer.id, currentEmotion);
+        if (userEmotions[userId]) {
+          updateEmoticonContainer(userId, userEmotions[userId]);
         }
+      });
 
-        userEmotions[peer.id] = currentEmotion;
+      if (currentEmotion !== "") {
+        socket.emit("user-emotion", userId, currentEmotion);
+      }
 
-        socket.emit("new-user-joined", userId);
-      }, 1000);
-    };
+      userEmotions[userId] = currentEmotion;
+
+      socket.emit("new-user-joined", userId);
+    }, 1000);
+  };
+
 
 
     peer.on("open", (id) => {
@@ -90,7 +91,7 @@ navigator.mediaDevices
     socket.on("user-connected", (userId) => {
       connectToNewUser(userId, myVideoStream, currentEmotion); // Passa l'emozione corrente come parametro
       if (userEmotions[userId]) {
-        updateEmoticonContainer(userId);
+        updateEmoticonContainer(userId, userEmotions[userId]);
       }
       if (userId !== peer.id) {
         socket.emit("get-user-emotion", userId, (emotion) => {
