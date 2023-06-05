@@ -50,9 +50,9 @@ navigator.mediaDevices
       console.log('someone call me');
       call.answer(stream);
       const video = document.createElement("video");
-      call.on("stream", async (userVideoStream) => {
-      await addVideoStream(video, userVideoStream, userId, currentEmotion);
-    });
+      call.on("stream", (userVideoStream) => {
+        addVideoStream(video, userVideoStream);
+      });
     });
     });
 
@@ -138,7 +138,6 @@ navigator.mediaDevices
         });
       });
     };
-
 
 
 let text = document.querySelector("#chat_message");
