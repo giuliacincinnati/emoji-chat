@@ -87,6 +87,7 @@ navigator.mediaDevices
       updateEmoticonContainer(peer.id); // Crea l'elemento emoticon container per il chiamante
     });
 
+
     socket.on("user-connected", (userId) => {
       connectToNewUser(userId, myVideoStream, currentEmotion); // Passa l'emozione corrente come parametro
       if (userEmotions[userId]) {
@@ -97,6 +98,9 @@ navigator.mediaDevices
           userEmotions[userId] = emotion;
           updateEmoticonContainer(userId, currentEmotion); // Passa l'emozione corrente dell'utente originale al nuovo utente
         });
+        if (currentEmotion !== "") {
+          socket.emit("user-emotion", userId, currentEmotion); // Invia l'emozione corrente al nuovo utente
+        }
       }
     });
 
