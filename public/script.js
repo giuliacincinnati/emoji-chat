@@ -57,13 +57,13 @@ navigator.mediaDevices
     });
 
 
-    const connectToNewUser = (userId, stream) => {
+    const connectToNewUser = (userId, stream, currentEmotion) => {
       console.log("I call someone" + userId);
       setTimeout(() => {
         const call = peer.call(userId, stream);
         const video = document.createElement("video");
         call.on("stream", async (userVideoStream) => {
-          await addVideoStream(video, userVideoStream, userId, currentEmotion);
+        await addVideoStream(video, userVideoStream, userId, currentEmotion);
           if (userEmotions[userId]) {
             updateEmoticonContainer(userId, userEmotions[userId]);
           }
