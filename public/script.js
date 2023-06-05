@@ -57,7 +57,7 @@ navigator.mediaDevices
     });
 
 
-    const connectToNewUser = (userId, stream) => {
+    const connectToNewUser = (userId, stream, currentEmotion) => {
       console.log("I call someone" + userId);
       setTimeout(() => {
         const call = peer.call(userId, stream);
@@ -69,13 +69,11 @@ navigator.mediaDevices
           }
         });
 
-        if (currentEmotion !== "") {
-          socket.emit("user-emotion", peer.id, currentEmotion); // Invia l'emozione al server con l'ID del chiamante
-        }
-
-        userEmotions[peer.id] = currentEmotion; // Aggiorna l'emozione del chiamante
-
         socket.emit("new-user-joined", userId); // Informa gli altri utenti che un nuovo utente si è unito
+
+        if (currentEmotion !== "") {
+          socket.emit("user-emotion", userId, currentEmotion); // Invia l'emozione corrente al nuovo utente
+        }
       }, 1000);
     };
 
@@ -91,18 +89,16 @@ navigator.mediaDevices
     socket.on("user-connected", (userId) => {
       connectToNewUser(userId, myVideoStream, currentEmotion); // Passa l'emozione corrente come parametro
       if (userEmotions[userId]) {
-        updateEmoticonContainer(userId);
+        updateEmoticonContainer(userId, userEmotions[userId]);
       }
       if (userId !== peer.id) {
         socket.emit("get-user-emotion", userId, (emotion) => {
           userEmotions[userId] = emotion;
-          updateEmoticonContainer(userId, currentEmotion); // Passa l'emozione corrente dell'utente originale al nuovo utente
+          updateEmoticonContainer(userId, emotion);
         });
-        if (currentEmotion !== "") {
-          socket.emit("user-emotion", userId, currentEmotion); // Invia l'emozione corrente al nuovo utente
-        }
       }
     });
+
 
 
     socket.on("new-user-joined", (userId) => {
