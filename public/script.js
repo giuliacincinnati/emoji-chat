@@ -65,7 +65,7 @@ navigator.mediaDevices
         call.on("stream", async (userVideoStream) => {
           await addVideoStream(video, userVideoStream, userId, currentEmotion);
           if (userEmotions[userId]) {
-            updateEmoticonContainer(userId, currentEmotion);
+            updateEmoticonContainer(userId, userEmotions[userId]);
           }
         });
 
