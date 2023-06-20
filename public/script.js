@@ -1,4 +1,4 @@
-const socket = io("https://video-chat-emoji.herokuapp.com");
+const socket = io("/");
 const videoGrid = document.getElementById("video-grid");
 const myVideo = document.createElement("video");
 const showChat = document.querySelector("#showChat");
@@ -24,8 +24,8 @@ showChat.addEventListener("click", () => {
 const user = prompt("Enter your name");
 
 var peer = new Peer({
-  host: window.location.hostname,
-  port: window.location.port || (window.location.protocol === 'https:' ? 443 : 80),
+  host: '127.0.0.1',
+  port: 3030,
   path: '/peerjs',
   config: {
     iceServers: [
