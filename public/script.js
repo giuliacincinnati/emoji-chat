@@ -24,8 +24,7 @@ showChat.addEventListener("click", () => {
 const user = prompt("Enter your name");
 
 var peer = new Peer({
-  host: '127.0.0.1',
-  port: 3030,
+  host: 'aurora-app-9b94c3cced21.herokuapp.com',
   path: '/peerjs',
   config: {
     iceServers: [
