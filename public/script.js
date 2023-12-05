@@ -248,7 +248,7 @@ const updateEmoticonImage = (userId) => {
 };
 
 const createEmoticon = (userId) => {
-  const emoticonContainerId = `emoticon-container-${userId}-${Date.now()}`;
+  const emoticonContainerId = `emoticon-container-${userId}`;
   let emoticonContainer = document.getElementById(emoticonContainerId);
 
   if (!emoticonContainer) {
