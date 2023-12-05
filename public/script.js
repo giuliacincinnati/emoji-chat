@@ -265,7 +265,7 @@ const createEmoticon = (userId) => {
   updateEmoticonImage(userId);
 
   setTimeout(() => {
-    emoticonContainer.innerHTML = "";
+    emoticonContainer.remove();
   }, 5000);
 
   return emoticonContainer;
