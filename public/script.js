@@ -53,91 +53,91 @@ navigator.mediaDevices
         addVideoStream(video, userVideoStream);
       });
     });
-    });
+  });
 
 
-    const connectToNewUser = (userId, stream, currentEmotion) => {
-    console.log("I call someone" + userId);
-    setTimeout(() => {
-      const call = peer.call(userId, stream);
-      const video = document.createElement("video");
-      call.on("stream", async (userVideoStream) => {
-        await addVideoStream(video, userVideoStream, userId, currentEmotion);
-        if (userEmotions[userId]) {
-          updateEmoticonContainer(userId, userEmotions[userId]);
-        }
-      });
-
-      if (currentEmotion !== "") {
-        socket.emit("user-emotion", userId, currentEmotion);
-      }
-
-      userEmotions[userId] = currentEmotion;
-
-      socket.emit("new-user-joined", userId);
-    }, 1000);
-  };
-
-
-
-    peer.on("open", (id) => {
-      console.log('my id is' + id);
-      socket.emit("join-room", ROOM_ID, id, user, peer.id);
-      updateEmoticonContainer(peer.id); // Crea l'elemento emoticon container per il chiamante
-    });
-
-
-    socket.on("user-connected", (userId) => {
-      connectToNewUser(userId, myVideoStream, currentEmotion); // Passa l'emozione corrente come parametro
+const connectToNewUser = (userId, stream, currentEmotion) => {
+  console.log("I call someone" + userId);
+  setTimeout(() => {
+    const call = peer.call(userId, stream);
+    const video = document.createElement("video");
+    call.on("stream", async (userVideoStream) => {
+      await addVideoStream(video, userVideoStream, userId, currentEmotion);
       if (userEmotions[userId]) {
         updateEmoticonContainer(userId, userEmotions[userId]);
       }
-      if (userId !== peer.id) {
-        socket.emit("get-user-emotion", userId, (emotion) => {
-          userEmotions[userId] = emotion;
-          updateEmoticonContainer(userId, currentEmotion); // Passa l'emozione corrente dell'utente originale al nuovo utente
-        });
+    });
+
+    if (currentEmotion !== "") {
+      socket.emit("user-emotion", userId, currentEmotion);
+    }
+
+    userEmotions[userId] = currentEmotion;
+
+    socket.emit("new-user-joined", userId);
+  }, 1000);
+};
+
+
+
+peer.on("open", (id) => {
+  console.log('my id is' + id);
+  socket.emit("join-room", ROOM_ID, id, user, peer.id);
+  updateEmoticonContainer(peer.id); // Crea l'elemento emoticon container per il chiamante
+});
+
+
+socket.on("user-connected", (userId) => {
+  connectToNewUser(userId, myVideoStream, currentEmotion); // Passa l'emozione corrente come parametro
+  if (userEmotions[userId]) {
+    updateEmoticonContainer(userId, userEmotions[userId]);
+  }
+  if (userId !== peer.id) {
+    socket.emit("get-user-emotion", userId, (emotion) => {
+      userEmotions[userId] = emotion;
+      updateEmoticonContainer(userId, currentEmotion); // Passa l'emozione corrente dell'utente originale al nuovo utente
+    });
+    if (currentEmotion !== "") {
+      socket.emit("user-emotion", userId, currentEmotion); // Invia l'emozione corrente al nuovo utente
+    }
+  }
+});
+
+
+socket.on("new-user-joined", (userId) => {
+  updateEmoticonContainer(userId);
+});
+
+peer.on("open", () => {
+  updateEmoticonContainer(peer.id);
+});
+
+
+const addVideoStream = (video, stream, userId, currentEmotion) => {
+  return new Promise((resolve) => {
+    video.srcObject = stream;
+    video.addEventListener("loadedmetadata", () => {
+      video.play();
+      videoGrid.appendChild(video);
+      const peerVideoGrid = document.createElement("div");
+      peerVideoGrid.classList.add("peer-video-grid");
+      peerVideoGrid.dataset.peer = userId;
+      peerVideoGrid.appendChild(video);
+
+      if (userId) {
+        const emoticonContainer = createEmoticon(userId);
+        peerVideoGrid.appendChild(emoticonContainer);
         if (currentEmotion !== "") {
-          socket.emit("user-emotion", userId, currentEmotion); // Invia l'emozione corrente al nuovo utente
+          userEmotions[userId] = currentEmotion;
+          updateEmoticonImage(userId);
         }
       }
+
+      videoGrid.appendChild(peerVideoGrid);
+      resolve();
     });
-
-
-    socket.on("new-user-joined", (userId) => {
-      updateEmoticonContainer(userId);
-    });
-
-    peer.on("open", () => {
-      updateEmoticonContainer(peer.id);
-    });
-
-
-    const addVideoStream = (video, stream, userId, currentEmotion) => {
-      return new Promise((resolve) => {
-        video.srcObject = stream;
-        video.addEventListener("loadedmetadata", () => {
-          video.play();
-          videoGrid.appendChild(video);
-          const peerVideoGrid = document.createElement("div");
-          peerVideoGrid.classList.add("peer-video-grid");
-          peerVideoGrid.dataset.peer = userId;
-          peerVideoGrid.appendChild(video);
-
-          if (userId) {
-            const emoticonContainer = createEmoticon(userId);
-            peerVideoGrid.appendChild(emoticonContainer);
-            if (currentEmotion !== "") {
-              userEmotions[userId] = currentEmotion;
-              updateEmoticonImage(userId);
-            }
-          }
-
-          videoGrid.appendChild(peerVideoGrid);
-          resolve();
-        });
-      });
-    };
+  });
+};
 
 
 let text = document.querySelector("#chat_message");
@@ -229,6 +229,10 @@ const updateEmoticonContainer = (userId, emotion) => {
       updateEmoticonImage(userId);
       socket.emit("user-emotion", userId, currentEmotion);
     }
+
+    setTimeout(() => {
+      emoticonContainer.remove();
+    }, 5000);
   }
 };
 
