@@ -266,7 +266,7 @@ const createEmoticon = (userId) => {
 
   setTimeout(() => {
     emoticonContainer.innerHTML = "";
-  }, 10000);
+  }, 5000);
 
   return emoticonContainer;
 };
