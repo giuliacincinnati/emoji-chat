@@ -217,9 +217,9 @@ socket.on("createMessage", (message, userName, userId) => {
 
 
 const updateEmoticonContainer = (userId, emotion) => {
-  const peerVideoGrid = document.querySelector(.peer-video-grid[data-peer="${userId}"]);
+  const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
   if (peerVideoGrid) {
-    let emoticonContainer = document.querySelector(#emoticon-container-${userId});
+    let emoticonContainer = document.querySelector(`#emoticon-container-${userId}`);
     if (!emoticonContainer) {
       emoticonContainer = createEmoticon(userId);
       peerVideoGrid.appendChild(emoticonContainer);
@@ -236,19 +236,19 @@ const updateEmoticonContainer = (userId, emotion) => {
 
 
 const updateEmoticonImage = (userId) => {
-  const emoticonContainer = document.querySelector(#emoticon-container-${userId});
+  const emoticonContainer = document.querySelector(`#emoticon-container-${userId}`);
   if (emoticonContainer) {
     let emoticonImage = emoticonContainer.querySelector("img");
     if (!emoticonImage) {
       emoticonImage = document.createElement("img");
       emoticonContainer.appendChild(emoticonImage);
     }
-    emoticonImage.src = ${userEmotions[userId]}.png;
+    emoticonImage.src = `${userEmotions[userId]}.png`;
   }
 };
 
 const createEmoticon = (userId) => {
-  const emoticonContainerId = emoticon-container-${userId};
+  const emoticonContainerId = `emoticon-container-${userId}`;
   let emoticonContainer = document.getElementById(emoticonContainerId);
 
   if (!emoticonContainer) {
@@ -256,7 +256,7 @@ const createEmoticon = (userId) => {
     emoticonContainer.classList.add("emoticon-container");
     emoticonContainer.id = emoticonContainerId;
 
-    const peerVideoGrid = document.querySelector(.peer-video-grid[data-peer="${userId}"]);
+    const peerVideoGrid = document.querySelector(`.peer-video-grid[data-peer="${userId}"]`);
     if (peerVideoGrid) {
       peerVideoGrid.appendChild(emoticonContainer);
     }
@@ -281,12 +281,12 @@ muteButton.addEventListener("click", () => {
   const enabled = myVideoStream.getAudioTracks()[0].enabled;
   if (enabled) {
     myVideoStream.getAudioTracks()[0].enabled = false;
-    html = <i class="fas fa-microphone-slash"></i>;
+    html = `<i class="fas fa-microphone-slash"></i>`;
     muteButton.classList.toggle("background__red");
     muteButton.innerHTML = html;
   } else {
     myVideoStream.getAudioTracks()[0].enabled = true;
-    html = <i class="fas fa-microphone"></i>;
+    html = `<i class="fas fa-microphone"></i>`;
     muteButton.classList.toggle("background__red");
     muteButton.innerHTML = html;
   }
@@ -296,12 +296,12 @@ stopVideo.addEventListener("click", () => {
   const enabled = myVideoStream.getVideoTracks()[0].enabled;
   if (enabled) {
     myVideoStream.getVideoTracks()[0].enabled = false;
-    html = <i class="fas fa-video-slash"></i>;
+    html = `<i class="fas fa-video-slash"></i>`;
     stopVideo.classList.toggle("background__red");
     stopVideo.innerHTML = html;
   } else {
     myVideoStream.getVideoTracks()[0].enabled = true;
-    html = <i class="fas fa-video"></i>;
+    html = `<i class="fas fa-video"></i>`;
     stopVideo.classList.toggle("background__red");
     stopVideo.innerHTML = html;
   }
