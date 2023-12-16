@@ -229,6 +229,10 @@ const updateEmoticonContainer = (userId, emotion) => {
       updateEmoticonImage(userId);
       socket.emit("user-emotion", userId, currentEmotion);
     }
+
+    setTimeout(() => {
+      emoticonContainer.remove();
+    }, 5000);
   }
 };
 
@@ -266,7 +270,7 @@ const createEmoticon = (userId) => {
 
   setTimeout(() => {
     emoticonContainer.innerHTML = "";
-  }, 10000);
+  }, 5000);
 
   return emoticonContainer;
 };
