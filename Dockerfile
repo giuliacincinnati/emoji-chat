@@ -15,6 +15,9 @@ COPY ./views ./views
 COPY ./public ./public
 COPY server.js .
 
+# Set the Heroku URL as an environment variable
+ENV HEROKU_URL=https://aurora-app-9b94c3cced21.herokuapp.com
+
 EXPOSE 3030
 
 # Start the app using serve command
