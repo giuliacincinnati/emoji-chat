@@ -266,12 +266,10 @@ const createEmoticon = (userId) => {
 
   setTimeout(() => {
     emoticonContainer.innerHTML = "";
-    emoticonContainer.parentNode.removeChild(emoticonContainer); // Rimuovi l'elemento emoticon dal suo genitore
-  }, 5000); // Imposta il timeout a 5 secondi (5000 millisecondi)
+  }, 10000);
 
   return emoticonContainer;
 };
-
 
 
 
